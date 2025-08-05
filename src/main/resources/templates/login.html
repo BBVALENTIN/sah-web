@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loghează-te</title>
+</head>
+<body>
+    <h1>Loghează-te pentru a putea juca</h1>
+    <form th:action="@{/login}" method="post">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Introdu numele" required>
+        <label>Parola</label>
+        <input type="password" name="password" placeholder="Introdu parola" required>
+
+        <button type="submit">Log in</button>
+    </form>
+    <a th:href="@{/register}">Dacă nu ai un cont, îți poți creea unul aici</a></body>
+</html>
