@@ -64,7 +64,7 @@ export class Tabla {
     return this.piese.find(p => p.row === row && p.col === col);
   }
 
-  redesenare() {
+  redesenare(piese = this.piese) {
     let c = 0;
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
@@ -80,6 +80,6 @@ export class Tabla {
       c = 1 - c;
     }
 
-    this.piese.forEach(p => p.desen(this.ctx, p.img));
+    piese.forEach(p => p.desen(this.ctx, p.img));
   }
 }

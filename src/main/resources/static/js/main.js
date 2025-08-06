@@ -12,4 +12,3 @@ tabla.drawTabla();
 
 const mutareMouse = new MutareMouse(canvas, tabla);
 let piesaSelectata = mutareMouse.getPiesaSelectata();
-

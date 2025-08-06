@@ -12,4 +12,12 @@ export class Tura extends Piesa{
         else
             this.img.src = "../../images/black-rook.png";
     }
+
+    mutariLegale(targetCol, targetRow) {
+        if(this.peTabla(targetCol, targetRow) && !this.acelasiPatrat(targetCol, targetRow))
+            if(targetCol === this.precol || targetRow === this.prerow)
+                if(this.patratValid(targetCol, targetRow) && this.piesaInFata(targetCol, targetRow) === false)
+                    return true;
+        return false;
+    }
 }

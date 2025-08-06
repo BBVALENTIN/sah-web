@@ -12,4 +12,14 @@ export class Rege extends Piesa{
         else
             this.img.src="../../images/black-king.png";
     }
+
+    mutariLegale(targetCol, targetRow) {
+        if(this.peTabla(targetCol, targetRow) && !this.acelasiPatrat(targetCol, targetRow))
+        {
+            if(Math.abs(targetCol-this.precol) + Math.abs(targetRow-this.prerow) === 1 || Math.abs(targetCol-this.precol) * Math.abs(targetRow-this.prerow) === 1)
+                if(this.patratValid(targetCol, targetRow));
+                    return true;
+        }
+        return false;
+    }
 }

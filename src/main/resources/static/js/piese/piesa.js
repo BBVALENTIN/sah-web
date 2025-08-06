@@ -56,7 +56,6 @@ export class Piesa {
     }
 
 
-
     getLovesteP(targetCol, targetRow)
     {
         for(const piesa of this.tabla.piese)
@@ -66,6 +65,7 @@ export class Piesa {
         }
         return null;
     }
+
 
     patratValid(targetCol, targetRow)
     {
