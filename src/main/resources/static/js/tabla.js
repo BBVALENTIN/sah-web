@@ -82,4 +82,46 @@ export class Tabla {
 
     piese.forEach(p => p.desen(this.ctx, p.img));
   }
+
+  setPiecesFromServer(piecesData) {
+    this.piese = piecesData.map(p => this.createPiesaFromData(p));
+  }
+
+  createPiesaFromData(data) {
+    const { tip, color, row, col } = data;
+
+    let piesa;
+
+    // Crează instanța corectă după tip
+    switch (tip.toLowerCase()) {
+      case "pion":   piesa = new Pion(color, row, col, this); break;
+      case "tura":   piesa = new Tura(color, row, col, this); break;
+      case "cal":    piesa = new Cal(color, row, col, this); break;
+      case "nebun":  piesa = new Nebun(color, row, col, this); break;
+      case "regina": piesa = new Regina(color, row, col, this); break;
+      case "rege":   piesa = new Rege(color, row, col, this); break;
+      default:
+        console.error("Tip piesă necunoscut:", tip);
+        return null;
+    }
+    piesa.row = parseInt(row);
+    piesa.col = parseInt(col);
+
+    // Setăm imaginea automat dacă e null
+    if (!piesa.img) {
+      piesa.img = new Image();
+      const folder = "../../images/";
+      const colorStr = (color === 1) ? "white" : "black";
+      piesa.img.src = `${folder}${colorStr}-${tip.toLowerCase()}.png`;
+    }
+
+    return piesa;
+  }
+
+  drawPiesa(p) {
+    if (p) {
+      p.desen(this.ctx, p.img);
+    }
+  }
+
 }

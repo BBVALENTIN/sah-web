@@ -7,8 +7,16 @@ const ctx = canvas.getContext('2d');
 
 
 const tabla = new Tabla(ctx);
-tabla.setPiese();
-tabla.drawTabla();
 
 const mutareMouse = new MutareMouse(canvas, tabla);
-let piesaSelectata = mutareMouse.getPiesaSelectata();
+
+async function loadBoard() {
+    const response = await fetch('/api/chess/state');
+    const piecesData = await response.json();
+
+    tabla.setPiecesFromServer(piecesData);
+
+    tabla.redesenare();
+}
+
+loadBoard();
