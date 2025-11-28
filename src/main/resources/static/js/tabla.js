@@ -37,7 +37,6 @@ export class Tabla {
       c = c === 0 ? 1 : 0;
     }
 
-    // Desenăm piesele peste tabla
     this.piese.forEach(piesa => {
       piesa.desen(this.ctx, piesa.img);
     });
@@ -92,7 +91,6 @@ export class Tabla {
 
     let piesa;
 
-    // Crează instanța corectă după tip
     switch (tip.toLowerCase()) {
       case "pion":   piesa = new Pion(color, row, col, this); break;
       case "tura":   piesa = new Tura(color, row, col, this); break;

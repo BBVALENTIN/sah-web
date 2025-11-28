@@ -1,19 +1,20 @@
 package com.sah.game;
 
-import com.sah.game.dto.MoveResult;
+import com.sah.dto.MoveResult;
 import com.sah.game.piese.*;
+import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class ChessBoard {
     public static Piese[][] board = new Piese[8][8];
 
     public static final int alb = 1;
     public static final int negru = -1;
 
-    private int culoareCurenta = alb;
+    private static int culoareCurenta = alb;
 
     public ChessBoard() {
         initializeBoard();
@@ -48,16 +49,16 @@ public class ChessBoard {
     public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
         Piese piesaSelectata = board[fromRow][fromCol];
         System.out.println("PIESA SELECTATA: "+piesaSelectata);
-//        int nrPioni = 0;
-//        for(int i = 0; i < 8; i++)
-//            for(int j = 0; j < 8; j++)
-//            {
-//                if(board[i][j] !=null)
-//                    System.out.println(board[i][j]+" "+i+" "+j);
-//                Piese piesa = ChessBoard.board[i][j];
-//                if(piesa instanceof Pion)
-//                    nrPioni++;
-//            }
+        int nrPioni = 0;
+        for(int i = 0; i < 8; i++)
+            for(int j = 0; j < 8; j++)
+            {
+                if(board[i][j] !=null)
+                    System.out.println(board[i][j]+" "+i+" "+j);
+                Piese piesa = ChessBoard.board[i][j];
+                if(piesa instanceof Pion)
+                    nrPioni++;
+            }
         if (piesaSelectata == null) {
             return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPieces());
         }
@@ -96,5 +97,9 @@ public class ChessBoard {
             return board[row][col];
         }
         return null;
+    }
+
+    public static int getCuloareCurenta() {
+        return culoareCurenta;
     }
 }

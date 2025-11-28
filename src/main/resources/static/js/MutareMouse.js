@@ -5,8 +5,6 @@ export class MutareMouse {
         this.canvas = canvas;
         this.tabla = tabla;
         this.piesaSelectata = null;
-        this.culoareCurenta = 1; // 1 = alb, -1 = negru
-
         this.offsetX = 0;
         this.offsetY = 0;
 
@@ -15,6 +13,19 @@ export class MutareMouse {
         canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
+    async init()
+    {
+        const resp = await fetch(
+            `/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`,
+            { method: "POST" }
+        );
+    }
+    async getTurn()
+    {
+        const resp = await fetch(`api/chess/turn`)
+        if(resp.ok)
+            this.culoareCurenta = await resp.json();
+    }
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -26,8 +37,8 @@ export class MutareMouse {
 
     onMouseDown(e) {
         const { col, row, x, y } = this.getSquareFromMouse(e);
+        this.getTurn();
         const piesa = this.tabla.getPiesa(row, col);
-
         if (piesa && piesa.color === this.culoareCurenta) {
             this.piesaSelectata = piesa;
             piesa.isDragging = true;
@@ -47,7 +58,6 @@ export class MutareMouse {
         this.piesaSelectata.dragX = x - this.offsetX;
         this.piesaSelectata.dragY = y - this.offsetY;
 
-        // Redesenăm tabla fără piesa selectată
         this.tabla.redesenare(this.tabla.piese.filter(p => p !== this.piesaSelectata));
         this.piesaSelectata.desen(this.tabla.ctx, this.piesaSelectata.img, this.piesaSelectata.dragX, this.piesaSelectata.dragY);
     }
@@ -56,7 +66,6 @@ export class MutareMouse {
         if (!this.piesaSelectata) return;
         const { col, row } = this.getSquareFromMouse(e);
 
-        // Pregătim datele mutării
         const moveData = {
             fromRow: this.piesaSelectata.row,
             fromCol: this.piesaSelectata.col,
@@ -75,9 +84,10 @@ export class MutareMouse {
             if (resp.ok) {
                 const moveResult = await resp.json();
                 if (moveResult.success) {
-                    // Setăm piesele din server
                     this.tabla.setPiecesFromServer(moveResult.updatedPieces);
                     this.culoareCurenta = this.culoareCurenta*-1;
+                    const statusDiv = document.getElementById("status");
+                    statusDiv.innerText = "Culoarea curenta muta: " + (this.culoareCurenta === 1 ? "Alb" : "Negru");
                 } else {
                     console.log("Mutare invalidă:", moveResult.message);
                 }

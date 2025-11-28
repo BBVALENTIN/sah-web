@@ -1,4 +1,4 @@
-package com.sah.game.dto;
+package com.sah.dto;
 
 import java.util.List;
 import com.sah.game.piese.Piese;
@@ -9,7 +9,7 @@ public class MoveResult {
     private List<Piese> updatedPieces;
     private boolean isCheck;
     private boolean isCheckmate;
-    private int currentPlayerColor;
+    private int culoareCurenta;
 
     public MoveResult(boolean success, String message, List<Piese> updatedPieces) {
         this.success = success;
@@ -62,10 +62,10 @@ public class MoveResult {
     }
 
     public int getCurrentPlayerColor() {
-        return currentPlayerColor;
+        return culoareCurenta;
     }
 
     public void setCurrentPlayerColor(int currentPlayerColor) {
-        this.currentPlayerColor = currentPlayerColor;
+        this.culoareCurenta = currentPlayerColor;
     }
 }
