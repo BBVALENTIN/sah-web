@@ -5,7 +5,6 @@ export class Cal extends Piesa{
         super(color, row, col);
 
         this.tip = "CAL";
-
         this.tabla = tabla;
 
         this.img = new Image();

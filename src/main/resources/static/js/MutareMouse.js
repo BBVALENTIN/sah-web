@@ -7,25 +7,19 @@ export class MutareMouse {
         this.piesaSelectata = null;
         this.offsetX = 0;
         this.offsetY = 0;
-
         canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
         canvas.addEventListener("mousemove", this.onMouseMove.bind(this));
         canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
-    async init()
-    {
-        const resp = await fetch(
-            `/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`,
-            { method: "POST" }
-        );
-    }
     async getTurn()
     {
         const resp = await fetch(`api/chess/turn`)
         if(resp.ok)
             this.culoareCurenta = await resp.json();
     }
+
+
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -35,9 +29,10 @@ export class MutareMouse {
         return { col, row, x, y };
     }
 
-    onMouseDown(e) {
+    async onMouseDown(e) {
         const { col, row, x, y } = this.getSquareFromMouse(e);
-        this.getTurn();
+        await this.getTurn();
+        console.log("Culoarea curenta: ", this.culoareCurenta);
         const piesa = this.tabla.getPiesa(row, col);
         if (piesa && piesa.color === this.culoareCurenta) {
             this.piesaSelectata = piesa;
@@ -85,7 +80,7 @@ export class MutareMouse {
                 const moveResult = await resp.json();
                 if (moveResult.success) {
                     this.tabla.setPiecesFromServer(moveResult.updatedPieces);
-                    this.culoareCurenta = this.culoareCurenta*-1;
+                    await this.getTurn();
                     const statusDiv = document.getElementById("status");
                     statusDiv.innerText = "Culoarea curenta muta: " + (this.culoareCurenta === 1 ? "Alb" : "Negru");
                 } else {

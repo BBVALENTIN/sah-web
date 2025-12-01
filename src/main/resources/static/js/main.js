@@ -15,8 +15,13 @@ async function loadBoard() {
     const piecesData = await response.json();
 
     tabla.setPiecesFromServer(piecesData);
-
     tabla.redesenare();
+
+    await mutareMouse.getTurn();
+
+    const statusDiv = document.getElementById("status");
+    statusDiv.innerText = "Culoarea curenta muta: " +
+        (mutareMouse.culoareCurenta === 1 ? "Alb" : "Negru");
 }
 
 loadBoard();
