@@ -39,10 +39,10 @@ public class ChessBoard {
         }
         board[7][7] = new Tura(alb, 7, 7);
         board[7][0] = new Tura(alb, 7, 0);
-        board[7][1] = new Cal(alb, 7, 1);
-        board[7][6] = new Cal(alb, 7, 6);
-        board[7][5] = new Nebun(alb, 7, 5);
-        board[7][2] = new Nebun(alb, 7, 2);
+//        board[7][1] = new Cal(alb, 7, 1);
+//        board[7][6] = new Cal(alb, 7, 6);
+//        board[7][5] = new Nebun(alb, 7, 5);
+//        board[7][2] = new Nebun(alb, 7, 2);
         board[7][3] = new Regina(alb, 7, 3);
         board[7][4] = new Rege(alb, 7, 4);
     }
@@ -72,6 +72,20 @@ public class ChessBoard {
             return new MoveResult(false, "Mutare ilegală", getAllPieces());
         }
 
+        if (rocada != null) {
+
+            int rookOldRow = rocada.row;
+            int rookOldCol = rocada.col;
+            int rookNewCol = rookOldCol - 2;
+
+            board[rookOldRow][rookNewCol] = rocada;
+
+            board[rookOldRow][rookOldCol] = null;
+
+            rocada.setPosition(rookOldRow, rookNewCol);
+
+            rocada = null;
+        }
         board[targetRow][targetCol] = piesaSelectata;
         board[fromRow][fromCol] = null;
         piesaSelectata.setPosition(targetRow, targetCol);
@@ -107,10 +121,8 @@ public class ChessBoard {
     public void checkRocada()
     {
         if(rocada != null) {
-            if (rocada.col == 0)
-                rocada.col += 3;
-            else if (rocada.col == 7)
-                rocada.col -= 3;
+            rocada.setPosition(rocada.row, rocada.col - 2);
         }
+        rocada = null;
     }
 }

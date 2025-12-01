@@ -21,6 +21,8 @@ public class Rege extends Piese {
            {
                if(board[prerow][precol+3].miscata == false){
                    ChessBoard.rocada = board[prerow][precol+3];
+                   System.out.println("--------------DEBUG TURA NU O VEDE BINE "+board[prerow][precol+3] + "-----"+ ChessBoard.rocada);
+                   System.out.println("-----------------PREROW SI PRECOL SUNT" + prerow+ "-------------------"+ precol+3);
                    return true;
                }
            }
