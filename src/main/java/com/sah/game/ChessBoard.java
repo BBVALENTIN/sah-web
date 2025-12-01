@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 public class ChessBoard {
     public static Piese[][] board = new Piese[8][8];
+    public static Piese rocada;
 
     public static final int alb = 1;
     public static final int negru = -1;
@@ -101,5 +102,15 @@ public class ChessBoard {
 
     public static int getCuloareCurenta() {
         return culoareCurenta;
+    }
+
+    public void checkRocada()
+    {
+        if(rocada != null) {
+            if (rocada.col == 0)
+                rocada.col += 3;
+            else if (rocada.col == 7)
+                rocada.col -= 3;
+        }
     }
 }

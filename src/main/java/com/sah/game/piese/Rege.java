@@ -15,14 +15,16 @@ public class Rege extends Piese {
         if(patratValid(targetRow, targetCol) && (Math.abs(targetRow - this.row) + Math.abs(targetCol - this.col) == 1 || Math.abs(targetRow - this.row) * Math.abs(targetCol - this.col) == 1)) {
             return true;
         }
-//       if(miscata == false)
-//       {
-//           if(targetCol == col + 2 && targetRow == row && piesaInFata(targetRow, targetCol) == false)
-//           {
-//               if((this.color == 1 && board[7][7] != null) || (this.color == -1 && board[7][0] != null))
-//                   Piese rocada =
-//           }
-//       }
+       if(miscata == false)
+       {
+           if(targetCol == col + 2 && targetRow == row && piesaInFata(targetRow, targetCol) == false)
+           {
+               if(board[prerow][precol+3].miscata == false){
+                   ChessBoard.rocada = board[prerow][precol+3];
+                   return true;
+               }
+           }
+       }
         return false;
     }
 }
