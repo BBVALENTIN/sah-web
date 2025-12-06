@@ -11,6 +11,7 @@ import java.util.List;
 public class ChessBoard {
     public static Piese[][] board = new Piese[8][8];
     public static Piese rocada;
+    public static Piese rege;
 
     public static final int alb = 1;
     public static final int negru = -1;
@@ -124,5 +125,19 @@ public class ChessBoard {
             rocada.setPosition(rocada.row, rocada.col - 2);
         }
         rocada = null;
+    }
+
+    public Piese getRege(boolean opponent)
+    {
+        List<Piese> pieseList = getAllPieces();
+        for(Piese piesa : pieseList) {
+            if (opponent) {
+                if (piesa.tip == "rege" && piesa.color != culoareCurenta)
+                    rege = piesa;
+                else if (piesa.tip == "rege" && piesa.color == culoareCurenta)
+                    rege = piesa;
+            }
+        }
+        return rege;
     }
 }
