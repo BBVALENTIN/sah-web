@@ -1,11 +1,12 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.Tip;
 
 public class Pion extends Piese {
     public Pion(int color, int row, int col) {
         super(color, row, col);
-        this.tip = "pion";
+        TIP = Tip.PION;
     }
 
     @Override

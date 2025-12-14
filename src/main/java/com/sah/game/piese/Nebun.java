@@ -1,10 +1,12 @@
 package com.sah.game.piese;
 
+import com.sah.game.Tip;
+
 public class Nebun  extends Piese {
     public Nebun(int color, int row, int col)
     {
         super(color, row, col);
-        this.tip = "nebun";
+        TIP = Tip.NEBUN;
     }
 
     @Override

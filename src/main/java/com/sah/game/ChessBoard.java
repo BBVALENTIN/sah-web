@@ -11,12 +11,13 @@ import java.util.List;
 public class ChessBoard {
     public static Piese[][] board = new Piese[8][8];
     public static Piese rocada;
-    public static Piese rege;
-
+    public  Piese rege, sahP, piesaSelectata;
+    public List<Piese> pieseList = new ArrayList<>();
     public static final int alb = 1;
     public static final int negru = -1;
 
     private static int culoareCurenta = alb;
+
 
     public ChessBoard() {
         initializeBoard();
@@ -46,10 +47,11 @@ public class ChessBoard {
 //        board[7][2] = new Nebun(alb, 7, 2);
         board[7][3] = new Regina(alb, 7, 3);
         board[7][4] = new Rege(alb, 7, 4);
+        pieseList = getAllPieces();
     }
 
     public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
-        Piese piesaSelectata = board[fromRow][fromCol];
+        piesaSelectata = board[fromRow][fromCol];
         System.out.println("PIESA SELECTATA: "+piesaSelectata);
         int nrPioni = 0;
         for(int i = 0; i < 8; i++)
@@ -62,15 +64,15 @@ public class ChessBoard {
                     nrPioni++;
             }
         if (piesaSelectata == null) {
-            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPieces());
+            return new MoveResult(false, "Nu există piesă pe poziția selectată", pieseList);
         }
 
         if (piesaSelectata.color != culoareCurenta) {
-            return new MoveResult(false, "Nu este rândul acestei culori", getAllPieces());
+            return new MoveResult(false, "Nu este rândul acestei culori", pieseList);
         }
 
         if (!piesaSelectata.miscare(targetRow, targetCol)) {
-            return new MoveResult(false, "Mutare ilegală", getAllPieces());
+            return new MoveResult(false, "Mutare ilegală", pieseList);
         }
 
         if (rocada != null) {
@@ -87,9 +89,17 @@ public class ChessBoard {
 
             rocada = null;
         }
-        board[targetRow][targetCol] = piesaSelectata;
-        board[fromRow][fromCol] = null;
-        piesaSelectata.setPosition(targetRow, targetCol);
+        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
+
+        if(esteRegeleMeuInSah())
+        {
+            board[fromRow][fromCol] = piesaSelectata;
+            board[targetRow][targetCol] = null;
+
+            piesaSelectata.setPosition(fromRow, fromCol);
+
+            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPieces());
+        }
 //        System.out.println("nr pioni"+ nrPioni);
 
         culoareCurenta *= -1;
@@ -97,7 +107,7 @@ public class ChessBoard {
     }
 
     public List<Piese> getAllPieces() {
-        List<Piese> pieseList = new ArrayList<>();
+        pieseList.clear();
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] != null) {
@@ -105,6 +115,16 @@ public class ChessBoard {
                 }
             }
         }
+        return pieseList;
+    }
+
+    public List<Piese> mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Piese piesaSelectata)
+    {
+        board[fromRow][fromCol] = null;
+        board[targetRow][targetCol] = piesaSelectata;
+
+        piesaSelectata.setPosition(targetRow, targetCol);
+
         return pieseList;
     }
 
@@ -127,17 +147,40 @@ public class ChessBoard {
         rocada = null;
     }
 
-    public Piese getRege(boolean opponent)
-    {
-        List<Piese> pieseList = getAllPieces();
-        for(Piese piesa : pieseList) {
-            if (opponent) {
-                if (piesa.tip == "rege" && piesa.color != culoareCurenta)
-                    rege = piesa;
-                else if (piesa.tip == "rege" && piesa.color == culoareCurenta)
-                    rege = piesa;
+    public Piese getRege(boolean opponent) {
+        for (Piese piesa : pieseList) {
+            if (piesa.TIP == Tip.REGE) {
+                if (opponent && piesa.color != culoareCurenta)
+                    return piesa;
+                if (!opponent && piesa.color == culoareCurenta)
+                    return piesa;
             }
         }
-        return rege;
+        return null;
+    }
+
+
+    private boolean esteRegeleMeuInSah() {
+        Piese rege = getRege(false);
+        return rege != null && esteRegeInSah(rege);
+    }
+
+    private boolean esteRegeleAdversInSah() {
+        Piese rege = getRege(true);
+        return rege != null && esteRegeInSah(rege);
+    }
+
+
+    private boolean esteRegeInSah(Piese rege) {
+        for (Piese piesa : pieseList) {
+            if (piesa.color != rege.color) {
+                if (piesa.miscare(rege.row, rege.col)) {
+                    sahP = piesa;
+                    return true;
+                }
+            }
+        }
+        sahP = null;
+        return false;
     }
 }

@@ -1,9 +1,11 @@
 package com.sah.game.piese;
 
+import com.sah.game.Tip;
+
 public class Regina extends Piese{
     public Regina(int color, int row, int col) {
         super(color, row, col);
-        this.tip = "regina";
+        TIP = Tip.REGINA;
     }
 
     @Override

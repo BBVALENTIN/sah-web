@@ -23,7 +23,7 @@ public class ChessController {
 
     @GetMapping("/state")
     public List<Piese> getState() {
-        return chessBoard.getAllPieces();
+        return chessBoard.pieseList;
     }
 
     @GetMapping("/turn")

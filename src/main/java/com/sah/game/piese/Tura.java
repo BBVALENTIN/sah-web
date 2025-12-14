@@ -1,11 +1,12 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.Tip;
 
 public class Tura extends Piese {
     public Tura(int color, int row, int col){
         super(color, row, col);
-        this.tip = "TURA";
+        TIP = Tip.TURA;
     }
 
     @Override

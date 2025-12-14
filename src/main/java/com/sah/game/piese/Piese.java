@@ -1,6 +1,7 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.Tip;
 
 public class Piese {
     public int x, y;
@@ -8,15 +9,14 @@ public class Piese {
     public int color;
     public boolean miscata;
     public Piese lovestePiese;
-    public String tip;
     public String img;
+    public Tip TIP;
 
     public Piese(int color, int row, int col)
     {
         this.color = color;
         this.col = col;
         this.row = row;
-        this.tip = tip;
         precol = col;
         prerow = row;
         this.miscata = false;
