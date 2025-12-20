@@ -201,4 +201,12 @@ public class ChessBoard {
         }
         return dto;
     }
+
+    //debug rege
+    public PiesaDTO getRegeDTO(boolean opponent) {
+        Piese rege = getRege(opponent);
+        if(rege == null)
+            return null;
+        return toDTO(rege);
+    }
 }

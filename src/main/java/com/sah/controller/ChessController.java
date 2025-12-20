@@ -38,16 +38,16 @@ public class ChessController {
         return ChessBoard.getCuloareCurenta();
     }
 
-//    @GetMapping("/regeInamic")
-//    public Piese getPozitieRegeInamic()
-//    {
-//        return ChessBoard.getRege(true);
-//    }
-//
-//    @GetMapping("/regeTau")
-//    public Piese getPozitieRegeTau()
-//    {
-//        return chessBoard.getRege(false);
-//    }
+    @GetMapping("/regeInamic")
+    public Piese getPozitieRegeInamic()
+    {
+        return chessBoard.getRege(true);
+    }
+
+    @GetMapping("/regeTau")
+    public Piese getPozitieRegeTau()
+    {
+        return chessBoard.getRege(false);
+    }
 }
 

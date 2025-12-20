@@ -21,12 +21,15 @@ export class MutareMouse {
 
     async getRegi()
     {
-        const regeInamic = await fetch(`api/chess/regeInamic`);
-        const regeTau = await fetch(`api/chess/regeTau`);
-        if(regeInamic && regeTau) {
-            console.log(regeInamic);
-            console.log(regeTau);
+        let regeInamic = null, regeTau = null;
+        const respInamic = await fetch(`api/chess/regeInamic`);
+        const respTau = await fetch(`api/chess/regeTau`);
+        if(respInamic && respTau) {
+            regeInamic = await respInamic.json();
+            regeTau = await respTau.json();
         }
+        console.log(regeInamic);
+        console.log(regeTau);
     }
 
 
@@ -42,6 +45,7 @@ export class MutareMouse {
     async onMouseDown(e) {
         const { col, row, x, y } = this.getSquareFromMouse(e);
         await this.getTurn();
+        await this.getRegi();
         console.log("Culoarea curenta: ", this.culoareCurenta);
         const piesa = this.tabla.getPiesa(row, col);
         if (piesa && piesa.color === this.culoareCurenta) {
