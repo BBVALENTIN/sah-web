@@ -90,6 +90,7 @@ public class ChessBoard {
 
             rocada = null;
         }
+
         mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
 
         if(esteRegeleMeuInSah())

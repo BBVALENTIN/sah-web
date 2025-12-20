@@ -39,15 +39,15 @@ public class ChessController {
     }
 
     @GetMapping("/regeInamic")
-    public Piese getPozitieRegeInamic()
+    public PiesaDTO getPozitieRegeInamic()
     {
-        return chessBoard.getRege(true);
+        return chessBoard.getRegeDTO(true);
     }
 
     @GetMapping("/regeTau")
-    public Piese getPozitieRegeTau()
+    public PiesaDTO getPozitieRegeTau()
     {
-        return chessBoard.getRege(false);
+        return chessBoard.getRegeDTO(false);
     }
 }
 

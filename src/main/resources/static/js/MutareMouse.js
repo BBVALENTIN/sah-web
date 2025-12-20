@@ -24,7 +24,7 @@ export class MutareMouse {
         let regeInamic = null, regeTau = null;
         const respInamic = await fetch(`api/chess/regeInamic`);
         const respTau = await fetch(`api/chess/regeTau`);
-        if(respInamic && respTau) {
+        if(respInamic.ok && respTau.ok) {
             regeInamic = await respInamic.json();
             regeTau = await respTau.json();
         }
