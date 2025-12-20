@@ -8,7 +8,7 @@ import static com.sah.game.ChessBoard.board;
 public class Rege extends Piese {
     public Rege(int color, int row, int col) {
         super(color, row, col);
-        TIP = Tip.REGE;
+        tip = Tip.REGE;
     }
 
     @Override

@@ -10,7 +10,7 @@ public class Piese {
     public boolean miscata;
     public Piese lovestePiese;
     public String img;
-    public Tip TIP;
+    public Tip tip;
 
     public Piese(int color, int row, int col)
     {

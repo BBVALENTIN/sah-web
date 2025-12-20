@@ -1,6 +1,7 @@
 package com.sah.game;
 
 import com.sah.dto.MoveResult;
+import com.sah.dto.PiesaDTO;
 import com.sah.game.piese.*;
 import org.springframework.stereotype.Service;
 
@@ -64,15 +65,15 @@ public class ChessBoard {
                     nrPioni++;
             }
         if (piesaSelectata == null) {
-            return new MoveResult(false, "Nu există piesă pe poziția selectată", pieseList);
+            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO());
         }
 
         if (piesaSelectata.color != culoareCurenta) {
-            return new MoveResult(false, "Nu este rândul acestei culori", pieseList);
+            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO());
         }
 
         if (!piesaSelectata.miscare(targetRow, targetCol)) {
-            return new MoveResult(false, "Mutare ilegală", pieseList);
+            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO());
         }
 
         if (rocada != null) {
@@ -98,12 +99,12 @@ public class ChessBoard {
 
             piesaSelectata.setPosition(fromRow, fromCol);
 
-            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPieces());
+            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO());
         }
 //        System.out.println("nr pioni"+ nrPioni);
 
         culoareCurenta *= -1;
-        return new MoveResult(true, "Mutare validă", getAllPieces());
+        return new MoveResult(true, "Mutare validă", getAllPiecesDTO());
     }
 
     public List<Piese> getAllPieces() {
@@ -149,7 +150,7 @@ public class ChessBoard {
 
     public Piese getRege(boolean opponent) {
         for (Piese piesa : pieseList) {
-            if (piesa.TIP == Tip.REGE) {
+            if (piesa.tip == Tip.REGE) {
                 if (opponent && piesa.color != culoareCurenta)
                     return piesa;
                 if (!opponent && piesa.color == culoareCurenta)
@@ -182,5 +183,22 @@ public class ChessBoard {
         }
         sahP = null;
         return false;
+    }
+
+    public static PiesaDTO toDTO(Piese p) {
+        return new PiesaDTO(
+                p.tip.name(),
+                p.color,
+                p.row,
+                p.col
+        );
+    }
+
+    public List<PiesaDTO> getAllPiecesDTO() {
+        List<PiesaDTO> dto = new ArrayList<>();
+        for (Piese p : getAllPieces()) {
+            dto.add(toDTO(p));
+        }
+        return dto;
     }
 }

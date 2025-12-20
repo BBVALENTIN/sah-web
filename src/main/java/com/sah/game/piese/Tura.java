@@ -6,7 +6,7 @@ import com.sah.game.Tip;
 public class Tura extends Piese {
     public Tura(int color, int row, int col){
         super(color, row, col);
-        TIP = Tip.TURA;
+        tip = Tip.TURA;
     }
 
     @Override

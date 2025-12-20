@@ -6,12 +6,12 @@ import com.sah.game.piese.Piese;
 public class MoveResult {
     private boolean success;
     private String message;
-    private List<Piese> updatedPieces;
+    private List<PiesaDTO> updatedPieces;
     private boolean isCheck;
     private boolean isCheckmate;
     private int culoareCurenta;
 
-    public MoveResult(boolean success, String message, List<Piese> updatedPieces) {
+    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces) {
         this.success = success;
         this.message = message;
         this.updatedPieces = updatedPieces;
@@ -37,11 +37,11 @@ public class MoveResult {
         this.message = message;
     }
 
-    public List<Piese> getUpdatedPieces() {
+    public List<PiesaDTO> getUpdatedPieces() {
         return updatedPieces;
     }
 
-    public void setUpdatedPieces(List<Piese> updatedPieces) {
+    public void setUpdatedPieces(List<PiesaDTO> updatedPieces) {
         this.updatedPieces = updatedPieces;
     }
 

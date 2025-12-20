@@ -6,7 +6,7 @@ public class Cal extends Piese {
     public Cal(int color, int row, int col)
     {
         super(color, row, col);
-        TIP = Tip.CAL;
+        tip = Tip.CAL;
     }
 
     @Override

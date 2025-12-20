@@ -5,7 +5,7 @@ import com.sah.game.Tip;
 public class Regina extends Piese{
     public Regina(int color, int row, int col) {
         super(color, row, col);
-        TIP = Tip.REGINA;
+        tip = Tip.REGINA;
     }
 
     @Override

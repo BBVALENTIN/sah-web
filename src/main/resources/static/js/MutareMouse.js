@@ -19,6 +19,16 @@ export class MutareMouse {
             this.culoareCurenta = await resp.json();
     }
 
+    async getRegi()
+    {
+        const regeInamic = await fetch(`api/chess/regeInamic`);
+        const regeTau = await fetch(`api/chess/regeTau`);
+        if(regeInamic && regeTau) {
+            console.log(regeInamic);
+            console.log(regeTau);
+        }
+    }
+
 
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
