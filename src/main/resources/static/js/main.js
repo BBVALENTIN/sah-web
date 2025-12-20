@@ -24,4 +24,29 @@ async function loadBoard() {
         (mutareMouse.culoareCurenta === 1 ? "Alb" : "Negru");
 }
 
+const resetBtn = document.getElementById("reset-btn")
+resetBtn.addEventListener("click", async () => {
+    try{
+        const resp = await fetch(`/api/chess/reset`)
+        if(!resp.ok) {
+            console.log("eroare la reset");
+            return;
+        }
+
+        const piecesData = await resp.json();
+
+        tabla.setPiecesFromServer(piecesData);
+        tabla.redesenare();
+
+        await mutareMouse.getTurn();
+
+        const statusDiv = document.getElementById("status");
+        statusDiv.innerText = "Tabla a fost resetata";
+
+        console.log("RESET BOARD OK");
+    } catch (err) {
+        console.log("eroare eroare eroare");
+    }
+
+})
 loadBoard();

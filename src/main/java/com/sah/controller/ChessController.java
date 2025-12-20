@@ -49,5 +49,19 @@ public class ChessController {
     {
         return chessBoard.getRegeDTO(false);
     }
+
+    @GetMapping("/reset")
+    public List<PiesaDTO> ResetBoard()
+    {
+        chessBoard.pieseList.clear();
+        for(int i = 0; i < 7; i++)
+            for(int j = 0; j < 7; j++)
+                chessBoard.board[i][j] = null;
+        chessBoard.initializeBoard();
+        List<PiesaDTO> dto = new ArrayList<>();
+        for(Piese p : chessBoard.getAllPieces())
+            dto.add(ChessBoard.toDTO(p));
+        return dto;
+    }
 }
 

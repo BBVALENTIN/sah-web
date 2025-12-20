@@ -49,6 +49,7 @@ public class ChessBoard {
         board[7][3] = new Regina(alb, 7, 3);
         board[7][4] = new Rege(alb, 7, 4);
         pieseList = getAllPieces();
+        culoareCurenta = alb;
     }
 
     public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
@@ -102,6 +103,7 @@ public class ChessBoard {
 
             return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO());
         }
+
 //        System.out.println("nr pioni"+ nrPioni);
 
         culoareCurenta *= -1;
