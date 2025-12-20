@@ -212,4 +212,57 @@ public class ChessBoard {
             return null;
         return toDTO(rege);
     }
+
+    public boolean esteSahMat(Piese rege)
+    {
+        if(!esteRegeInSah(rege))
+            return false;
+        if(miscareRege(rege))
+            return false;
+
+        return true;
+    }
+
+    private boolean miscareRege(Piese rege){
+        if(isValidMoveRege(rege, -1, -1)) return true;
+        if(isValidMoveRege(rege, -1, -0)) return true;
+        if(isValidMoveRege(rege, -1, 1)) return true;
+        if(isValidMoveRege(rege, 0, -1)) return true;
+        if(isValidMoveRege(rege, 0, 1)) return true;
+        if(isValidMoveRege(rege, 1, -1)) return true;
+        if(isValidMoveRege(rege, 1, 0)) return true;
+        if(isValidMoveRege(rege, 1, 1)) return true;
+
+        return false;
+    }
+    private boolean isValidMoveRege(Piese rege, int rowSafe, int colSafe)
+    {
+        int newRow = rege.row + rowSafe;
+        int newCol = rege.col + colSafe;
+
+        if(!rege.peTabla(newRow, newCol)) return false;
+
+        Piese lovita = ChessBoard.board[newRow][newCol];
+
+        if(lovita != null || lovita.color == rege.color)
+            return false;
+
+        ChessBoard.board[rege.row][rege.col] = null;
+        ChessBoard.board[newRow][newCol] = rege;
+
+        int oldRow = rege.row;
+        int oldCol = rege.col;
+        rege.row = newRow;
+        rege.col = newCol;
+
+        boolean inSah = esteRegeInSah(rege);
+
+        // rollback
+        rege.row = oldRow;
+        rege.col = oldCol;
+        ChessBoard.board[oldRow][oldCol] = rege;
+        ChessBoard.board[newRow][newCol] = lovita;
+
+        return !inSah;
+    }
 }
