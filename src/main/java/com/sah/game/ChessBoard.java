@@ -16,6 +16,7 @@ public class ChessBoard {
     public List<Piese> pieseList = new ArrayList<>();
     public static final int alb = 1;
     public static final int negru = -1;
+    String allFormatedMoves = "";
 
     private static int culoareCurenta = alb;
 
@@ -107,6 +108,9 @@ public class ChessBoard {
 //        System.out.println("nr pioni"+ nrPioni);
 
         culoareCurenta *= -1;
+        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol));
+        allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol));
+        System.out.println(allFormatedMoves);
         return new MoveResult(true, "Mutare validă", getAllPiecesDTO());
     }
 
@@ -264,5 +268,34 @@ public class ChessBoard {
         ChessBoard.board[newRow][newCol] = lovita;
 
         return !inSah;
+    }
+
+    // moving a pawn to row 4 (from up to bottom), col 4 = e4
+    public String formattedMoves(Piese piesa, int targetRow, int targetCol)
+    {
+        char pieceChar;
+
+        switch(piesa.tip){
+            case CAL -> pieceChar = 'N';
+            case NEBUN -> pieceChar = 'B';
+            case REGE ->  pieceChar = 'K';
+            case REGINA -> pieceChar = 'Q';
+            case TURA ->  pieceChar = 'R';
+            default -> pieceChar = '?';
+        }
+        char colChar = (char)('a'+targetCol);
+        int boardRow = 8 - targetRow;
+        String notation;
+        if(piesa.tip == Tip.PION)
+            notation = "" + colChar + boardRow;
+        else
+            notation = "" + pieceChar + colChar + boardRow;
+
+        return notation;
+    }
+
+    public void allFormatedMoves(String notation)
+    {
+        allFormatedMoves += notation+ " ";
     }
 }
