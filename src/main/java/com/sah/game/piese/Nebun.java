@@ -14,7 +14,7 @@ public class Nebun  extends Piese {
 
         if(patratValid(targetRow, targetCol) && Math.abs(targetRow - this.row) == Math.abs(targetCol - this.col) && piesaPeDiagonala(targetRow, targetCol) == false && !acelasiPatrat(targetRow, targetCol))
             return true;
-        System.out.println("lovestePiese:"+lovestePiese+" piesaPeDiagonala" + this.piesaPeDiagonala(targetRow, targetCol) + " patratvalid: "+ patratValid(targetRow, targetCol));
+//        System.out.println("lovestePiese:"+lovestePiese+" piesaPeDiagonala" + this.piesaPeDiagonala(targetRow, targetCol) + " patratvalid: "+ patratValid(targetRow, targetCol));
         return false;
     }
 }

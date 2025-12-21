@@ -11,7 +11,7 @@ public class Tura extends Piese {
 
     @Override
     public boolean miscare(int targetRow, int targetCol) {
-        System.out.println("DEBUG miscare: targetRow=" + targetRow + " targetCol=" + targetCol);
+//        System.out.println("DEBUG miscare: targetRow=" + targetRow + " targetCol=" + targetCol);
         if(acelasiPatrat(targetRow, targetCol)){
             return false;
         }
@@ -21,13 +21,13 @@ public class Tura extends Piese {
                 return true;
             }
         }
-
-        System.out.println(
-                "acelasiPatrat=" + acelasiPatrat(targetRow, targetCol) +
-                        " lovestePiese=" + lovestePiese +
-                        " this.miscata=" + miscata +
-                        " piesaInFata=" + this.piesaInFata(targetRow, targetCol)
-        );
+//
+//        System.out.println(
+//                "acelasiPatrat=" + acelasiPatrat(targetRow, targetCol) +
+//                        " lovestePiese=" + lovestePiese +
+//                        " this.miscata=" + miscata +
+//                        " piesaInFata=" + this.piesaInFata(targetRow, targetCol)
+//        );
 
         return false;
     }

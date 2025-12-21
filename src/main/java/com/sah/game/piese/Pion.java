@@ -24,7 +24,7 @@ public class Pion extends Piese {
             return true;
         if(Math.abs(targetCol-col) == 1 && targetRow == row+directie && lovestePiese != null && lovestePiese.color != this.color)
             return true;
-        System.out.println("lovestePiese:"+lovestePiese + " this.miscata:"+miscata+" piesaInfata" + this.piesaInFata(targetRow, targetCol));
+//        System.out.println("lovestePiese:"+lovestePiese + " this.miscata:"+miscata+" piesaInfata" + this.piesaInFata(targetRow, targetCol));
         return false;
     }
 }
