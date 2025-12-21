@@ -37,7 +37,7 @@ public class Piese {
     }
 
 
-    public boolean peTabla(int targetCol, int targetRow)
+    public boolean peTabla(int targetRow, int targetCol)
     {
         return targetCol >= 0 && targetRow >=0 && targetCol <= 7 && targetRow <= 7;
     }
