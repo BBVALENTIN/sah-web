@@ -12,6 +12,9 @@ public class Tura extends Piese {
     @Override
     public boolean miscare(int targetRow, int targetCol) {
         System.out.println("DEBUG miscare: targetRow=" + targetRow + " targetCol=" + targetCol);
+        if(acelasiPatrat(targetRow, targetCol)){
+            return false;
+        }
 
         if (targetRow == this.row || targetCol == this.col) {
             if (!piesaInFata(targetRow, targetCol) && patratValid(targetRow, targetCol)) {

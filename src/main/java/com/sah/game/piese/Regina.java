@@ -10,6 +10,9 @@ public class Regina extends Piese{
 
     @Override
     public boolean miscare(int targetRow, int targetCol) {
+        if(acelasiPatrat(targetRow, targetCol)){
+            return false;
+        }
         if(patratValid(targetRow, targetCol) && !piesaPeDiagonala(targetRow, targetCol)){
             if(Math.abs(targetRow - row) == Math.abs(targetCol - col)){
                 return true;
