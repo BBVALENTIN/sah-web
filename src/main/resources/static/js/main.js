@@ -35,10 +35,7 @@ resetBtn.addEventListener("click", async () => {
 
         const piecesData = await resp.json();
 
-        tabla.setPiecesFromServer(piecesData);
-        tabla.redesenare();
-
-        await mutareMouse.getTurn();
+        loadBoard();
 
         const statusDiv = document.getElementById("status");
         statusDiv.innerText = "Tabla a fost resetata";

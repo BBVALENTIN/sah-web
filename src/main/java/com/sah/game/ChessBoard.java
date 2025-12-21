@@ -16,7 +16,7 @@ public class ChessBoard {
     public List<Piese> pieseList = new ArrayList<>();
     public static final int alb = 1;
     public static final int negru = -1;
-    String allFormatedMoves = "";
+    public String allFormatedMoves = "";
 
     private static int culoareCurenta = alb;
 

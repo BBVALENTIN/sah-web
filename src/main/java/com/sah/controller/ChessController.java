@@ -54,9 +54,10 @@ public class ChessController {
     public List<PiesaDTO> ResetBoard()
     {
         chessBoard.pieseList.clear();
-        for(int i = 0; i < 7; i++)
-            for(int j = 0; j < 7; j++)
+        for(int i = 0; i < 8; i++)
+            for(int j = 0; j < 8; j++)
                 chessBoard.board[i][j] = null;
+        chessBoard.allFormatedMoves = "";
         chessBoard.initializeBoard();
         List<PiesaDTO> dto = new ArrayList<>();
         for(Piese p : chessBoard.getAllPieces())
