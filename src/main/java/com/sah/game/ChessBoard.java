@@ -67,15 +67,15 @@ public class ChessBoard {
                     nrPioni++;
             }
         if (piesaSelectata == null) {
-            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO());
+            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false);
         }
 
         if (piesaSelectata.color != culoareCurenta) {
-            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO());
+            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false);
         }
 
         if (!piesaSelectata.miscare(targetRow, targetCol)) {
-            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO());
+            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false);
         }
 
         if (rocada != null) {
@@ -102,16 +102,34 @@ public class ChessBoard {
 
             piesaSelectata.setPosition(fromRow, fromCol);
 
-            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO());
+            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false);
         }
 
-//        System.out.println("nr pioni"+ nrPioni);
 
         culoareCurenta *= -1;
-        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol));
+        getAllPieces();
+
+        Piese regeAdvers = getRege(true);
+
+        boolean isCheck = esteRegeInSah(regeAdvers);
+        boolean isCheckMate = false;
+
+        if (isCheck) {
+            isCheckMate = esteSahMat(regeAdvers);
+        }
+
         allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol));
+        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol));
         System.out.println(allFormatedMoves);
-        return new MoveResult(true, "Mutare validă", getAllPiecesDTO());
+
+        return new MoveResult(
+                true,
+                isCheckMate ? "ȘAH-MAT" : (isCheck ? "ȘAH" : "Mutare validă"),
+                getAllPiecesDTO(),
+                isCheck,
+                isCheckMate
+        );
+//        return new MoveResult(true, "Mutare validă", getAllPiecesDTO(), isCheck, isCheckMate);
     }
 
     public List<Piese> getAllPieces() {
@@ -179,7 +197,8 @@ public class ChessBoard {
     }
 
 
-    private boolean esteRegeInSah(Piese rege) {
+    public boolean esteRegeInSah(Piese rege) {
+        getAllPieces();
         for (Piese piesa : pieseList) {
             if (piesa.color != rege.color) {
                 if (piesa.miscare(rege.row, rege.col)) {
@@ -223,7 +242,8 @@ public class ChessBoard {
             return false;
         if(miscareRege(rege))
             return false;
-
+        if(canSaveRege(rege))
+            return false;
         return true;
     }
 
@@ -248,7 +268,7 @@ public class ChessBoard {
 
         Piese lovita = ChessBoard.board[newRow][newCol];
 
-        if(lovita != null || lovita.color == rege.color)
+        if(lovita != null && lovita.color == rege.color)
             return false;
 
         ChessBoard.board[rege.row][rege.col] = null;
@@ -268,6 +288,46 @@ public class ChessBoard {
         ChessBoard.board[newRow][newCol] = lovita;
 
         return !inSah;
+    }
+
+    public boolean canSaveRege(Piese rege)
+    {
+        for(Piese piesa : pieseList) {
+            if (piesa.color != rege.color)
+                continue; // salvam piesele de aceeasi culoare cu regele nostru
+
+            if(piesa.tip == Tip.REGE)
+                continue;
+
+            for(int r = 0; r < 8; r++)
+                for(int c = 0; c < 8; c++)
+                {
+                    if(!piesa.miscare(r, c))
+                        continue;
+
+                    Piese lovita = board[r][c];
+
+                    board[piesa.row][piesa.col] = null;
+                    board[r][c] = piesa;
+
+                    int oldRow = piesa.row;
+                    int oldCol = piesa.col;
+                    piesa.row = r;
+                    piesa.col = c;
+
+                    boolean inSah = esteRegeInSah(rege);
+
+                    piesa.row = oldRow;
+                    piesa.col = oldCol;
+                    board[oldRow][oldCol] = piesa;
+                    board[r][c] = lovita;
+
+                    if (!inSah)
+                        return true;
+                }
+        }
+
+        return false;
     }
 
     // moving a pawn to row 4 (from up to bottom), col 4 = e4

@@ -63,5 +63,17 @@ public class ChessController {
             dto.add(ChessBoard.toDTO(p));
         return dto;
     }
+
+    @GetMapping("/check")
+    public boolean isCheck(){
+        Piese rege = chessBoard.getRege(false);
+        return chessBoard.esteRegeInSah(rege);
+    };
+
+    @GetMapping("/checkmate")
+    public boolean isCheckMate(){
+        Piese rege = chessBoard.getRege(false);
+        return chessBoard.esteSahMat(rege);
+    }
 }
 

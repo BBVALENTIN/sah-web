@@ -32,6 +32,19 @@ export class MutareMouse {
         console.log(regeTau);
     }
 
+    async getCheck()
+    {
+        const respSAH = await fetch(`api/chess/check`);
+        const respSAHMAT = await fetch(`api/chess/checkmate`);
+        let esteSahJSON = null, esteSAHMATJSON = null;
+        if(respSAH.ok && respSAHMAT.ok)
+        {
+            esteSahJSON = await respSAH.json();
+            esteSAHMATJSON = await respSAHMAT.json();
+        }
+        console.log("Sah: ", esteSahJSON, "Sah-Mat: ", esteSAHMATJSON);
+    }
+
 
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
@@ -81,7 +94,6 @@ export class MutareMouse {
             toRow: row,
             toCol: col
         };
-
         try {
             const resp = await fetch(
                 `/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`,
@@ -95,6 +107,7 @@ export class MutareMouse {
                 if (moveResult.success) {
                     this.tabla.setPiecesFromServer(moveResult.updatedPieces);
                     await this.getTurn();
+                    await this.getCheck();
                     const statusDiv = document.getElementById("status");
                     statusDiv.innerText = "Culoarea curenta muta: " + (this.culoareCurenta === 1 ? "Alb" : "Negru");
                 } else {

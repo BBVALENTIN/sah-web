@@ -11,10 +11,12 @@ public class MoveResult {
     private boolean isCheckmate;
     private int culoareCurenta;
 
-    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces) {
+    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate) {
         this.success = success;
         this.message = message;
         this.updatedPieces = updatedPieces;
+        this.isCheck = isCheck;
+        this.isCheckmate = isCheckmate;
 //        this.isCheck = isCheck;
 //        this.isCheckmate = isCheckmate;
 //        this.currentPlayerColor = currentPlayerColor;
