@@ -17,6 +17,7 @@ public class ChessBoard {
     public static final int alb = 1;
     public static final int negru = -1;
     public String allFormatedMoves = "";
+    public short numberOfMoves;
 
     private static int culoareCurenta = alb;
 
@@ -51,6 +52,7 @@ public class ChessBoard {
         board[7][4] = new Rege(alb, 7, 4);
         pieseList = getAllPieces();
         culoareCurenta = alb;
+        numberOfMoves = 1;
     }
 
     public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
@@ -107,6 +109,7 @@ public class ChessBoard {
 
 
         culoareCurenta *= -1;
+        numberOfMoves++;
         getAllPieces();
 
         Piese regeAdvers = getRege(true);
@@ -356,6 +359,8 @@ public class ChessBoard {
 
     public void allFormatedMoves(String notation)
     {
-        allFormatedMoves += notation+ " ";
+        if(numberOfMoves%2 ==0)
+            allFormatedMoves += numberOfMoves/2 + ".";
+        allFormatedMoves += notation + " ";
     }
 }
