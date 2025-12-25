@@ -76,5 +76,11 @@ public class ChessController {
         Piese rege = chessBoard.getRege(false);
         return chessBoard.esteSahMat(rege);
     }
+
+    @GetMapping("/getMovesPGN")
+    public String movesPGN()
+    {
+        return chessBoard.allFormatedMoves;
+    }
 }
 

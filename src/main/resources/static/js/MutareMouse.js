@@ -45,6 +45,17 @@ export class MutareMouse {
         console.log("Sah: ", esteSahJSON, "Sah-Mat: ", esteSAHMATJSON);
     }
 
+    async getMovesPGN()
+    {
+        const respPGN = await fetch(`/api/chess/getMovesPGN`)
+        let movesPGN = null;
+        if(respPGN.ok)
+        {
+            movesPGN = await respPGN.text();
+        }
+        const destination = document.getElementById("movesPGN");
+        destination.innerText = movesPGN;
+    }
 
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
@@ -108,6 +119,7 @@ export class MutareMouse {
                     this.tabla.setPiecesFromServer(moveResult.updatedPieces);
                     await this.getTurn();
                     await this.getCheck();
+                    await this.getMovesPGN();
                     const statusDiv = document.getElementById("status");
                     statusDiv.innerText = "Culoarea curenta muta: " + (this.culoareCurenta === 1 ? "Alb" : "Negru");
                 } else {
