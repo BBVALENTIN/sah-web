@@ -65,6 +65,8 @@ export class Tabla {
 
   redesenare(piese = this.piese) {
     let c = 0;
+    const ctx = this.ctx;
+    const size = Tabla.squareSize;
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
         this.ctx.fillStyle = (c === 0) ? "#ffffff" : "#0b96be";
@@ -77,6 +79,19 @@ export class Tabla {
         );
       }
       c = 1 - c;
+    }
+    // coordonate
+    ctx.font = "600 14px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.fillStyle = "#4a4a4a";
+
+    for (let col = 0; col < 8; col++) {
+      const letter = String.fromCharCode(97 + col);
+      ctx.fillText(letter, col * size + size - 14, 8 * size - 6);
+    }
+
+    for (let row = 0; row < 8; row++) {
+      const number = 8 - row;
+      ctx.fillText(number, 4, row * size + 14);
     }
 
     piese.forEach(p => p.desen(this.ctx, p.img));
@@ -121,5 +136,6 @@ export class Tabla {
       p.desen(this.ctx, p.img);
     }
   }
+
 
 }
