@@ -112,17 +112,18 @@ public class ChessBoard {
         numberOfMoves++;
         getAllPieces();
 
-        Piese regeAdvers = getRege(true);
+        Piese regeAdvers = getRege(false);
 
         boolean isCheck = esteRegeInSah(regeAdvers);
-        boolean isCheckMate = false;
+        boolean isCheckMate = esteSahMat(regeAdvers);
 
         if (isCheck) {
             isCheckMate = esteSahMat(regeAdvers);
         }
 
-        allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol));
-        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol));
+        System.out.println("isCheck: "+isCheck);
+        allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
+        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
         System.out.println(allFormatedMoves);
 
         return new MoveResult(
@@ -201,7 +202,6 @@ public class ChessBoard {
 
 
     public boolean esteRegeInSah(Piese rege) {
-        getAllPieces();
         for (Piese piesa : pieseList) {
             if (piesa.color != rege.color) {
                 if (piesa.miscare(rege.row, rege.col)) {
@@ -334,7 +334,7 @@ public class ChessBoard {
     }
 
     // moving a pawn to row 4 (from up to bottom), col 4 = e4
-    public String formattedMoves(Piese piesa, int targetRow, int targetCol)
+    public String formattedMoves(Piese piesa, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate)
     {
         char pieceChar;
 
@@ -354,6 +354,13 @@ public class ChessBoard {
         else
             notation = "" + pieceChar + colChar + boardRow;
 
+        if(isCheck && !isCheckMate) {
+            notation = notation + "+";
+        }
+        if(isCheckMate)
+        {
+            notation = notation + "#";
+        }
         return notation;
     }
 
