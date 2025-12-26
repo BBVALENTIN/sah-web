@@ -44,11 +44,11 @@ public class ChessBoard {
         }
         board[7][7] = new Tura(alb, 7, 7);
         board[7][0] = new Tura(alb, 7, 0);
-//        board[7][1] = new Cal(alb, 7, 1);
-//        board[7][6] = new Cal(alb, 7, 6);
-//        board[7][5] = new Nebun(alb, 7, 5);
-//        board[7][2] = new Nebun(alb, 7, 2);
-//        board[7][3] = new Regina(alb, 7, 3);
+        board[7][1] = new Cal(alb, 7, 1);
+        board[7][6] = new Cal(alb, 7, 6);
+        board[7][5] = new Nebun(alb, 7, 5);
+        board[7][2] = new Nebun(alb, 7, 2);
+        board[7][3] = new Regina(alb, 7, 3);
         board[7][4] = new Rege(alb, 7, 4);
         pieseList = getAllPieces();
         culoareCurenta = alb;
@@ -57,17 +57,6 @@ public class ChessBoard {
 
     public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
         piesaSelectata = board[fromRow][fromCol];
-//        System.out.println("PIESA SELECTATA: "+piesaSelectata);
-//        int nrPioni = 0;
-//        for(int i = 0; i < 8; i++)
-//            for(int j = 0; j < 8; j++)
-//            {
-//                if(board[i][j] !=null)
-//                    System.out.println(board[i][j]+" "+i+" "+j);
-//                Piese piesa = ChessBoard.board[i][j];
-//                if(piesa instanceof Pion)
-//                    nrPioni++;
-//            }
         if (piesaSelectata == null) {
             return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false);
         }
