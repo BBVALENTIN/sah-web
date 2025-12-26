@@ -18,12 +18,22 @@ public class Rege extends Piese {
         }
        if(miscata == false)
        {
+           // rocada mica
            if(targetCol == col + 2 && targetRow == row && piesaInFata(targetRow, targetCol) == false)
            {
                if(board[prerow][precol+3].miscata == false){
                    ChessBoard.rocada = board[prerow][precol+3];
 //                   System.out.println("--------------DEBUG TURA NU O VEDE BINE "+board[prerow][precol+3] + "-----"+ ChessBoard.rocada);
 //                   System.out.println("-----------------PREROW SI PRECOL SUNT" + prerow+ "-------------------"+ precol+3);
+                   return true;
+               }
+           }
+
+           // rocada mare
+           if(targetCol == col - 2 && targetRow == row && !piesaInFata(targetRow, targetCol))
+           {
+               if(board[prerow][precol-4].miscata == false){
+                   ChessBoard.rocada = board[prerow][precol-4];
                    return true;
                }
            }

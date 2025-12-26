@@ -48,7 +48,7 @@ public class ChessBoard {
 //        board[7][6] = new Cal(alb, 7, 6);
 //        board[7][5] = new Nebun(alb, 7, 5);
 //        board[7][2] = new Nebun(alb, 7, 2);
-        board[7][3] = new Regina(alb, 7, 3);
+//        board[7][3] = new Regina(alb, 7, 3);
         board[7][4] = new Rege(alb, 7, 4);
         pieseList = getAllPieces();
         culoareCurenta = alb;
@@ -57,17 +57,17 @@ public class ChessBoard {
 
     public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
         piesaSelectata = board[fromRow][fromCol];
-        System.out.println("PIESA SELECTATA: "+piesaSelectata);
-        int nrPioni = 0;
-        for(int i = 0; i < 8; i++)
-            for(int j = 0; j < 8; j++)
-            {
-                if(board[i][j] !=null)
-                    System.out.println(board[i][j]+" "+i+" "+j);
-                Piese piesa = ChessBoard.board[i][j];
-                if(piesa instanceof Pion)
-                    nrPioni++;
-            }
+//        System.out.println("PIESA SELECTATA: "+piesaSelectata);
+//        int nrPioni = 0;
+//        for(int i = 0; i < 8; i++)
+//            for(int j = 0; j < 8; j++)
+//            {
+//                if(board[i][j] !=null)
+//                    System.out.println(board[i][j]+" "+i+" "+j);
+//                Piese piesa = ChessBoard.board[i][j];
+//                if(piesa instanceof Pion)
+//                    nrPioni++;
+//            }
         if (piesaSelectata == null) {
             return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false);
         }
@@ -80,20 +80,26 @@ public class ChessBoard {
             return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false);
         }
 
+        String rocadaNotatie = null;
+
         if (rocada != null) {
+            if (rocada.col == 7) {
+                rocadaNotatie = "Rocada-Mica"; // O-O
+            } else {
+                rocadaNotatie = "Rocada-Mare"; // O-O-O
+            }
 
             int rookOldRow = rocada.row;
             int rookOldCol = rocada.col;
-            int rookNewCol = rookOldCol - 2;
+            int rookNewCol = (rocada.col == 7) ? rookOldCol - 2 : rookOldCol + 3;
 
             board[rookOldRow][rookNewCol] = rocada;
-
             board[rookOldRow][rookOldCol] = null;
-
             rocada.setPosition(rookOldRow, rookNewCol);
 
             rocada = null;
         }
+
 
         mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
 
@@ -121,10 +127,10 @@ public class ChessBoard {
             isCheckMate = esteSahMat(regeAdvers);
         }
 
-        System.out.println("isCheck: "+isCheck);
-        allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
-        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
-        System.out.println(allFormatedMoves);
+        allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie));
+//        System.out.println("isCheck: "+isCheck);
+//        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
+//        System.out.println(allFormatedMoves);
 
         return new MoveResult(
                 true,
@@ -334,9 +340,20 @@ public class ChessBoard {
     }
 
     // moving a pawn to row 4 (from up to bottom), col 4 = e4
-    public String formattedMoves(Piese piesa, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate)
+    public String formattedMoves(Piese piesa, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie)
     {
         char pieceChar;
+        String notation = "";
+        if(rocadaNotatie != null)
+        {
+            if ("Rocada-Mare".equals(rocadaNotatie)) {
+                notation = "O-O-O";
+            } else if ("Rocada-Mica".equals(rocadaNotatie)) {
+                notation = "O-O";
+            }
+
+            return notation;
+        }
 
         switch(piesa.tip){
             case CAL -> pieceChar = 'N';
@@ -346,9 +363,9 @@ public class ChessBoard {
             case TURA ->  pieceChar = 'R';
             default -> pieceChar = '?';
         }
+
         char colChar = (char)('a'+targetCol);
         int boardRow = 8 - targetRow;
-        String notation;
         if(piesa.tip == Tip.PION)
             notation = "" + colChar + boardRow;
         else
