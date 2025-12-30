@@ -2,6 +2,7 @@ import { Tabla } from './tabla.js';
 import {MutareMouse} from "./MutareMouse.js";
 
 
+
 const canvas = document.getElementById('chessCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -22,6 +23,12 @@ async function loadBoard() {
     const statusDiv = document.getElementById("status");
     statusDiv.innerText = "Culoarea curenta muta: " +
         (mutareMouse.culoareCurenta === 1 ? "Alb" : "Negru");
+
+    const destination = document.getElementById("movesPGN");
+    if(destination) {
+        destination.innerText =  await mutareMouse.getPGN();
+        ;
+    }
 }
 
 const resetBtn = document.getElementById("reset-btn")

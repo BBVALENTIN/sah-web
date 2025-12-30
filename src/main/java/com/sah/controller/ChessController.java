@@ -55,5 +55,11 @@ public class ChessController {
             dto.add(ChessBoard.toDTO(p));
         return dto;
     }
+
+    @GetMapping("/PGN")
+    public String getPGN()
+    {
+        return chessBoard.allFormatedMoves;
+    }
 }
 

@@ -19,6 +19,16 @@ export class MutareMouse {
             this.culoareCurenta = await resp.json();
     }
 
+    async getPGN()
+    {
+        const resp = await fetch(`api/chess/PGN`)
+        let PGN = null
+        if(resp.ok)
+            PGN = await resp.text();
+
+        return PGN;
+    }
+
 
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
