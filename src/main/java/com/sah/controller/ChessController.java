@@ -4,6 +4,7 @@ import com.sah.dto.PiesaDTO;
 import com.sah.game.ChessBoard;
 import com.sah.dto.MoveResult;
 import com.sah.game.piese.Piese;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,7 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/chess")
 public class ChessController {
-    private final ChessBoard chessBoard = new ChessBoard();
+    private final ChessBoard chessBoard;
+
+    @Autowired
+    public ChessController(ChessBoard chessBoard) {
+        this.chessBoard = chessBoard;
+    }
 
     @PostMapping("/move")
     public MoveResult move(@RequestParam int fromRow,
@@ -25,11 +31,7 @@ public class ChessController {
 
     @GetMapping("/state")
     public List<PiesaDTO> getState() {
-        List<PiesaDTO> dto = new ArrayList<>();
-        for (Piese p : chessBoard.getAllPieces()) {
-            dto.add(ChessBoard.toDTO(p));
-        }
-        return dto;
+        return chessBoard.getAllPiecesDTO();
     }
 
     @GetMapping("/turn")

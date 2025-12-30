@@ -59,18 +59,18 @@ public class ChessBoard {
         numberOfMoves = 1;
     }
 
-    public MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
+    public synchronized MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
         piesaSelectata = board[fromRow][fromCol];
         if (piesaSelectata == null) {
-            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false);
+            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves);
         }
 
         if (piesaSelectata.color != culoareCurenta) {
-            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false);
+            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves);
         }
 
         if (!piesaSelectata.miscare(targetRow, targetCol)) {
-            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false);
+            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves);
         }
 
         String rocadaNotatie = null;
@@ -110,7 +110,7 @@ public class ChessBoard {
 
             piesaSelectata.setPosition(fromRow, fromCol);
 
-            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false);
+            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false, culoareCurenta, allFormatedMoves);
         }
 
 
@@ -135,12 +135,14 @@ public class ChessBoard {
                 isCheckMate ? "ȘAH-MAT" : (isCheck ? "ȘAH" : "Mutare validă"),
                 getAllPiecesDTO(),
                 isCheck,
-                isCheckMate
+                isCheckMate,
+                culoareCurenta,
+                allFormatedMoves
         );
 //        return new MoveResult(true, "Mutare validă", getAllPiecesDTO(), isCheck, isCheckMate);
     }
 
-    public List<Piese> getAllPieces() {
+    public synchronized List<Piese> getAllPieces() {
         oldSize = (short) pieseList.size();
         pieseList.clear();
         for (int row = 0; row < 8; row++) {
@@ -228,7 +230,7 @@ public class ChessBoard {
         );
     }
 
-    public List<PiesaDTO> getAllPiecesDTO() {
+    public synchronized List<PiesaDTO> getAllPiecesDTO() {
         List<PiesaDTO> dto = new ArrayList<>();
         for (Piese p : pieseList) {
             dto.add(toDTO(p));
@@ -274,13 +276,13 @@ public class ChessBoard {
 
         if(!rege.peTabla(newRow, newCol)) return false;
 
-        Piese lovita = ChessBoard.board[newRow][newCol];
+        Piese lovita = board[newRow][newCol];
 
         if(lovita != null && lovita.color == rege.color)
             return false;
 
-        ChessBoard.board[rege.row][rege.col] = null;
-        ChessBoard.board[newRow][newCol] = rege;
+        board[rege.row][rege.col] = null;
+        board[newRow][newCol] = rege;
 
         int oldRow = rege.row;
         int oldCol = rege.col;
@@ -292,8 +294,8 @@ public class ChessBoard {
         // rollback
         rege.row = oldRow;
         rege.col = oldCol;
-        ChessBoard.board[oldRow][oldCol] = rege;
-        ChessBoard.board[newRow][newCol] = lovita;
+        board[oldRow][oldCol] = rege;
+        board[newRow][newCol] = lovita;
 
         return !inSah;
     }

@@ -10,16 +10,16 @@ public class MoveResult {
     private boolean isCheck;
     private boolean isCheckmate;
     private int culoareCurenta;
+    private String pgn;
 
-    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate) {
+    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn) {
         this.success = success;
         this.message = message;
         this.updatedPieces = updatedPieces;
         this.isCheck = isCheck;
         this.isCheckmate = isCheckmate;
-//        this.isCheck = isCheck;
-//        this.isCheckmate = isCheckmate;
-//        this.currentPlayerColor = currentPlayerColor;
+        this.culoareCurenta = culoareCurenta;
+        this.pgn = pgn;
     }
 
     // Getters și Setters
@@ -63,11 +63,15 @@ public class MoveResult {
         isCheckmate = checkmate;
     }
 
-    public int getCurrentPlayerColor() {
+    public int getCuloareCurenta() {
         return culoareCurenta;
     }
 
-    public void setCurrentPlayerColor(int currentPlayerColor) {
-        this.culoareCurenta = currentPlayerColor;
+    public void setCuloareCurenta(int culoareCurenta) {
+        this.culoareCurenta = culoareCurenta;
     }
+
+    public String getPgn() { return pgn; }
+
+    public void setPgn(String pgn) { this.pgn = pgn; }
 }

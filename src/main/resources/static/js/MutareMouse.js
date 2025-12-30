@@ -68,8 +68,6 @@ export class MutareMouse {
 
     async onMouseDown(e) {
         const { col, row, x, y } = this.getSquareFromMouse(e);
-        await this.getTurn();
-        await this.getRegi();
         console.log("Culoarea curenta: ", this.culoareCurenta);
         const piesa = this.tabla.getPiesa(row, col);
         if (piesa && piesa.color === this.culoareCurenta) {
@@ -117,11 +115,13 @@ export class MutareMouse {
                 const moveResult = await resp.json();
                 if (moveResult.success) {
                     this.tabla.setPiecesFromServer(moveResult.updatedPieces);
-                    await this.getTurn();
-                    await this.getCheck();
-                    await this.getMovesPGN();
+                    this.culoareCurenta = moveResult.culoareCurenta;
                     const statusDiv = document.getElementById("status");
                     statusDiv.innerText = "Culoarea curenta muta: " + (this.culoareCurenta === 1 ? "Alb" : "Negru");
+                    const destination = document.getElementById("movesPGN");
+                    if(destination) {
+                        destination.innerText = moveResult.pgn;
+                    }
                 } else {
                     console.log("Mutare invalidă:", moveResult.message);
                 }

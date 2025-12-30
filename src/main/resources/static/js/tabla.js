@@ -14,6 +14,7 @@ export class Tabla {
     this.cols = 8;
     this.piese = [];
     this.simPiese = [];
+    this.imageCache = {};
   }
 
   drawTabla() {
@@ -103,7 +104,6 @@ export class Tabla {
 
   createPiesaFromData(data) {
     const { tip, color, row, col } = data;
-
     let piesa;
 
     switch (tip.toLowerCase()) {
@@ -113,29 +113,38 @@ export class Tabla {
       case "nebun":  piesa = new Nebun(color, row, col, this); break;
       case "regina": piesa = new Regina(color, row, col, this); break;
       case "rege":   piesa = new Rege(color, row, col, this); break;
-      default:
-        console.error("Tip piesă necunoscut:", tip);
-        return null;
+      default: return null;
     }
+
     piesa.row = parseInt(row);
     piesa.col = parseInt(col);
 
-    // Setăm imaginea automat dacă e null
-    if (!piesa.img) {
-      piesa.img = new Image();
-      const folder = "../../images/";
-      const colorStr = (color === 1) ? "white" : "black";
-      piesa.img.src = `${folder}${colorStr}-${tip.toLowerCase()}.png`;
+    if (piesa.getX && piesa.getY) {
+      piesa.x = piesa.getX(piesa.col);
+      piesa.y = piesa.getY(piesa.row);
+    }
+
+
+    const colorStr = (color === 1) ? "white" : "black";
+    const imgKey = `${colorStr}-${tip.toLowerCase()}`;
+
+    if (this.imageCache[imgKey]) {
+      piesa.img = this.imageCache[imgKey];
+    } else {
+      if (piesa.img) {
+        this.imageCache[imgKey] = piesa.img;
+      }
+    }
+
+    if (piesa.img && !piesa.img.complete) {
+      if (!piesa.img.hasRedrawListener) {
+        piesa.img.addEventListener('load', () => {
+          this.redesenare();
+        });
+        piesa.img.hasRedrawListener = true;
+      }
     }
 
     return piesa;
   }
-
-  drawPiesa(p) {
-    if (p) {
-      p.desen(this.ctx, p.img);
-    }
-  }
-
-
 }
