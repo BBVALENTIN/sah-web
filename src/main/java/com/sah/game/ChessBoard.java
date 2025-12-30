@@ -14,10 +14,12 @@ public class ChessBoard {
     public static Piese rocada;
     public  Piese rege, sahP, piesaSelectata;
     public List<Piese> pieseList = new ArrayList<>();
+    public List<Piese> oldList = new ArrayList<>();
     public static final int alb = 1;
     public static final int negru = -1;
     public String allFormatedMoves = "";
     public short numberOfMoves;
+    public static short oldSize;
 
     private static int culoareCurenta = alb;
 
@@ -50,6 +52,7 @@ public class ChessBoard {
         board[7][2] = new Nebun(alb, 7, 2);
         board[7][3] = new Regina(alb, 7, 3);
         board[7][4] = new Rege(alb, 7, 4);
+
         pieseList = getAllPieces();
         culoareCurenta = alb;
         numberOfMoves = 1;
@@ -88,7 +91,15 @@ public class ChessBoard {
 
             rocada = null;
         }
-
+        boolean isCapture = board[targetRow][targetCol] != null;
+        oldList = new ArrayList<>(pieseList);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("OLD LIST --1-1-1");
+        for(Piese p : oldList)
+            System.out.println(p+" "+p.row+" "+p.col+ " "+p.tip);
 
         mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
 
@@ -106,6 +117,9 @@ public class ChessBoard {
         culoareCurenta *= -1;
         numberOfMoves++;
         getAllPieces();
+        System.out.println("NEWWWWWWWWWW LIST --1-1-1");
+        for(Piese p : pieseList)
+            System.out.println(p+" "+p.row+" "+p.col+ " "+p.tip);
 
         Piese regeAdvers = getRege(false);
 
@@ -116,7 +130,8 @@ public class ChessBoard {
             isCheckMate = esteSahMat(regeAdvers);
         }
 
-        allFormatedMoves(formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie));
+
+        allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
 //        System.out.println("isCheck: "+isCheck);
 //        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
 //        System.out.println(allFormatedMoves);
@@ -132,6 +147,7 @@ public class ChessBoard {
     }
 
     public List<Piese> getAllPieces() {
+        oldSize = (short) pieseList.size();
         pieseList.clear();
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -220,7 +236,7 @@ public class ChessBoard {
 
     public List<PiesaDTO> getAllPiecesDTO() {
         List<PiesaDTO> dto = new ArrayList<>();
-        for (Piese p : getAllPieces()) {
+        for (Piese p : pieseList) {
             dto.add(toDTO(p));
         }
         return dto;
@@ -329,7 +345,7 @@ public class ChessBoard {
     }
 
     // moving a pawn to row 4 (from up to bottom), col 4 = e4
-    public String formattedMoves(Piese piesa, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie)
+    public String formattedMoves(Piese piesa,int fromRow, int fromCol, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie, boolean isCapture)
     {
         char pieceChar;
         String notation = "";
@@ -343,7 +359,6 @@ public class ChessBoard {
 
             return notation;
         }
-
         switch(piesa.tip){
             case CAL -> pieceChar = 'N';
             case NEBUN -> pieceChar = 'B';
@@ -355,10 +370,44 @@ public class ChessBoard {
 
         char colChar = (char)('a'+targetCol);
         int boardRow = 8 - targetRow;
-        if(piesa.tip == Tip.PION)
-            notation = "" + colChar + boardRow;
+
+        char fromColChar = (char)('a'+fromCol);
+        int fromBoardRow = 8 - fromRow;
+
+        if(isCapture)
+        {
+            System.out.println("TARGET ROW: " + targetRow + "TARGET COL: " + targetCol);
+            if(piesa.tip == Tip.PION)
+            {
+                notation = fromColChar + "x" + colChar + boardRow;
+            }
+            else {
+                for(Piese p : oldList) {
+                    if(p==piesa)
+                        continue;
+                    if (p.color == piesa.color && p.poateAjunge(targetRow, targetCol) && piesa.tip == p.tip) {
+                        if (p.row == fromRow) {
+                            notation =""+ pieceChar + fromColChar + "x" + colChar + boardRow;
+                        } else if (p.col == fromCol) {
+                            notation =""+ pieceChar + fromBoardRow + "x" + colChar + boardRow;
+                        } else {
+                            notation =""+pieceChar + fromColChar + "x" + colChar + boardRow;
+                        }
+                    }
+                }
+                if (notation.equals("")) {
+                    notation = pieceChar + "x" + colChar + boardRow;
+                }
+            }
+        }
         else
-            notation = "" + pieceChar + colChar + boardRow;
+            if(piesa.tip == Tip.PION)
+            {
+                notation = ""+ colChar+boardRow;
+            }
+            else {
+                notation = ""+pieceChar+colChar+boardRow;
+            }
 
         if(isCheck && !isCheckMate) {
             notation = notation + "+";

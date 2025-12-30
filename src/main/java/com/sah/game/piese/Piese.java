@@ -42,6 +42,10 @@ public class Piese {
         return targetCol >= 0 && targetRow >=0 && targetCol <= 7 && targetRow <= 7;
     }
 
+    public boolean poateAjunge(int targetRow, int targetCol){
+        return false;
+    }
+
     public boolean piesaInFata(int targetRow, int targetCol) {
         if (this.row == targetRow) {
             int start = Math.min(this.col, targetCol) + 1;

@@ -17,4 +17,12 @@ public class Cal extends Piese {
                 return true;
         return false;
     }
+
+    @Override
+    public boolean poateAjunge(int targetRow, int targetCol)
+    {
+        if(Math.abs(targetRow-row) * Math.abs(targetCol-col) == 2)
+            return true;
+        return false;
+    }
 }

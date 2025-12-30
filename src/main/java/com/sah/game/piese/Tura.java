@@ -24,4 +24,12 @@ public class Tura extends Piese {
 
         return false;
     }
+
+    @Override
+    public boolean poateAjunge(int targetRow, int targetCol) {
+        if (targetRow == this.row || targetCol == this.col) {
+            return true;
+        }
+        return false;
+    }
 }
