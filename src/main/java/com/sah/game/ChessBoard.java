@@ -20,6 +20,7 @@ public class ChessBoard {
     public String allFormatedMoves = "";
     public short numberOfMoves;
     public static short oldSize;
+    public boolean promoted;
 
     private static int culoareCurenta = alb;
 
@@ -93,15 +94,14 @@ public class ChessBoard {
         }
         boolean isCapture = board[targetRow][targetCol] != null;
         oldList = new ArrayList<>(pieseList);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("OLD LIST --1-1-1");
-        for(Piese p : oldList)
-            System.out.println(p+" "+p.row+" "+p.col+ " "+p.tip);
+
 
         mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
+
+        if(piesaSelectata.tip == Tip.PION)
+        {
+            checkPromotion(piesaSelectata, targetRow, targetCol);
+        }
 
         if(esteRegeleMeuInSah())
         {
@@ -117,9 +117,6 @@ public class ChessBoard {
         culoareCurenta *= -1;
         numberOfMoves++;
         getAllPieces();
-        System.out.println("NEWWWWWWWWWW LIST --1-1-1");
-        for(Piese p : pieseList)
-            System.out.println(p+" "+p.row+" "+p.col+ " "+p.tip);
 
         Piese regeAdvers = getRege(false);
 
@@ -132,9 +129,6 @@ public class ChessBoard {
 
 
         allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
-//        System.out.println("isCheck: "+isCheck);
-//        System.out.println("MUTAREA FORMATATA: "+ formattedMoves(piesaSelectata, targetRow, targetCol, isCheck, isCheckMate));
-//        System.out.println(allFormatedMoves);
 
         return new MoveResult(
                 true,
@@ -344,6 +338,18 @@ public class ChessBoard {
         return false;
     }
 
+    public void checkPromotion(Piese piesa, int row, int col)
+    {
+        promoted = false;
+        if(row == 7 && piesa.color == negru) {
+            board[row][col] = new Regina(piesa.color, row, col);
+            promoted = true;
+        }
+        else if (row == 0 && piesa.color == alb) {
+            board[row][col] = new Regina(piesa.color, row, col);
+            promoted = true;
+        }
+    }
     // moving a pawn to row 4 (from up to bottom), col 4 = e4
     public String formattedMoves(Piese piesa,int fromRow, int fromCol, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie, boolean isCapture)
     {
@@ -376,7 +382,6 @@ public class ChessBoard {
 
         if(isCapture)
         {
-            System.out.println("TARGET ROW: " + targetRow + "TARGET COL: " + targetCol);
             if(piesa.tip == Tip.PION)
             {
                 notation = fromColChar + "x" + colChar + boardRow;
@@ -415,6 +420,9 @@ public class ChessBoard {
         if(isCheckMate)
         {
             notation = notation + "#";
+        }
+        if(promoted == true){
+            notation = notation + "=Q";
         }
         return notation;
     }
