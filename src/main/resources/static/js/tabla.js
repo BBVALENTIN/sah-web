@@ -13,52 +13,9 @@ export class Tabla {
     this.rows = 8;
     this.cols = 8;
     this.piese = [];
-    this.simPiese = [];
     this.imageCache = {};
   }
 
-  drawTabla() {
-    let c = 0;
-    for (let row = 0; row < this.rows; row++) {
-      for (let col = 0; col < this.cols; col++) {
-        if (c === 0) {
-          this.ctx.fillStyle = "#ffffff";
-          c = 1;
-        } else {
-          this.ctx.fillStyle = "#0b96be";
-          c = 0;
-        }
-        this.ctx.fillRect(
-            col * Tabla.squareSize,
-            row * Tabla.squareSize,
-            Tabla.squareSize,
-            Tabla.squareSize
-        );
-      }
-      c = c === 0 ? 1 : 0;
-    }
-
-    this.piese.forEach(piesa => {
-      piesa.desen(this.ctx, piesa.img);
-    });
-  }
-
-  setPiese() {
-    const pieseMajore = [Tura, Cal, Nebun, Regina, Rege, Nebun, Cal, Tura];
-
-    for(let col = 0; col < 8; col++)
-    {
-      this.piese.push(new Pion("alb", 6, col, this));
-      this.piese.push(new Pion("negru", 1, col, this));
-    }
-
-    for(let col = 0; col < 8; col++)
-    {
-      const PiesaCurenta = pieseMajore[col];
-      this.piese.push(new PiesaCurenta("alb", 7, col, this));
-      this.piese.push(new PiesaCurenta("negru", 0, col, this));
-    }
-  }
 
   getPiesa(row, col) {
     return this.piese.find(p => p.row === row && p.col === col);

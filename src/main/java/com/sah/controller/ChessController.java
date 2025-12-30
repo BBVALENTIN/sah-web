@@ -40,17 +40,6 @@ public class ChessController {
         return ChessBoard.getCuloareCurenta();
     }
 
-    @GetMapping("/regeInamic")
-    public PiesaDTO getPozitieRegeInamic()
-    {
-        return chessBoard.getRegeDTO(true);
-    }
-
-    @GetMapping("/regeTau")
-    public PiesaDTO getPozitieRegeTau()
-    {
-        return chessBoard.getRegeDTO(false);
-    }
 
     @GetMapping("/reset")
     public List<PiesaDTO> ResetBoard()
@@ -65,24 +54,6 @@ public class ChessController {
         for(Piese p : chessBoard.getAllPieces())
             dto.add(ChessBoard.toDTO(p));
         return dto;
-    }
-
-    @GetMapping("/check")
-    public boolean isCheck(){
-        Piese rege = chessBoard.getRege(false);
-        return chessBoard.esteRegeInSah(rege);
-    };
-
-    @GetMapping("/checkmate")
-    public boolean isCheckMate(){
-        Piese rege = chessBoard.getRege(false);
-        return chessBoard.esteSahMat(rege);
-    }
-
-    @GetMapping("/getMovesPGN")
-    public String movesPGN()
-    {
-        return chessBoard.allFormatedMoves;
     }
 }
 

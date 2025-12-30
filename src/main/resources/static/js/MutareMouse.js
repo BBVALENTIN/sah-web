@@ -19,43 +19,6 @@ export class MutareMouse {
             this.culoareCurenta = await resp.json();
     }
 
-    async getRegi()
-    {
-        let regeInamic = null, regeTau = null;
-        const respInamic = await fetch(`api/chess/regeInamic`);
-        const respTau = await fetch(`api/chess/regeTau`);
-        if(respInamic.ok && respTau.ok) {
-            regeInamic = await respInamic.json();
-            regeTau = await respTau.json();
-        }
-        console.log(regeInamic);
-        console.log(regeTau);
-    }
-
-    async getCheck()
-    {
-        const respSAH = await fetch(`api/chess/check`);
-        const respSAHMAT = await fetch(`api/chess/checkmate`);
-        let esteSahJSON = null, esteSAHMATJSON = null;
-        if(respSAH.ok && respSAHMAT.ok)
-        {
-            esteSahJSON = await respSAH.json();
-            esteSAHMATJSON = await respSAHMAT.json();
-        }
-        console.log("Sah: ", esteSahJSON, "Sah-Mat: ", esteSAHMATJSON);
-    }
-
-    async getMovesPGN()
-    {
-        const respPGN = await fetch(`/api/chess/getMovesPGN`)
-        let movesPGN = null;
-        if(respPGN.ok)
-        {
-            movesPGN = await respPGN.text();
-        }
-        const destination = document.getElementById("movesPGN");
-        destination.innerText = movesPGN;
-    }
 
     getSquareFromMouse(e) {
         const rect = this.canvas.getBoundingClientRect();
