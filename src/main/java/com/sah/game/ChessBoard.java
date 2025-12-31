@@ -102,6 +102,7 @@ public class ChessBoard {
         {
             checkPromotion(piesaSelectata, targetRow, targetCol);
         }
+        getAllPieces();
 
         if(esteRegeleMeuInSah())
         {
@@ -116,7 +117,6 @@ public class ChessBoard {
 
         culoareCurenta *= -1;
         numberOfMoves++;
-        getAllPieces();
 
         Piese regeAdvers = getRege(false);
 
@@ -416,7 +416,9 @@ public class ChessBoard {
             else {
                 notation = ""+pieceChar+colChar+boardRow;
             }
-
+        if(promoted == true){
+            notation = notation + "=Q";
+        }
         if(isCheck && !isCheckMate) {
             notation = notation + "+";
         }
@@ -424,9 +426,7 @@ public class ChessBoard {
         {
             notation = notation + "#";
         }
-        if(promoted == true){
-            notation = notation + "=Q";
-        }
+
         return notation;
     }
 
