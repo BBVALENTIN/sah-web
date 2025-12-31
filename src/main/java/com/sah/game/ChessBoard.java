@@ -129,7 +129,7 @@ public class ChessBoard {
 
 
         allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
-
+        promoted = false;
         return new MoveResult(
                 true,
                 isCheckMate ? "ȘAH-MAT" : (isCheck ? "ȘAH" : "Mutare validă"),
@@ -344,7 +344,7 @@ public class ChessBoard {
     public void checkPromotion(Piese piesa, int row, int col)
     {
         promoted = false;
-        if(row == 7 && piesa.color == negru) {
+        if(row == 7 && piesa.color == negru && piesa.tip == Tip.PION) {
             board[row][col] = new Regina(piesa.color, row, col);
             promoted = true;
         }

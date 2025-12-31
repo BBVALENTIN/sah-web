@@ -27,7 +27,7 @@ public class Tura extends Piese {
 
     @Override
     public boolean poateAjunge(int targetRow, int targetCol) {
-        if (targetRow == this.row || targetCol == this.col) {
+        if ((targetRow == this.row || targetCol == this.col) && !piesaInFata(targetRow, targetCol)) {
             return true;
         }
         return false;
