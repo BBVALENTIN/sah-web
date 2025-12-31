@@ -11,8 +11,9 @@ public class MoveResult {
     private boolean isCheckmate;
     private int culoareCurenta;
     private String pgn;
+    private boolean captures;
 
-    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn) {
+    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn, boolean captures) {
         this.success = success;
         this.message = message;
         this.updatedPieces = updatedPieces;
@@ -20,6 +21,7 @@ public class MoveResult {
         this.isCheckmate = isCheckmate;
         this.culoareCurenta = culoareCurenta;
         this.pgn = pgn;
+        this.captures = captures;
     }
 
     // Getters și Setters
@@ -74,4 +76,7 @@ public class MoveResult {
     public String getPgn() { return pgn; }
 
     public void setPgn(String pgn) { this.pgn = pgn; }
+
+    public boolean isCaptures() { return captures;}
+    public void setCaptures(boolean captures) { this.captures = captures; }
 }

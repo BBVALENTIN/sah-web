@@ -62,15 +62,15 @@ public class ChessBoard {
     public synchronized MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
         piesaSelectata = board[fromRow][fromCol];
         if (piesaSelectata == null) {
-            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves);
+            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves, false);
         }
 
         if (piesaSelectata.color != culoareCurenta) {
-            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves);
+            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves, false);
         }
 
         if (!piesaSelectata.miscare(targetRow, targetCol)) {
-            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves);
+            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false, culoareCurenta, allFormatedMoves, false);
         }
 
         String rocadaNotatie = null;
@@ -110,7 +110,7 @@ public class ChessBoard {
 
             piesaSelectata.setPosition(fromRow, fromCol);
 
-            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false, culoareCurenta, allFormatedMoves);
+            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false, culoareCurenta, allFormatedMoves, isCapture);
         }
 
 
@@ -137,7 +137,8 @@ public class ChessBoard {
                 isCheck,
                 isCheckMate,
                 culoareCurenta,
-                allFormatedMoves
+                allFormatedMoves,
+                isCapture
         );
 //        return new MoveResult(true, "Mutare validă", getAllPiecesDTO(), isCheck, isCheckMate);
     }
