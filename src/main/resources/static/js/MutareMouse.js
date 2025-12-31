@@ -56,8 +56,14 @@ export class MutareMouse {
     }
 
     onMouseMove(e) {
+        const {col, row, x, y } = this.getSquareFromMouse(e);
+        const piesa = this.tabla.getPiesa(row, col);
+        if(piesa && piesa.color == this.culoareCurenta)
+            this.canvas.style.cursor = "grab";
+        else
+            this.canvas.style.cursor = "default";
         if (!this.piesaSelectata) return;
-        const { x, y } = this.getSquareFromMouse(e);
+
 
         this.piesaSelectata.dragX = x - this.offsetX;
         this.piesaSelectata.dragY = y - this.offsetY;
@@ -109,6 +115,7 @@ export class MutareMouse {
             this.piesaSelectata.dragY = undefined;
             this.piesaSelectata = null;
             this.tabla.redesenare();
+            this.canvas.style.cursor = "default";
         }
     }
 }
