@@ -20,7 +20,7 @@ public class ChessBoard {
     public String allFormatedMoves = "";
     public short numberOfMoves;
     public static short oldSize;
-    public boolean promoted;
+    public boolean promoted, isCheckMate;
 
     private static int culoareCurenta = alb;
 
@@ -121,15 +121,19 @@ public class ChessBoard {
         Piese regeAdvers = getRege(false);
 
         boolean isCheck = esteRegeInSah(regeAdvers);
-        boolean isCheckMate = esteSahMat(regeAdvers);
+        isCheckMate = esteSahMat(regeAdvers);
 
         if (isCheck) {
             isCheckMate = esteSahMat(regeAdvers);
+
         }
 
 
         allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
         promoted = false;
+        if(isCheckMate == true)
+            return new MoveResult(true, "Game Over", getAllPiecesDTO(), isCheck, isCheckMate, 0, allFormatedMoves, isCapture);
+        
         return new MoveResult(
                 true,
                 isCheckMate ? "ȘAH-MAT" : (isCheck ? "ȘAH" : "Mutare validă"),
