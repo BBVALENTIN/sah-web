@@ -6,6 +6,7 @@ export class MutareMouse {
         this.canvas = canvas;
         this.tabla = tabla;
         this.piesaSelectata = null;
+        this.winner = null;
         this.offsetX = 0;
         this.offsetY = 0;
 
@@ -20,6 +21,11 @@ export class MutareMouse {
         const resp = await fetch(`api/chess/turn`)
         if(resp.ok)
             this.culoareCurenta = await resp.json();
+    }
+
+    convertNumberToSide(number)
+    {
+        return number === 1 ? "alb" : "negru";
     }
 
     async getPGN()
@@ -119,12 +125,15 @@ export class MutareMouse {
                     "Culoarea curenta muta: " +
                     (this.culoareCurenta === 1 ? "Alb" : "Negru");
             }
-
             const destination = document.getElementById("movesPGN");
             if (destination) {
                 destination.innerText = moveResult.pgn;
             }
 
+            if(moveResult.checkmate === true){
+                this.winner = this.piesaSelectata.color;
+                console.log("Culoarea castigatoare este " + this.convertNumberToSide(this.winner));
+            }
             if (moveResult.check === true) { // naming conventions in spring boot, field isCheck -> check
                 this.soundManager.play("check");
             } else if(moveResult.captures === true) {

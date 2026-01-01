@@ -133,7 +133,7 @@ public class ChessBoard {
         promoted = false;
         if(isCheckMate == true)
             return new MoveResult(true, "Game Over", getAllPiecesDTO(), isCheck, isCheckMate, 0, allFormatedMoves, isCapture);
-        
+
         return new MoveResult(
                 true,
                 isCheckMate ? "ȘAH-MAT" : (isCheck ? "ȘAH" : "Mutare validă"),
@@ -428,7 +428,10 @@ public class ChessBoard {
         }
         if(isCheckMate)
         {
-            notation = notation + "#";
+            if(this.culoareCurenta == 1)
+                notation = notation + "#" + " 0-1";
+            else
+                notation = notation + "#" + " 1-0";
         }
 
         return notation;
