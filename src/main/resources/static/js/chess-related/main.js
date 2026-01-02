@@ -6,7 +6,6 @@ import {MutareMouse} from "./MutareMouse.js";
 const canvas = document.getElementById('chessCanvas');
 const ctx = canvas.getContext('2d');
 
-
 const tabla = new Tabla(ctx);
 
 const mutareMouse = new MutareMouse(canvas, tabla);

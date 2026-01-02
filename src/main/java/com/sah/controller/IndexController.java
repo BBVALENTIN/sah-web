@@ -20,5 +20,5 @@ public class IndexController {
 
     @GetMapping("/")
     @Profile("dev")
-    public String GameDebug() {return "game";}
+    public String GameDebug() {return "play";}
 }
