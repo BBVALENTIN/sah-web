@@ -360,18 +360,13 @@ public class ChessBoard {
     // moving a pawn to row 4 (from up to bottom), col 4 = e4
     public String formattedMoves(Piese piesa,int fromRow, int fromCol, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie, boolean isCapture)
     {
-        char pieceChar;
-        String notation = "";
         if(rocadaNotatie != null)
         {
-            if ("Rocada-Mare".equals(rocadaNotatie)) {
-                notation = "O-O-O";
-            } else if ("Rocada-Mica".equals(rocadaNotatie)) {
-                notation = "O-O";
-            }
-
-            return notation;
+            if ("Rocada-Mare".equals(rocadaNotatie)) { return"O-O-O";}
+            if ("Rocada-Mica".equals(rocadaNotatie)) { return "O-O";}
         }
+
+        char pieceChar;
         switch(piesa.tip){
             case CAL -> pieceChar = 'N';
             case NEBUN -> pieceChar = 'B';
@@ -387,39 +382,45 @@ public class ChessBoard {
         char fromColChar = (char)('a'+fromCol);
         int fromBoardRow = 8 - fromRow;
 
-        if(isCapture)
+        String disambiguation = "";
+        if(piesa.tip != Tip.PION)
         {
-            if(piesa.tip == Tip.PION)
+            for(Piese p: oldList)
             {
-                notation = fromColChar + "x" + colChar + boardRow;
-            }
-            else {
-                for(Piese p : oldList) {
-                    if(p==piesa)
-                        continue;
-                    if (p.color == piesa.color && p.poateAjunge(targetRow, targetCol) && piesa.tip == p.tip) {
-                        if (p.row == fromRow) {
-                            notation =""+ pieceChar + fromColChar + "x" + colChar + boardRow;
-                        } else if (p.col == fromCol) {
-                            notation =""+ pieceChar + fromBoardRow + "x" + colChar + boardRow;
-                        } else {
-                            notation =""+pieceChar + fromColChar + "x" + colChar + boardRow;
-                        }
+                if(p == piesa)
+                    continue;
+                if((p.color == piesa.color && piesa.tip == p.tip) && p.poateAjunge(targetRow, targetCol))
+                {
+                    if(p.col == fromCol) {
+                        disambiguation = "" + fromBoardRow;
                     }
-                }
-                if (notation.equals("")) {
-                    notation = pieceChar + "x" + colChar + boardRow;
+                    else {
+                        disambiguation = "" + fromColChar;
+                    }
                 }
             }
         }
-        else
-            if(piesa.tip == Tip.PION)
+
+        String notation = "";
+
+        if(piesa.tip == Tip.PION) {
+            if (isCapture)
             {
-                notation = ""+ colChar+boardRow;
+                notation = fromColChar+"x"+colChar+boardRow;
             }
             else {
-                notation = ""+pieceChar+colChar+boardRow;
+                notation = ""+colChar+boardRow;
             }
+        }
+        else
+        {
+            if(isCapture)
+                notation = "" + pieceChar + disambiguation + "x" + colChar + boardRow;
+            else
+                notation = "" + pieceChar + disambiguation + colChar + boardRow;
+
+        }
+
         if(promoted == true){
             notation = notation + "=Q";
         }
