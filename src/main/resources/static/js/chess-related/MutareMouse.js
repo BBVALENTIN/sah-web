@@ -136,6 +136,8 @@ export class MutareMouse {
             }
             if (moveResult.check === true) { // naming conventions in spring boot, field isCheck -> check
                 this.soundManager.play("check");
+                if(moveResult.checkmate === true)
+                    this.soundManager.play("end");
             } else if(moveResult.captures === true) {
                 this.soundManager.play("capture");
             }
