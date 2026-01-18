@@ -1,7 +1,8 @@
-import { Tabla} from "../Tabla";
+import {Tabla} from "../Tabla.js";
+import {Tip} from "../Tip";
 
 export class Piesa {
-
+    readonly tip: Tip;
     color: 1 | -1;
     row:number;
     col: number;
