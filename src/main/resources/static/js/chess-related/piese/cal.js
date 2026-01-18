@@ -1,11 +1,10 @@
 import {Piesa} from "./piesa.js";
 
 export class Cal extends Piesa{
-    constructor(color, row, col, tabla) {
+    constructor(color, row, col) {
         super(color, row, col);
 
         this.tip = "CAL";
-        this.tabla = tabla;
 
         this.img = new Image();
 

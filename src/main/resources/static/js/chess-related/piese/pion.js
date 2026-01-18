@@ -1,8 +1,8 @@
 import { Piesa } from './piesa.js';
 
 export class Pion extends Piesa {
-    constructor(color, row, col, tabla) {
-        super(color, row, col, tabla);
+    constructor(color, row, col) {
+        super(color, row, col);
         this.tip = "PION";
 
 

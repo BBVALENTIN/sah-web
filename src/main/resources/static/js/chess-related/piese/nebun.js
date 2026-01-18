@@ -1,11 +1,10 @@
 import { Piesa } from "./piesa.js";
 
 export class Nebun extends Piesa{
-    constructor(color, row, col, tabla) {
+    constructor(color, row, col) {
         super(color, row, col);
 
         this.tip = "NEBUN";
-        this.tabla = tabla;
         this.img = new Image();
 
         if(color === 1)

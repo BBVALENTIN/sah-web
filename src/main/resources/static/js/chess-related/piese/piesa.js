@@ -1,11 +1,10 @@
 import { Tabla } from "../tabla.js";
 
 export class Piesa {
-    constructor(color, row, col, tabla) {
+    constructor(color, row, col) {
         this.color = color;
         this.row = row;
         this.col = col;
-        this.tabla = tabla;
         this.x = this.getX(col);
         this.y = this.getY(row);
     }
