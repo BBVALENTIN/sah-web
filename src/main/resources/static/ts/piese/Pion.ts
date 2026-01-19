@@ -1,4 +1,4 @@
-import {Piesa} from './Piesa'
+import {Piesa} from './Piesa.js'
 import {Tip} from "../Tip.js";
 
 export class Pion extends Piesa {
@@ -9,6 +9,8 @@ export class Pion extends Piesa {
         super(color, row, col);
 
         this.tip = Tip.CAL;
+        this.img = new Image();
+
 
         if (color === 1) {
             this.img.src = "../../images/white-pawn.png";

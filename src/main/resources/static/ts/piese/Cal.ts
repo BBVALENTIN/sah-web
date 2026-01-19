@@ -1,14 +1,15 @@
-import {Piesa} from "./Piesa";
-import {Tip} from "../Tip";
+import {Piesa} from "./Piesa.js";
+import {Tip} from "../Tip.js";
 
 export class Cal extends Piesa {
     readonly tip: Tip;
     img: HTMLImageElement;
 
-    constructor(color: 1 | -1, row, col) {
+    constructor(color: 1 | -1, row: number, col: number) {
         super(color, row, col);
 
         this.tip = Tip.CAL;
+        this.img = new Image();
 
         if(color === 1)
             this.img.src ="../../images/white-knight.png";

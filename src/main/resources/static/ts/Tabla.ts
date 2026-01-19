@@ -1,4 +1,10 @@
-import { Piesa} from "./piese/Piesa";
+import {Piesa} from "./piese/Piesa.js";
+import {Pion} from "./piese/Pion.js";
+import {Nebun} from "./piese/Nebun.js";
+import {Cal} from "./piese/Cal.js";
+import {Tura} from "./piese/Tura.js";
+import {Rege} from "./piese/Rege.js";
+import {Regina} from "./piese/Regina.js";
 
 export class Tabla {
     static squareSize: number = 100;
@@ -49,5 +55,70 @@ export class Tabla {
         }
 
         piese.forEach(p => p.desen(this.ctx, p.img));
+    }
+
+    createPiesaFromData(data: any):Piesa
+    {
+        const { tip, color, row, col} = data;
+
+        let piesa: Piesa;
+
+        switch (tip.toLowerCase()) {
+            case "pion":
+                piesa = new Pion(color, row, col);
+                break;
+            case "tura":
+                piesa = new Tura(color, row, col);
+                break;
+            case "cal":
+                piesa = new Cal(color, row, col);
+                break;
+            case "nebun":
+                piesa = new Nebun(color, row, col);
+                break;
+            case "regina":
+                piesa = new Regina(color, row, col);
+                break;
+            case "rege":
+                piesa = new Rege(color, row, col);
+                break;
+            default:
+                throw new Error(`Tip necunoscut ${tip.toLowerCase()}`);
+        }
+
+        piesa.row = parseInt(row);
+        piesa.col = parseInt(col);
+
+        if (piesa.getX && piesa.getY) {
+            piesa.x = piesa.getX(piesa.col);
+            piesa.y = piesa.getY(piesa.row);
+        }
+
+        const colorStr = (color === 1) ? "white" : "black";
+        const imgKey = `${colorStr}-${tip.toLowerCase()}`;
+        const imgAny = piesa.img as any;
+
+        if (this.imageCache[imgKey]) {
+            piesa.img = this.imageCache[imgKey];
+        } else {
+            if (piesa.img) {
+                this.imageCache[imgKey] = piesa.img;
+            }
+        }
+
+        if (piesa.img && !piesa.img.complete) {
+            if (!imgAny.hasRedrawListener) {
+                piesa.img.addEventListener('load', () => {
+                    this.redesenare();
+                });
+                imgAny.hasRedrawListener = true;
+            }
+        }
+
+        return piesa;
+    }
+
+    setPiecesFromServer(piecesData: any): void {
+        this.piese = piecesData.map((p:any) => this.createPiesaFromData(p));
     }
 }
