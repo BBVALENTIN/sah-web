@@ -10,7 +10,7 @@
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-
+    "allowJs": true, // for sound manager - might change
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true

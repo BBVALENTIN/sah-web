@@ -26,7 +26,6 @@ async function loadBoard() {
     const destination = document.getElementById("movesPGN");
     if(destination) {
         destination.innerText =  await mutareMouse.getPGN();
-        ;
     }
 }
 

@@ -1,0 +1,76 @@
+import { Tabla } from "./Tabla.js";
+import { SoundManager } from "../js/chess-related/audio/soundManager.js";
+import { Piesa} from "./piese/Piesa.js";
+
+export class Mouse {
+    canvas: HTMLCanvasElement;
+    tabla: Tabla;
+    piesaSelectata: Piesa | undefined;
+    soundManager: SoundManager = new SoundManager();
+    offsetX: number;
+    offsetY: number;
+    winner: 1 | 0 | -1 | undefined;
+    culoareCurenta: 1 | 0 | -1 | undefined;
+    constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
+        this.canvas = canvas;
+        this.tabla = tabla;
+        this.piesaSelectata = undefined;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.winner = undefined;
+
+        this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
+        this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
+        this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
+    }
+
+    getSquareFromMouse(e: any){
+        const rect: DOMRect = this.canvas.getBoundingClientRect();
+        const x: number = e.clientX - rect.left;
+        const y: number = e.clientY - rect.top;
+        const col: number = Math.floor(x / Tabla.squareSize);
+        const row: number = Math.floor(y / Tabla.squareSize);
+
+        return { col, row, x, y};
+    }
+
+    async getTurn() {
+        const resp: Response = await fetch(`api/chess/turn`);
+        if(resp.ok)
+            this.culoareCurenta = await resp.json();
+    }
+
+    public onMouseDown(e:any):void {
+        const { col, row, x, y} = this.getSquareFromMouse(e);
+        const piesa = this.tabla.getPiesa(row, col);
+        if(piesa && piesa.color === this.culoareCurenta)
+        {
+            this.piesaSelectata = piesa;
+            piesa.dragX = x - (x % Tabla.squareSize);
+            piesa.dragY = y - ( y % Tabla.squareSize);
+            this.offsetX = x - piesa.col * Tabla.squareSize;
+            this.offsetY = y - piesa.row * Tabla.squareSize;
+
+            this.tabla.redesenare((this.tabla.piese.filter(p => p!== piesa)));
+        }
+    }
+    public MouseMove(e:any):void {
+        const { col, row, x, y} = this.getSquareFromMouse(e);
+        const piesa = this.tabla.getPiesa(row, col);
+        if(piesa && piesa.color == this.culoareCurenta)
+            this.canvas.style.cursor = "grab";
+        else
+            this.canvas.style.cursor = "default";
+        if (!this.piesaSelectata) return;
+
+        this.canvas.style.cursor = "grab";
+        this.piesaSelectata.dragX = x - this.offsetX;
+        this.piesaSelectata.dragY = y - this.offsetY;
+
+        this.tabla.redesenare(this.tabla.piese.filter(p => p !== this.piesaSelectata));
+        this.piesaSelectata.desen(this.tabla.ctx, this.piesaSelectata.img);
+    }
+    public onMouseUp(e: any):void {
+
+    }
+}
