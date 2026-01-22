@@ -19,3 +19,5 @@ async function loadBoard()
 
     await mouse.getTurn();
 }
+
+loadBoard();

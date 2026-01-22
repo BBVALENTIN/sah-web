@@ -1,6 +1,7 @@
 import { Tabla } from "./Tabla.js";
 import { SoundManager } from "../js/chess-related/audio/soundManager.js";
 import { Piesa} from "./piese/Piesa.js";
+import {Mutari} from "./Types.js";
 
 export class Mouse {
     canvas: HTMLCanvasElement;
@@ -54,7 +55,7 @@ export class Mouse {
             this.tabla.redesenare((this.tabla.piese.filter(p => p!== piesa)));
         }
     }
-    public MouseMove(e:any):void {
+    public async MouseMove(e:any):Promise<void> {
         const { col, row, x, y} = this.getSquareFromMouse(e);
         const piesa = this.tabla.getPiesa(row, col);
         if(piesa && piesa.color == this.culoareCurenta)
@@ -70,7 +71,52 @@ export class Mouse {
         this.tabla.redesenare(this.tabla.piese.filter(p => p !== this.piesaSelectata));
         this.piesaSelectata.desen(this.tabla.ctx, this.piesaSelectata.img);
     }
-    public onMouseUp(e: any):void {
+    public async onMouseUp(e: any): Promise<void> {
+        if(!this.piesaSelectata) { return; }
+        const { col, row } = this.getSquareFromMouse(e);
 
+        const moveData = {
+            fromRow: this.piesaSelectata.row,
+            fromCol: this.piesaSelectata.col,
+            toRow: row,
+            toCol: col
+        };
+
+        try {
+            const respMutari = await fetch(`/api/chess/move?
+            fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}
+            &toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"}
+            );
+
+            if(!respMutari.ok){
+                console.error("Eroare la JSON: ", respMutari.statusText);
+                return;
+            }
+
+            console.log("from: ", moveData.fromRow, moveData.fromCol);
+            console.log("to: ", moveData.toRow, moveData.toCol);
+
+            let moveResult: Mutari = await respMutari.json()
+
+            if(!moveResult.success) {
+                console.log("Mutare invalida: ", moveResult.message);
+                return;
+            }
+
+            this.tabla.setPiecesFromServer(moveResult.updatedPieces);
+            this.culoareCurenta = moveResult.culoareCurenta;
+        } catch(err){
+            console.log("eroare cine stie de ce");
+        } finally {
+            if(this.piesaSelectata) {
+                this.piesaSelectata.isDragging = false;
+                this.piesaSelectata.dragX = undefined;
+                this.piesaSelectata.dragY = undefined;
+            }
+
+            this.piesaSelectata = undefined;
+            this.tabla.redesenare();
+            this.canvas.style.cursor = "default";
+        }
     }
 }
