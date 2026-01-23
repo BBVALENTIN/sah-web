@@ -1,5 +1,5 @@
 import { Tabla } from "./Tabla.js";
-import { SoundManager } from "../js/chess-related/audio/soundManager.js";
+import { SoundManager } from "./audio/soundManager.js";
 import { Piesa} from "./piese/Piesa.js";
 import {Mutari} from "./Types.js";
 
@@ -83,10 +83,7 @@ export class Mouse {
         };
 
         try {
-            const respMutari = await fetch(`/api/chess/move?
-            fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}
-            &toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"}
-            );
+            const respMutari = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
 
             if(!respMutari.ok){
                 console.error("Eroare la JSON: ", respMutari.statusText);

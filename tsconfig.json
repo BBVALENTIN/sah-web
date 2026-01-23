@@ -5,7 +5,6 @@
     "moduleResolution": "bundler",
 
     "rootDir": "src/main/resources/static/ts",
-
     "outDir": "src/main/resources/static/ts-transpiled",
     "allowJs": true, // pentru sound manager
     "strict": true,
@@ -13,5 +12,4 @@
     "skipLibCheck": true
   },
   "include": ["src/main/resources/static/ts/**/*"],
-  "exclude": ["src/main/resources/static/js/chess-related/audio/soundManager.js"]
 }
