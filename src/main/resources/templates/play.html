@@ -11,15 +11,17 @@
 <h1>Bine ai venit, <span th:text="${username}">Guest</span></h1>
   <div id="chess-stuff">
     <canvas id="chessCanvas" width="800" height="800"></canvas>
-    <p id="movesPGN"></p>
+    <div class="grid-container" data-columns="3">
+      <div class="grid-item">test</div>
+    </div>
   </div>
   <div id = "status" style = "font-size: 20px; font-weight: bold">
   </div>
-  <div id="check-string" style="font-size: 20px; font-weight: bold">
+    <div id="check-string" style="font-size: 20px; font-weight: bold">
   </div>
   <button id="reset-btn">RESET</button>
 <!--  <img src="../images/IMG_20250315_153200_360.jpg">-->
-  <script type="module" src="js/chess-related/main.js"></script>
-<!--  <script type="module" src="/ts-transpiled/Main.js"></script>-->
+<!--  <script type="module" src="js/chess-related/main.js"></script>-->
+  <script type="module" src="/ts-transpiled/Main.js"></script>
 </body>
 </html>

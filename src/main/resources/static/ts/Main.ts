@@ -9,6 +9,7 @@ const tabla: Tabla = new Tabla(ctx);
 
 const mouse: Mouse = new Mouse(canvas, tabla);
 
+
 async function loadBoard()
 {
     const response: Response = await fetch('/api/chess/state');
@@ -18,6 +19,11 @@ async function loadBoard()
     tabla.redesenare();
 
     await mouse.getTurn();
+}
+
+async function gridManaging()
+{
+    // TO DO
 }
 
 loadBoard();

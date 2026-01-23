@@ -41,6 +41,16 @@ export class Mouse {
             this.culoareCurenta = await resp.json();
     }
 
+    async getPGN():Promise<String> {
+        let PGN: String = "";
+        const respPGN: Response = await fetch(`api/chess/PGN`);
+        if(respPGN.ok) {
+            PGN = await respPGN.text();
+        }
+
+        return PGN;
+    }
+
     public onMouseDown(e:any):void {
         const { col, row, x, y} = this.getSquareFromMouse(e);
         const piesa = this.tabla.getPiesa(row, col);
