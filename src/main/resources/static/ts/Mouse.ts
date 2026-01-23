@@ -47,6 +47,7 @@ export class Mouse {
         if(piesa && piesa.color === this.culoareCurenta)
         {
             this.piesaSelectata = piesa;
+            this.piesaSelectata.isDragging = true;
             piesa.dragX = x - (x % Tabla.squareSize);
             piesa.dragY = y - ( y % Tabla.squareSize);
             this.offsetX = x - piesa.col * Tabla.squareSize;
@@ -64,12 +65,11 @@ export class Mouse {
             this.canvas.style.cursor = "default";
         if (!this.piesaSelectata) return;
 
-        this.canvas.style.cursor = "grab";
+        this.canvas.style.cursor = "grabbing";
         this.piesaSelectata.dragX = x - this.offsetX;
         this.piesaSelectata.dragY = y - this.offsetY;
 
-        this.tabla.redesenare(this.tabla.piese.filter(p => p !== this.piesaSelectata));
-        this.piesaSelectata.desen(this.tabla.ctx, this.piesaSelectata.img);
+        this.tabla.redesenare(this.tabla.piese, this.piesaSelectata);
     }
     public async onMouseUp(e: any): Promise<void> {
         if(!this.piesaSelectata) { return; }

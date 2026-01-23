@@ -27,7 +27,7 @@ export class Tabla {
         return this.piese.find(p => p.row === row && p.col === col);
     }
 
-    redesenare(piese: Piesa[] = this.piese): void {
+    redesenare(piese: Piesa[] = this.piese, piesaSelectata?: Piesa): void {
         let c = 0;
         const ctx = this.ctx;
         const size = Tabla.squareSize;
@@ -41,6 +41,8 @@ export class Tabla {
                 }
             c = 1 - c;
         }
+
+        //coordonate
         ctx.font = "600 14px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
         ctx.fillStyle = "#4a4a4a";
 
@@ -54,7 +56,11 @@ export class Tabla {
             ctx.fillText(number.toString(), 4, row * size + 14);
         }
 
-        piese.forEach(p => p.desen(this.ctx, p.img));
+        piese.forEach(p => p.desen(this.ctx));
+
+        if(piesaSelectata && piesaSelectata.img.complete) {
+            piesaSelectata.desen(ctx);
+        }
     }
 
     createPiesaFromData(data: any):Piesa

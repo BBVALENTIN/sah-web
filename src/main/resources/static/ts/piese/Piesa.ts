@@ -19,28 +19,18 @@ export class Piesa {
         this.img = new Image();
     }
 
-    desen(ctx: CanvasRenderingContext2D, imagine?: HTMLImageElement): void {
-        if(!imagine) return;
+    desen(ctx: CanvasRenderingContext2D): void {
+        if(!this.img.complete) return;
 
-        let xPixeli: number, yPixeli: number;
+        let xPixeli = this.col * Tabla.squareSize;
+        let yPixeli = this.row * Tabla.squareSize;
 
-        if(this.isDragging && this.dragX !== undefined && this.dragY !== undefined) {
+        if (this.isDragging && this.dragX !== undefined && this.dragY !== undefined) {
             xPixeli = this.dragX;
             yPixeli = this.dragY;
         }
-        else {
-            xPixeli = this.col * Tabla.squareSize;
-            yPixeli = this.row * Tabla.squareSize;
-        }
 
-        if(imagine.complete) {
-            ctx.drawImage(imagine, xPixeli, yPixeli, Tabla.squareSize, Tabla.squareSize);
-        }
-        else {
-            imagine.onload = () => {
-                ctx.drawImage(imagine, xPixeli, yPixeli, Tabla.squareSize, Tabla.squareSize);
-            }
-        }
+        ctx.drawImage(this.img, xPixeli, yPixeli, Tabla.squareSize, Tabla.squareSize);
     }
 
     getX(col: number): number
