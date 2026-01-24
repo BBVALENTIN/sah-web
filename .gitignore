@@ -34,3 +34,7 @@ build/
 /src/main/resources/Plans.md
 /src/main/resources/application.properties
 /src/main/resources/application-dev.properties
+
+### NODE MODULES ###
+node_modules
+src/main/resources/static/ts-transpiled
