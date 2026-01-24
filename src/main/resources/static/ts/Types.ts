@@ -9,8 +9,8 @@ export interface Mutari {
     success: boolean;
     message: string;
     updatedPieces: PiesaDTO[];
-    isCheck: boolean;
-    isCheckmate: boolean;
+    check: boolean;
+    checkmate: boolean;
     culoareCurenta: 1 | 0 | -1;
     pgn: string;
     captures: boolean;

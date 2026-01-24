@@ -3,10 +3,10 @@ export class SoundManager {
 
     constructor() {
         this.sounds = {
-            move: new Audio('../sounds/public_sound_standard_Move.mp3'),
-            capture: new Audio('../sounds/public_sound_standard_Capture.mp3'),
-            check: new Audio('../sounds/public_sound_standard_Check.mp3'),
-            end: new Audio('../sounds/public_sound_standard_End.mp3'),
+            move: new Audio('/sounds/public_sound_standard_Move.mp3'),
+            capture: new Audio('/sounds/public_sound_standard_Capture.mp3'),
+            check: new Audio('/sounds/public_sound_standard_Check.mp3'),
+            end: new Audio('/sounds/public_sound_standard_End.mp3'),
         };
 
         for (const sound of Object.values(this.sounds)) {
