@@ -12,7 +12,7 @@ import java.util.List;
 public class ChessBoard {
     public static Piese[][] board = new Piese[8][8];
     public static Piese rocada;
-    public  Piese rege, sahP, piesaSelectata;
+    public  Piese rege, sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
     public static final int alb = 1;
@@ -68,7 +68,8 @@ public class ChessBoard {
         if (piesaSelectata.color != culoareCurenta) {
             return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false, culoareCurenta, currentFormattedMove, false);
         }
-
+        System.out.println("Vrei sa muti de la : "+ fromRow +" "+ fromCol);
+        System.out.println("La: " +targetRow +" "+ targetCol);
         if (!piesaSelectata.miscare(targetRow, targetCol)) {
             return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false, culoareCurenta, currentFormattedMove, false);
         }
@@ -93,6 +94,10 @@ public class ChessBoard {
             rocada = null;
         }
         boolean isCapture = board[targetRow][targetCol] != null;
+        if(isCapture == true) {
+            piesaCapturata = board[targetRow][targetCol];
+        }
+        else piesaCapturata = null;
         oldList = new ArrayList<>(pieseList);
 
 
@@ -106,11 +111,7 @@ public class ChessBoard {
 
         if(esteRegeleMeuInSah())
         {
-            board[fromRow][fromCol] = piesaSelectata;
-            board[targetRow][targetCol] = null;
-
-            piesaSelectata.setPosition(fromRow, fromCol);
-
+            rollBack(targetRow, targetCol, fromRow, fromCol, piesaSelectata);
             return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false, culoareCurenta, currentFormattedMove, isCapture);
         }
 
@@ -175,6 +176,16 @@ public class ChessBoard {
             return board[row][col];
         }
         return null;
+    }
+    public void rollBack(int targetRow, int targetCol, int fromRow, int fromCol, Piese piesaSelectata) {
+        board[fromRow][fromCol] = piesaSelectata;
+        if(piesaCapturata == null) {
+            board[targetRow][targetCol] = null;
+        }
+        else {
+            board[targetRow][targetCol] = piesaCapturata;
+        }
+        piesaSelectata.setPosition(fromRow, fromCol);
     }
 
     public static int getCuloareCurenta() {
@@ -444,4 +455,5 @@ public class ChessBoard {
         currentFormattedMove = notation;
         allFormattedMoves += notation + " ";
     }
+
 }
