@@ -1,7 +1,9 @@
 import { Tabla } from "./Tabla.js";
 import { SoundManager } from "./audio/soundManager.js";
-import { Piesa} from "./piese/Piesa.js";
-import {Mutari} from "./Types.js";
+import { Piesa } from "./piese/Piesa.js";
+import { Mutari } from "./Types.js";
+import {moveList} from "./Main.js";
+
 
 export class Mouse {
     canvas: HTMLCanvasElement;
@@ -19,7 +21,6 @@ export class Mouse {
         this.offsetX = 0;
         this.offsetY = 0;
         this.winner = undefined;
-
         this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
         this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
         this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
@@ -39,6 +40,14 @@ export class Mouse {
         const resp: Response = await fetch(`api/chess/turn`);
         if(resp.ok)
             this.culoareCurenta = await resp.json();
+    }
+
+    async getMovePGN(): Promise<string>{
+        let movePGN = "";
+        const resp: Response = await fetch(`api/chess/PGN_THIS`);
+        if(resp.ok) { movePGN = await resp.text(); }
+
+        return movePGN;
     }
 
     public onMouseDown(e:any):void {
@@ -99,7 +108,7 @@ export class Mouse {
                 console.log("Mutare invalida: ", moveResult.message);
                 return;
             }
-
+            moveList.addMove(moveResult.pgn);
             this.tabla.setPiecesFromServer(moveResult.updatedPieces);
             this.culoareCurenta = moveResult.culoareCurenta;
         } catch(err){

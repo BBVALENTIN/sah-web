@@ -15,3 +15,9 @@ export interface Mutari {
     pgn: string;
     captures: boolean;
 }
+
+export interface MoveRow {
+    number: number;
+    white?: string;
+    black?: string;
+}
