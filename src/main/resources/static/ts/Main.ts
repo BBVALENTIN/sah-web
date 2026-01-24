@@ -21,9 +21,4 @@ async function loadBoard()
     await mouse.getTurn();
 }
 
-async function gridManaging()
-{
-    // TO DO
-}
-
 loadBoard();

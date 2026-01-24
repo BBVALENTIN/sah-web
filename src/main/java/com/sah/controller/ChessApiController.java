@@ -48,7 +48,7 @@ public class ChessApiController {
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 8; j++)
                 chessBoard.board[i][j] = null;
-        chessBoard.allFormatedMoves = "";
+        chessBoard.allFormattedMoves = "";
         chessBoard.initializeBoard();
         List<PiesaDTO> dto = new ArrayList<>();
         for(Piese p : chessBoard.getAllPieces())
@@ -56,10 +56,15 @@ public class ChessApiController {
         return dto;
     }
 
-    @GetMapping("/PGN")
+    @GetMapping("/PGN_ALL")
     public String getPGN()
     {
-        return chessBoard.allFormatedMoves;
+        return chessBoard.allFormattedMoves;
+    }
+
+    @GetMapping("/PGN_THIS")
+    public String getMovePGN() {
+        return chessBoard.currentFormattedMove;
     }
 }
 
