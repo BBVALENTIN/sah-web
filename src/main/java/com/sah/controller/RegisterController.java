@@ -1,7 +1,6 @@
 package com.sah.controller;
 
 import com.sah.entity.User;
-import com.sah.config.*;
 import com.sah.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;

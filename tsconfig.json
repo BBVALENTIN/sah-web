@@ -6,7 +6,6 @@
 
     "rootDir": "src/main/resources/static/ts",
     "outDir": "src/main/resources/static/ts-transpiled",
-    "allowJs": true, // pentru sound manager
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
