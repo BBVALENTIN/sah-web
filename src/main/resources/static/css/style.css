@@ -1,5 +1,6 @@
 #chess-stuff{
     display: flex;
+    justify-content: center;
     gap:20px;
 }
 
@@ -25,3 +26,17 @@
     padding: 2px 4px;
 }
 
+.navbar {
+}
+
+.navbar-brand {
+    margin-left: 100px;
+}
+
+.navbar-right {
+    float: right;
+}
+
+.register-login {
+    margin-right: 50px;
+}

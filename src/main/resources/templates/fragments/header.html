@@ -1,0 +1,36 @@
+<div class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="header" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <a class="navbar-brand" href="#">Chess</a>
+<!-- TO ADD HREFs-->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-left">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">News</a>
+                </li>
+
+                <li>
+                    <a class="nav-link" href="#">Streamers</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="navbar-right ms-auto d-flex align-items-center">
+            <div sec:authorize="isAnonymous()" class="register-login buttons">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="btn btn-secondary" href="@{templates/registration/register}">Register</a>
+                        <a class="btn btn-secondary" href="@{templates/registration/login}">Log-in</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div sec:authorize="isAuthenticated()" class="your-profile">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="btn btn-secondary" href="#">Your profile</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
