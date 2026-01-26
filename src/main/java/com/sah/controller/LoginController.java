@@ -15,7 +15,7 @@ public class LoginController {
         if (error != null) {
             model.addAttribute("loginError", "Numele de utilizator sau parola sunt incorecte.");
         }
-        return "login";
+        return "registration/login";
     }
 
 }
