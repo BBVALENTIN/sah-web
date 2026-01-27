@@ -9,9 +9,18 @@
 <div th:insert="fragments/header :: header"></div>
   <div id="chess-stuff">
     <canvas id="chessCanvas"></canvas>
-    <div id="move-list-container">
-      <div id="move-list"></div>
+    <div id="chess-info-wrapper" class="chess-info-wrapper">
+      <div class="chess-info-item">Play
+        <div id="move-list-container">
+          <div id="move-list"></div>
+        </div>
+        <div id="buttons" class="important-buttons">
+          <div id="resign-button">Resign</div>
+<!--          <div id="offer-draw-button" class="btn btn-secondary">Draw</div> TO ADD WHEN WEBSOCKETS-->
+        </div>
+      </div>
     </div>
+
 
   </div>
   <div id = "status" style = "font-size: 20px; font-weight: bold">
