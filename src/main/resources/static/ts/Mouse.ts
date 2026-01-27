@@ -3,6 +3,7 @@
     import { Piesa } from "./piese/Piesa.js";
     import { Mutari } from "./Types.js";
     import {moveList} from "./Main.js";
+    import {Culoare} from "./Tip";
 
 
     export class Mouse {
@@ -13,7 +14,7 @@
         offsetX: number;
         offsetY: number;
         winner: 1 | 0 | -1 | undefined;
-        culoareCurenta: 1 | 0 | -1 | undefined;
+        culoareCurenta: Culoare | undefined;
         constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
             this.canvas = canvas;
             this.tabla = tabla;
@@ -108,7 +109,6 @@
                     return;
                 }
 
-                console.log(moveResult);
                 if(moveResult.checkmate){
                     this.soundManager.play("checkmate");
                     this.soundManager.play("end")

@@ -1,4 +1,5 @@
-import {MoveRow} from "./Types";
+import {MoveRow} from "./Types.js";
+import {Culoare} from "./Tip.js";
 
 export class MoveList {
     private container: HTMLElement;
@@ -53,12 +54,21 @@ export class MoveList {
         return div;
     }
 
-
-
     reset() {
         this.rows = [];
         this.moveCount = 0;
         this.lastPGN = "";
         this.container.innerHTML = "";
+    }
+
+    resign(culoareaCurenta: Culoare) {
+        const whiteResigned: string = "0-1";
+        const blackResigned: string = "1-0";
+
+        if(culoareaCurenta === Culoare.ALB)
+        {
+            this.addMove(whiteResigned);
+        }
+        else { this.addMove(blackResigned); }
     }
 }

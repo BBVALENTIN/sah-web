@@ -6,3 +6,9 @@ export enum Tip {
     REGINA = "REGINA",
     REGE = "REGE"
 }
+
+export enum Culoare {
+    ALB = 1,
+    NEGRU = -1,
+    MECI_TERMINAT = 0
+}

@@ -60,6 +60,7 @@ public class ChessBoard {
     }
 
     public synchronized MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
+
         piesaSelectata = board[fromRow][fromCol];
         if (piesaSelectata == null) {
             return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false, culoareCurenta, currentFormattedMove, false);
