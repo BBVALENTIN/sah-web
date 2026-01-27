@@ -3,8 +3,11 @@ import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
 
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d');
-if(!ctx) throw new Error("No canvas context");
+const ctx = canvas.getContext('2d')!;
+
+const size = Tabla.squareSize * 8;
+canvas.width = size;
+canvas.height = size;
 
 const tabla: Tabla = new Tabla(ctx);
 export const moveList:MoveList = new MoveList("move-list");

@@ -1,3 +1,12 @@
+:root {
+    --gWidth: 600px;
+    --gHeight: 600px;
+}
+#chessCanvas{
+    /*width: var(--gWidth);*/
+    /*height: var(--gHeight);*/
+    border: 1px solid black;
+}
 #chess-stuff{
     display: flex;
     justify-content: center;
@@ -9,7 +18,8 @@
     grid-template-columns: 40px 1fr 1fr;
     row-gap: 4px;
     font-family: monospace;
-    max-height: 300px;
+    width: 200px;
+    max-height: var(--gHeight);
     overflow-y: auto;
     padding: 6px;
     background: #fafafa;

@@ -7,7 +7,7 @@ import {Rege} from "./piese/Rege.js";
 import {Regina} from "./piese/Regina.js";
 
 export class Tabla {
-    static squareSize: number = 100;
+    static squareSize: number = 75;
 
     ctx: CanvasRenderingContext2D;
     rows: number;
@@ -31,6 +31,7 @@ export class Tabla {
         let c = 0;
         const ctx = this.ctx;
         const size = Tabla.squareSize;
+
 
         for(let row = 0; row < this.rows; row++){
             for(let col = 0; col < this.cols; col++)

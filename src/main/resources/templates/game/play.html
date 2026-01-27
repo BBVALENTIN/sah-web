@@ -2,17 +2,13 @@
 <html>
 <head>
   <title>Șah</title>
-  <style>
-    canvas { border: 1px solid black; }
-  </style>
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}">
 </head>
 <body>
 <div th:insert="fragments/header :: header"></div>
-<h1>Bine ai venit, <span th:text="${username}">Guest</span></h1>
   <div id="chess-stuff">
-    <canvas id="chessCanvas" width="800" height="800"></canvas>
+    <canvas id="chessCanvas"></canvas>
     <div id="move-list-container">
       <div id="move-list"></div>
     </div>
