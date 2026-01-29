@@ -1,6 +1,6 @@
 package com.sah.controller;
 
-import com.sah.entity.User;
+import com.sah.entity.Users;
 import com.sah.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -23,7 +23,7 @@ public class RegisterController {
     @GetMapping("/register")
     public String showRegisterForm()
     {
-        return "register";
+        return "registration/register";
     }
 
     @PostMapping("/register")
@@ -35,7 +35,7 @@ public class RegisterController {
 
         String cryptedPassword = encoder.encode(password);
 
-        User user = new User();
+        Users user = new Users();
         user.setUsername(username);
         user.setPassword(cryptedPassword);
 

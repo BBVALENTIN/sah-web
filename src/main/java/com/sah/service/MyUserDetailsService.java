@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.entity.User;
+import com.sah.entity.Users;
 import com.sah.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -20,7 +20,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        User user = userRepository.findByUsername(username);
+        Users user = userRepository.findByUsername(username);
 
         if(user == null)
             throw new UsernameNotFoundException("Nu exista acest utilizator");
