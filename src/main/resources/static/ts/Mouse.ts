@@ -1,7 +1,7 @@
     import { Tabla } from "./Tabla.js";
     import { SoundManager } from "./audio/soundManager.js";
     import { Piesa } from "./piese/Piesa.js";
-    import { Mutari } from "./Types.js";
+    import {Mutare, Mutare_Reusita} from "./Types.js";
     import {moveList} from "./Main.js";
     import {Culoare} from "./Tip";
 
@@ -25,6 +25,26 @@
             this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
             this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
             this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
+        }
+
+         async handleMutareAPI(e: any):Promise<Mutare_Reusita> {
+             const { col, row, x, y} = this.getSquareFromMouse(e);
+             let mutare: Promise<Mutare_Reusita>;
+             let errorText: any;
+             const moveData = {
+                 fromRow: this.piesaSelectata!.row,
+                 fromCol: this.piesaSelectata!.col,
+                 toRow: row,
+                 toCol: col
+             };
+            const respMutare: Response = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
+            if(!respMutare.ok) {
+                const errorText = await respMutare.text();
+                throw new Error("errortext is here");
+            }
+
+             mutare = await respMutare.json();
+             return mutare;
         }
 
         getSquareFromMouse(e: any){
@@ -93,33 +113,24 @@
             };
 
             try {
-                const respMutari = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
-
-                if(!respMutari.ok){
-                    console.error("Eroare la JSON: ", respMutari.statusText);
-                    return;
-                }
 
                 console.log("from: ", moveData.fromRow, moveData.fromCol);
                 console.log("to: ", moveData.toRow, moveData.toCol);
 
-                let moveResult: Mutari = await respMutari.json();
-                if(!moveResult.success) {
-                    console.log("Mutare invalida: ", moveResult.message);
-                    return;
-                }
+                const result:Mutare_Reusita = await this.handleMutareAPI(e);
+                console.log(result);
 
-                if(moveResult.checkmate){
+                if(result.checkmate){
                     this.soundManager.play("checkmate");
                     this.soundManager.play("end")
                 }
-                else if(moveResult.check) { this.soundManager.play("check");}
-                else if(moveResult.captures) {this.soundManager.play("capture");}
+                else if(result.check) { this.soundManager.play("check");}
+                else if(result.captures) {this.soundManager.play("capture");}
                 else {this.soundManager.play("move"); }
 
-                moveList.addMove(moveResult.pgn);
-                this.tabla.setPiecesFromServer(moveResult.updatedPieces);
-                this.culoareCurenta = moveResult.culoareCurenta;
+                moveList.addMove(result.pgn);
+                this.tabla.setPiecesFromServer(result.updatedPieces);
+                this.culoareCurenta = result.culoareCurenta;
             } catch(err){
                 console.log("eroare cine stie de ce");
             } finally {
