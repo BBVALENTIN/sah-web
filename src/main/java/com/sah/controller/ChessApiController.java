@@ -5,6 +5,7 @@ import com.sah.game.ChessBoard;
 import com.sah.dto.MoveResult;
 import com.sah.game.piese.Piese;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -21,12 +22,18 @@ public class ChessApiController {
     }
 
     @PostMapping("/move")
-    public MoveResult move(@RequestParam int fromRow,
+    public ResponseEntity<?> move(@RequestParam int fromRow,
                            @RequestParam int fromCol,
                            @RequestParam int toRow,
                            @RequestParam int toCol
     ) {
-        return chessBoard.faMiscare(fromRow, fromCol, toRow, toCol);
+        MoveResult result =  chessBoard.faMiscare(fromRow, fromCol, toRow, toCol);
+
+        if(result.getErrorCodes() != null) {
+            return ResponseEntity.badRequest().body(result.getErrorCodes());
+        }
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/state")

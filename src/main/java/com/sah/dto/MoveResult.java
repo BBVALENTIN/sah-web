@@ -1,21 +1,19 @@
 package com.sah.dto;
 
 import java.util.List;
+
+import com.sah.game.ErrorCodes;
 import com.sah.game.piese.Piese;
 
 public class MoveResult {
-    private boolean success;
-    private String message;
     private List<PiesaDTO> updatedPieces;
-    private boolean isCheck;
-    private boolean isCheckmate;
+    private boolean isCheck, isCheckmate;
+    private ErrorCodes errorCodes;
     private int culoareCurenta;
     private String pgn;
     private boolean captures;
 
-    public MoveResult(boolean success, String message, List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn, boolean captures) {
-        this.success = success;
-        this.message = message;
+    public MoveResult(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn, boolean captures) {
         this.updatedPieces = updatedPieces;
         this.isCheck = isCheck;
         this.isCheckmate = isCheckmate;
@@ -24,21 +22,18 @@ public class MoveResult {
         this.captures = captures;
     }
 
+    public MoveResult(ErrorCodes errorCodes){
+        this.errorCodes = errorCodes;
+    }
+
     // Getters și Setters
-    public boolean isSuccess() {
-        return success;
+
+    public ErrorCodes getErrorCodes() {
+        return errorCodes;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setErrorCodes(ErrorCodes errorCodes) {
+        this.errorCodes = errorCodes;
     }
 
     public List<PiesaDTO> getUpdatedPieces() {

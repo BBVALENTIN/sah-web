@@ -21,6 +21,7 @@ public class ChessBoard {
     public short numberOfMoves;
     public static short oldSize;
     public boolean promoted, isCheckMate;
+    public ErrorCodes error;
 
     private static int culoareCurenta = alb;
 
@@ -62,17 +63,15 @@ public class ChessBoard {
     public synchronized MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
 
         piesaSelectata = board[fromRow][fromCol];
-        if (piesaSelectata == null) {
-            return new MoveResult(false, "Nu există piesă pe poziția selectată", getAllPiecesDTO(), false, false, culoareCurenta, currentFormattedMove, false);
+        if (piesaSelectata == null) { // piesa inexistenta
+            return new MoveResult(error.PIESA_NEDETECTATA);
         }
 
-        if (piesaSelectata.color != culoareCurenta) {
-            return new MoveResult(false, "Nu este rândul acestei culori", getAllPiecesDTO(), false, false, culoareCurenta, currentFormattedMove, false);
+        if (piesaSelectata.color != culoareCurenta) { // rand gresit
+            return new MoveResult(error.RAND_GRESIT);
         }
-        System.out.println("Vrei sa muti de la : "+ fromRow +" "+ fromCol);
-        System.out.println("La: " +targetRow +" "+ targetCol);
-        if (!piesaSelectata.miscare(targetRow, targetCol)) {
-            return new MoveResult(false, "Mutare ilegală", getAllPiecesDTO(), false, false, culoareCurenta, currentFormattedMove, false);
+        if (!piesaSelectata.miscare(targetRow, targetCol)) { // mutare ilegala
+            return new MoveResult(error.MUTARE_ILEGALA);
         }
 
         String rocadaNotatie = null;
@@ -113,7 +112,7 @@ public class ChessBoard {
         if(esteRegeleMeuInSah())
         {
             rollBack(targetRow, targetCol, fromRow, fromCol, piesaSelectata);
-            return new MoveResult(false, "Nu-ti poti lasa regele in sah", getAllPiecesDTO(), true, false, culoareCurenta, currentFormattedMove, isCapture);
+            return new MoveResult(getAllPiecesDTO(), true, false, culoareCurenta, currentFormattedMove, isCapture);
         }
 
 
@@ -134,11 +133,9 @@ public class ChessBoard {
         allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
         promoted = false;
         if(isCheckMate == true)
-            return new MoveResult(true, "Game Over", getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture);
-
+            return new MoveResult(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture);
+        // sah, sah-mat
         return new MoveResult(
-                true,
-                isCheckMate ? "ȘAH-MAT" : (isCheck ? "ȘAH" : "Mutare validă"),
                 getAllPiecesDTO(),
                 isCheck,
                 isCheckMate,
