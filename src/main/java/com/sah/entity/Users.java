@@ -8,16 +8,18 @@ import java.util.Set;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="user_id")
     private Long userId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name="username")
     private String username;
-    @Column(nullable = false)
+    @Column(nullable = false, name="password")
     private String password;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name="email")
     private String email;
-    private boolean confirmed_Account = false;
-    @Column(nullable = false)
+    @Column(name="confirmed_account")
+    private boolean confirmed_account = false;
+    @Column(nullable = false, name="number_of_games")
     private int number_of_games;
 
     @ManyToMany
@@ -35,8 +37,8 @@ public class Users {
     public String getEmail() { return email; }
     public void setEmail(String email) {this.email = email;}
 
-    public boolean getConfirmed_Account() { return confirmed_Account; }
-    public void setConfirmed_Account(boolean Confirmed_Account) { this.confirmed_Account = Confirmed_Account; }
+    public boolean getConfirmed_Account() { return confirmed_account; }
+    public void setConfirmed_Account(boolean Confirmed_Account) { this.confirmed_account = Confirmed_Account; }
 
     public int getNumber_of_games() { return  number_of_games; }
     public void setNumber_of_games(int number_of_games) { this.number_of_games = number_of_games; }
