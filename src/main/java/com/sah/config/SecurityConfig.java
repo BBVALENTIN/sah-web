@@ -1,5 +1,7 @@
 package com.sah.config;
 
+import com.sah.service.CustomUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -23,11 +25,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http.
                     csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
-                    .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "register", "/css/**","/game", "/js/**").permitAll()
+                    .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/register", "/css/**","/success", "/js/**").permitAll()
                             .anyRequest().authenticated()
                     )
                     .formLogin(form -> form.loginPage("/login")
-                            .defaultSuccessUrl("/index", true)
+                            .defaultSuccessUrl("/index")
                             .permitAll()
                     )
                     .logout(logout -> logout.permitAll());

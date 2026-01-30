@@ -2,6 +2,7 @@ package com.sah.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,7 +24,7 @@ public class Users {
     private int number_of_games;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Roles> roles;
+    private Set<Roles> roles = new HashSet<>();
 
 
     public Long getId() {return userId;}

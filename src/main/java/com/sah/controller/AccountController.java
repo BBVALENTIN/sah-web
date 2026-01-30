@@ -17,19 +17,24 @@ public class AccountController {
         this.userService = userService;
     }
 
+
     @GetMapping("/register")
     public String showRegisterForm() { return "registration/register"; }
 
     @PostMapping("/register")
     public String register(@ModelAttribute RegisterRequest request) {
         userService.register(request);
-        return "redirect:/login";
+        return "redirect:/success";
     }
+
+    @GetMapping("/success")
+    public String showSuccessStatus() { return "registration/success"; }
 
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
             model.addAttribute("loginError", "Numele de utilizator sau parola sunt incorecte.");
+            System.out.println("Logare nereusita");
         }
         return "registration/login";
     }

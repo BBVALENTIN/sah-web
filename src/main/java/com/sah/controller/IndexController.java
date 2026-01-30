@@ -12,9 +12,8 @@ public class IndexController {
 
     @GetMapping("/index")
     @Profile("prod")
-    public String showIndex(Model model, Principal principal)
+    public String showIndex()
     {
-        model.addAttribute("username", principal.getName());
         return "index/index";
     }
 

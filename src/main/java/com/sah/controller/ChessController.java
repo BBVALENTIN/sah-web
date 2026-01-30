@@ -9,11 +9,11 @@ import java.security.Principal;
 @Controller
 public class ChessController {
 
-    @GetMapping("/play")
+    @GetMapping("/game/play")
     public String gamePage(Model model, Principal principal) {
         String username = (principal != null) ? principal.getName() : "";
         model.addAttribute("username", username);
-        return "g/play";
+        return "game/play";
     }
 
     @GetMapping("/me")
