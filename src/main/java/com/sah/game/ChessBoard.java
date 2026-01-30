@@ -15,8 +15,7 @@ public class ChessBoard {
     public  Piese rege, sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
-    public static final int alb = 1;
-    public static final int negru = -1;
+    public static final int alb = 1, negru = -1;
     public String allFormattedMoves = "", currentFormattedMove;
     public short numberOfMoves;
     public static short oldSize;
@@ -367,7 +366,7 @@ public class ChessBoard {
         }
     }
     // moving a pawn to row 4 (from up to bottom), col 4 = e4
-    public String formattedMoves(Piese piesa,int fromRow, int fromCol, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie, boolean isCapture)
+    public String formattedMoves(Piese piesa, int fromRow, int fromCol, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie, boolean isCapture)
     {
         if(rocadaNotatie != null)
         {

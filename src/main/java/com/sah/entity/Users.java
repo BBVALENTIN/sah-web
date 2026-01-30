@@ -22,7 +22,7 @@ public class Users {
     @Column(nullable = false, name="number_of_games")
     private int number_of_games;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Roles> roles;
 
 
@@ -42,4 +42,7 @@ public class Users {
 
     public int getNumber_of_games() { return  number_of_games; }
     public void setNumber_of_games(int number_of_games) { this.number_of_games = number_of_games; }
+
+    public Set<Roles> getRoles() { return this.roles; }
+    public void SetRoles(Set<Roles> roles) { this.roles = roles; }
 }
