@@ -1,1 +1,3 @@
-// scripts for the rest of the website
+addEventListener("DOMContentLoaded", () => {
+    const createBtn = document.getElementById("createLobbyButton");
+});
