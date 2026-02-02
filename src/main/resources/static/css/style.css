@@ -3,7 +3,15 @@
     --gHeight: 600px;
     --infoWidth: 250px;
     --gap: 20px;;
+    --cWidth: 300px;
+    --cHeight: 600px;
 }
+
+#content {
+    display: flex;
+    flex-direction: column;
+}
+
 #chessCanvas{
     /*width: var(--gWidth);*/
     /*height: var(--gHeight);*/
