@@ -1,5 +1,5 @@
 import {Piesa} from "./Piesa.js";
-import {Enums} from "../Enums";
+import {Enums} from "../Enums.js";
 
 export class Tura extends Piesa {
     readonly tip: Enums;

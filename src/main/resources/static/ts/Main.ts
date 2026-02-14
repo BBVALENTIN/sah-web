@@ -1,7 +1,17 @@
 import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
+import { connect, sendMessage } from "./WebSockets.js"
 
+// LOGICA FRONTEND MESAJE
+let sendButton = document.querySelector('#sendBtn') as HTMLButtonElement;
+
+sendButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    sendMessage();
+});
+
+// LOGICA FRONTEND JOC
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
 
