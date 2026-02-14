@@ -1,5 +1,6 @@
 package com.sah.service;
 
+import com.sah.dto.loggedUser;
 import com.sah.entity.Users;
 import com.sah.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 
 @Service
@@ -29,5 +31,14 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Nu exista acest utilizator");
 
         return new User(user.getUsername(), user.getPassword(), user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).toList());
+    }
+
+
+    public loggedUser loadInfo(Principal principal) {
+        System.out.println("principal : " + principal);
+
+        Users loggedUserAllInfo = userRepo.findByUsername(principal.getName());
+
+        return new loggedUser(loggedUserAllInfo.getId(), loggedUserAllInfo.getUsername());
     }
 }

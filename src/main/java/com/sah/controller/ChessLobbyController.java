@@ -25,16 +25,17 @@ public class ChessLobbyController {
     @PostMapping("/play/create")
     public String createLobby() {
         String lobby_Id = chessLobbyService.GenerateRandomLobbyId();
-        return "redirect:/play/"+lobby_Id;
+        return "redirect:/play="+lobby_Id;
     }
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
+        chatMessage.setSender(principal.getName());
         return chatMessage;
     }
 
-    @MessageMapping("/chat.sendMessage")
+    @MessageMapping("/chat.addUser")
     @SendTo("/topic/public")
     public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
         // add username in websocket session
@@ -42,7 +43,7 @@ public class ChessLobbyController {
         return chatMessage;
     }
 
-    @GetMapping("/play/{lobby_Id}")
+    @GetMapping("/play={lobby_Id}")
     public String showLobby(@PathVariable String lobby_Id) {
         return "game/play";
     }

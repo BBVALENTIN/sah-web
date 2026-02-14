@@ -10,14 +10,14 @@ import java.security.Principal;
 @Controller
 public class IndexController {
 
-    @GetMapping("/index")
+    @GetMapping("/")
     @Profile("prod")
     public String showIndex()
     {
         return "index/index";
     }
 
-    @GetMapping("/")
-    @Profile("dev")
-    public String GameDebug() {return "game/play";}
+//    @GetMapping("/")
+//    @Profile("dev")
+//    public String GameDebug() {return "game/play";}
 }
