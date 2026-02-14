@@ -1,7 +1,21 @@
 import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
+import {userInfo} from "./Types";
 
+//LOGICA FRONTEND CHAT + BASIC
+let username: string = "";
+let userId: number = 0;
+
+let respInfo = await fetch("/info/user");
+if(respInfo.ok) {
+    const userInfoJSON:userInfo = await respInfo.json();
+    username = userInfoJSON.username;
+    userId = userInfoJSON.userId;
+    console.log("username: ", username, "userId: ", userId);
+}
+
+// LOGICA FRONTEND JOC
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
 

@@ -25,3 +25,8 @@ export interface MoveRow {
     white?: string;
     black?: string;
 }
+
+export interface userInfo {
+    userId: number;
+    username: string;
+}

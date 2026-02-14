@@ -8,9 +8,20 @@
 <body>
 <div th:insert="fragments/header :: header"></div>
   <div id="content">
-    <div id="chat-stuff">
-      <div id="username-page">
-        <div></div>
+    <div id="chat-wrapper">
+      <div id="chat-header">
+        <h2>Chat box</h2>
+        <ul id="messageArea">
+
+        </ul>
+        <div id="messageForm" name="messageForm">
+           <div id="form-group">
+             <div class="input-group clearfix">
+               <input type="text" id="message" placeholder="Type a message..." autocomplete="off">
+               <button type="submit" class="primary">Send</button>
+             </div>
+           </div>
+        </div>
       </div>
     </div>
     <div id="chess-stuff">
