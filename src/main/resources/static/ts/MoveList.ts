@@ -1,5 +1,5 @@
 import {MoveRow} from "./Types.js";
-import {Culoare} from "./Tip.js";
+import {Culoare} from "./Enums";
 
 export class MoveList {
     private container: HTMLElement;

@@ -1,3 +1,5 @@
+import { MessageType } from "./Enums.js";
+
 export interface PiesaDTO {
     tip: String;
     color: number;
@@ -30,3 +32,10 @@ export interface userInfo {
     userId: number;
     username: string;
 }
+
+export interface Message {
+    sender: string;
+    content: string;
+    type: MessageType;
+}
+

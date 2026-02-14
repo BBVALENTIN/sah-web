@@ -1,8 +1,8 @@
 import {Tabla} from "../Tabla.js";
-import {Tip} from "../Tip.js";
+import {Enums} from "../Enums";
 
 export class Piesa {
-    readonly tip: Tip | undefined;
+    readonly tip: Enums | undefined;
     color: 1 | -1;
     row:number;
     col: number;

@@ -1,13 +1,13 @@
 import {Piesa} from "./Piesa.js";
-import {Tip} from "../Tip.js";
+import {Enums} from "../Enums";
 
 export class Tura extends Piesa {
-    readonly tip: Tip;
+    readonly tip: Enums;
     img: HTMLImageElement;
 
     constructor(color: 1 | -1, row: number, col: number) {
         super(color, row, col);
-        this.tip = Tip.TURA;
+        this.tip = Enums.TURA;
         this.img = new Image();
 
         if(color === 1)

@@ -3,7 +3,7 @@
     import { Piesa } from "./piese/Piesa.js";
     import {Mutare, Mutare_Reusita} from "./Types.js";
     import {moveList} from "./Main.js";
-    import {Culoare} from "./Tip";
+    import {Culoare} from "./Enums";
 
 
     export class Mouse {
