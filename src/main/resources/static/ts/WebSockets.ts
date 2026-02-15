@@ -1,12 +1,18 @@
 import {Message, userInfo} from "./Types.js";
 import {MessageType} from "./Enums.js";
 
+declare var SockJS: any;
+declare var Stomp: any;
+
 //LOGICA FRONTEND CHAT + BASIC
 let loggedUsername: string = "";
 let userId: number = 0;
-declare var SockJS: any;
-declare var Stomp: any;
-export let stompClient: any = null;
+
+export const state = {
+    stompClient: null as any,
+    connected: false
+};
+
 let messageInput = document.querySelector('#message') as HTMLInputElement;
 let chatMessage: Message;
 let messageArea = document.querySelector("#messageArea") as HTMLElement;
@@ -23,30 +29,30 @@ if(respInfo.ok) {
     console.log("username: ", loggedUsername, "userId: ", userId);
 }
 
-export function connect(event: Event):void{
+export function connect(loggedUsername: string):void{
     if(!loggedUsername) {
         alert("Error - not seeing the user");
         return;
     }
 
     const socket = new SockJS('/ws');
-    stompClient = Stomp.over(socket);
+    state.stompClient = Stomp.over(socket);
 
-    stompClient.connect(
+    state.stompClient.connect(
         { username: loggedUsername},
         function () {
+            state.connected = true;
             console.log("Connected");
-            stompClient.subscribe('/topic/public', onMessageReceived);
+            state.stompClient.subscribe('/topic/public', onMessageReceived);
 
-            stompClient.send('/app/chat.addUser', {}, JSON.stringify({ type: MessageType.JOIN })
+            state.stompClient.send('/app/chat.addUser', {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
             );
         },
         function(error: any) {
+            state.connected = false;
             console.error("STOMP ERROR: ", error);
         }
     )
-
-    event.preventDefault();
 }
 
 // function onConnected() {
@@ -59,15 +65,17 @@ export function connect(event: Event):void{
 // }
 
 export function sendMessage() {
+    console.log("stompClient214:", state.stompClient);
+    console.log("connected:", state.stompClient?.connected);
     const messageContent = messageInput.value.trim();
-    if(messageContent && stompClient) {
+    if(messageContent && state.stompClient && state.connected) {
         chatMessage = {
             sender: loggedUsername,
             content: messageContent,
             type: MessageType.CHAT
         };
 
-        stompClient.send("app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        state.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
 
         messageInput.value = "";
     }

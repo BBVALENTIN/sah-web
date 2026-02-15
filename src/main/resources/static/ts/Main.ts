@@ -4,12 +4,26 @@ import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
 
 // LOGICA FRONTEND MESAJE
-let sendButton = document.querySelector('#sendMessageButton') as HTMLButtonElement;
+async function initializeApp() {
+    let loggedUsername = "";
+    try {
+        const respInfo = await fetch("/info/user");
+        if (respInfo.ok) {
+            const userInfo = await respInfo.json();
+            loggedUsername = userInfo.username;
+            connect(loggedUsername);
+        }
+    } catch (e) {
+        console.error("Failed to fetch user info", e);
+    }
 
-sendButton.addEventListener('click', (event) => {
-    event.preventDefault();
-    sendMessage();
-});
+    let sendButton = document.querySelector('#sendMessageButton') as HTMLButtonElement;
+
+    sendButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        sendMessage();
+    });
+}
 
 // LOGICA FRONTEND JOC
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
@@ -35,7 +49,7 @@ async function loadBoard():Promise<void>
 
     await mouse.getTurn();
 }
-
+initializeApp();
 loadBoard();
 
 document.addEventListener("DOMContentLoaded", () => {
