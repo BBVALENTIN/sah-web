@@ -96,7 +96,7 @@ function onMessageReceived(payload: any) {
     }
     else { // MessageType.CHAT
         messageElement.classList.add("chat-message");
-        messageElement.innerHTML = `<div class="message-content">${message.content}</div>`;
+        messageElement.innerHTML = `<div class="message-content">${message.sender}: ${message.content}</div>`;
     }
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
