@@ -6,50 +6,41 @@
   <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}">
 </head>
 <body>
-<div th:insert="fragments/header :: header"></div>
-  <div id="content">
-    <div id="chat-wrapper">
-      <div id="chat-header">
-        <h2>Chat box</h2>
-        <div id="messageArea">
+    <div th:insert="fragments/header :: header"></div>
 
+    <div id="content">
+        <div id="chat-wrapper">
+            <div id="chat-header">
+                <h2> Chat box</h2>
+            </div>
+            <div id="messageArea"></div>
+            <div id="messageForm" name="messageForm">
+                <input type="text" id="message" placeholder="Type a message..." autocomplete="off">
+                <button type="submit" class="btn btn-primary" id="sendMessageButton"></button>
+            </div>
         </div>
-        <div id="messageForm" name="messageForm">
-           <div id="form-group">
-             <div class="input-group clearfix">
-               <input type="text" id="message" placeholder="Type a message..." autocomplete="off">
-               <button type="submit" class="primary" id="sendMessageButton">Send</button>
-             </div>
-           </div>
+
+        <div id="chess-stuff">
+            <canvas id="chessCanvas"></canvas>
+            <div id="chess-info-wrapper" class="chess-info-wrapper">
+                <div id="chess-info-item">Play</div>
+                <div id="move-list-container">
+                    <div id="move-list"></div>
+                </div>
+                <div id="buttons" class="buttons">
+                    <div id="resign-button">Resign</div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div id="chess-stuff">
-      <canvas id="chessCanvas"></canvas>
-      <div id="chess-info-wrapper" class="chess-info-wrapper">
-        <div class="chess-info-item">Play
-          <div id="move-list-container">
-            <div id="move-list"></div>
-          </div>
-          <div id="buttons" class="buttons">
-            <div id="resign-button">Resign</div>
-  <!--          <div id="offer-draw-button" class="btn btn-secondary">Draw</div> TO ADD WHEN WEBSOCKETS-->
-          </div>
-        </div>
-      </div>
-  </div>
 
+    <div id="test-strings">
+        <div id="status" style="font-size: 20px; font-weight: bold;"></div>
+        <div id="check-string" style="font-size: 20px; font-weight: bold;"></div>
+    </div>
 
-  </div>
-  <div id = "status" style = "font-size: 20px; font-weight: bold">
-  </div>
-    <div id="check-string" style="font-size: 20px; font-weight: bold">
-  </div>
-<!--  <button id="reset-btn">RESET</button>-->
-<!--  <script type="module" src="js/chess-related/main.js"></script>-->
-  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-  <script type="module" th:src="@{/ts-transpiled/Main.js}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script type="module" th:src="@{/ts-transpiled/Main.js}"></script>
 </body>
 </html>

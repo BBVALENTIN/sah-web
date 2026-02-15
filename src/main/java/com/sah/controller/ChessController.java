@@ -1,24 +1,51 @@
 package com.sah.controller;
 
+import com.sah.dto.ChatMessage;
+import com.sah.service.ChessLobbyService;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
 
 @Controller
 public class ChessController {
 
-    @GetMapping("/game/play")
-    public String gamePage(Model model, Principal principal) {
-        String username = (principal != null) ? principal.getName() : "";
-        model.addAttribute("username", username);
-        return "game/play";
+    private final ChessLobbyService chessLobbyService;
+
+    public ChessController(ChessLobbyService chessLobbyService) {
+        this.chessLobbyService = chessLobbyService;
     }
 
-    @GetMapping("/me")
-    public String getUser(Principal principal) {
-        return principal.getName();
+    @PostMapping("/play/create")
+    public String createLobby() {
+        String lobby_Id = chessLobbyService.GenerateRandomLobbyId();
+        return "redirect:/play="+lobby_Id;
+    }
+
+    @MessageMapping("/chat.sendMessage")
+    @SendTo("/topic/public")
+    public ChatMessage sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
+        chatMessage.setSender(principal.getName());
+        return chatMessage;
+    }
+
+    @MessageMapping("/chat.addUser")
+    @SendTo("/topic/public")
+    public ChatMessage addUser(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+        // add username in websocket session
+        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        return chatMessage;
+    }
+
+    @GetMapping("/play={lobby_Id}")
+    public String showLobby(@PathVariable String lobby_Id) {
+        return "game/play";
     }
 }
