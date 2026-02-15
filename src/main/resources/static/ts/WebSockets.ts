@@ -1,12 +1,12 @@
 import {Message, userInfo} from "./Types.js";
 import {MessageType} from "./Enums.js";
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs"
 
 //LOGICA FRONTEND CHAT + BASIC
 let loggedUsername: string = "";
 let userId: number = 0;
-export let stompClient: Client;
+declare var SockJS: any;
+declare var Stomp: any;
+export let stompClient: any = null;
 let messageInput = document.querySelector('#message') as HTMLInputElement;
 let chatMessage: Message;
 let messageArea = document.querySelector("#messageArea") as HTMLElement;
@@ -29,39 +29,34 @@ export function connect(event: Event):void{
         return;
     }
 
-    stompClient = new Client({
-        brokerURL: undefined,
-        connectHeaders: {
-            username: loggedUsername
+    const socket = new SockJS('/ws');
+    stompClient = Stomp.over(socket);
+
+    stompClient.connect(
+        { username: loggedUsername},
+        function () {
+            console.log("Connected");
+            stompClient.subscribe('/topic/public', onMessageReceived);
+
+            stompClient.send('/app/chat.addUser', {}, JSON.stringify({ type: MessageType.JOIN })
+            );
         },
-        webSocketFactory: () => new SockJS('/ws'),
-        debug: (str) => console.log(str),
-        reconnectDelay: 5000
-    });
-
-    stompClient.onConnect = onConnected;
-
-    stompClient.onWebSocketError = (error) => {
-        console.error("Websocket error: ", error);
-    }
-
-    stompClient.onStompError = (frame) => {
-        console.error("Broker error", frame.headers['message']);
-    }
-
-    stompClient.activate();
+        function(error: any) {
+            console.error("STOMP ERROR: ", error);
+        }
+    )
 
     event.preventDefault();
 }
 
-function onConnected() {
-    stompClient.subscribe('/topic/public', onMessageReceived);
-
-    stompClient.publish({
-        destination: "/app/chat.addUser",
-        body: JSON.stringify({type: MessageType.JOIN})
-    });
-}
+// function onConnected() {
+//     stompClient.subscribe('/topic/public', onMessageReceived);
+//
+//     stompClient.publish({
+//         destination: "/app/chat.addUser",
+//         body: JSON.stringify({type: MessageType.JOIN})
+//     });
+// }
 
 export function sendMessage() {
     const messageContent = messageInput.value.trim();
@@ -71,6 +66,10 @@ export function sendMessage() {
             content: messageContent,
             type: MessageType.CHAT
         };
+
+        stompClient.send("app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+
+        messageInput.value = "";
     }
 }
 

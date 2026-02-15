@@ -4,7 +4,7 @@ import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
 
 // LOGICA FRONTEND MESAJE
-let sendButton = document.querySelector('#sendBtn') as HTMLButtonElement;
+let sendButton = document.querySelector('#sendMessageButton') as HTMLButtonElement;
 
 sendButton.addEventListener('click', (event) => {
     event.preventDefault();
