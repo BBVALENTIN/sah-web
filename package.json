@@ -7,14 +7,12 @@
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1"
   },
   "name": "sah-web",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "vite",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "watch": "tsc -w"
