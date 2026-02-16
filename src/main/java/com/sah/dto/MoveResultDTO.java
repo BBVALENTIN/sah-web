@@ -3,9 +3,8 @@ package com.sah.dto;
 import java.util.List;
 
 import com.sah.game.ErrorCodes;
-import com.sah.game.piese.Piese;
 
-public class MoveResult {
+public class MoveResultDTO {
     private List<PiesaDTO> updatedPieces;
     private boolean isCheck, isCheckmate;
     private ErrorCodes errorCodes;
@@ -13,7 +12,7 @@ public class MoveResult {
     private String pgn;
     private boolean captures;
 
-    public MoveResult(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn, boolean captures) {
+    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn, boolean captures) {
         this.updatedPieces = updatedPieces;
         this.isCheck = isCheck;
         this.isCheckmate = isCheckmate;
@@ -22,7 +21,7 @@ public class MoveResult {
         this.captures = captures;
     }
 
-    public MoveResult(ErrorCodes errorCodes){
+    public MoveResultDTO(ErrorCodes errorCodes){
         this.errorCodes = errorCodes;
     }
 

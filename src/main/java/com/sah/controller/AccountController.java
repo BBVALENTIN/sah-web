@@ -1,9 +1,8 @@
 package com.sah.controller;
 
-import com.sah.dto.RegisterRequest;
+import com.sah.dto.RegisterRequestDTO;
 import com.sah.service.UsersService;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +21,7 @@ public class AccountController {
     public String showRegisterForm() { return "registration/register"; }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterRequest request) {
+    public String register(@ModelAttribute RegisterRequestDTO request) {
         userService.register(request);
         return "redirect:/success";
     }

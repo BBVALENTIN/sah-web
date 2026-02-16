@@ -1,6 +1,6 @@
 package com.sah.config;
 
-import com.sah.dto.ChatMessage;
+import com.sah.dto.ChatMessageDTO;
 import com.sah.enums.MessageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class WebSocketEventListener {
 
         if(username != null) {
             log.info("User disconnected: {}", username);
-            var chatMessage = ChatMessage.builder().type(MessageType.LEAVE).sender(username).build();
+            var chatMessage = ChatMessageDTO.builder().type(MessageType.LEAVE).sender(username).build();
             messageTemplate.convertAndSend("/topic/public", chatMessage);
         }
     }

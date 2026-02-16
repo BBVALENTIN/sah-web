@@ -2,7 +2,7 @@ package com.sah.controller;
 
 import com.sah.dto.PiesaDTO;
 import com.sah.game.ChessBoard;
-import com.sah.dto.MoveResult;
+import com.sah.dto.MoveResultDTO;
 import com.sah.game.piese.Piese;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class ChessApiController {
                            @RequestParam int toRow,
                            @RequestParam int toCol
     ) {
-        MoveResult result =  chessBoard.faMiscare(fromRow, fromCol, toRow, toCol);
+        MoveResultDTO result =  chessBoard.faMiscare(fromRow, fromCol, toRow, toCol);
 
         if(result.getErrorCodes() != null) {
             return ResponseEntity.badRequest().body(result.getErrorCodes());

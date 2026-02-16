@@ -1,6 +1,6 @@
 package com.sah.dto;
 
-public class RegisterRequest {
+public class RegisterRequestDTO {
     private String username;
     private String password;
     private String email;

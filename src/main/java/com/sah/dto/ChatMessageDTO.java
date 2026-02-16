@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatMessage {
+public class ChatMessageDTO {
     private String content;
     private String sender; // will change to User
     private MessageType type;

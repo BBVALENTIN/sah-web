@@ -1,6 +1,6 @@
 package com.sah.game;
 
-import com.sah.dto.MoveResult;
+import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.game.piese.*;
 import org.springframework.stereotype.Service;
@@ -59,18 +59,18 @@ public class ChessBoard {
         numberOfMoves = 1;
     }
 
-    public synchronized MoveResult faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
+    public synchronized MoveResultDTO faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
 
         piesaSelectata = board[fromRow][fromCol];
         if (piesaSelectata == null) { // piesa inexistenta
-            return new MoveResult(error.PIESA_NEDETECTATA);
+            return new MoveResultDTO(error.PIESA_NEDETECTATA);
         }
 
         if (piesaSelectata.color != culoareCurenta) { // rand gresit
-            return new MoveResult(error.RAND_GRESIT);
+            return new MoveResultDTO(error.RAND_GRESIT);
         }
         if (!piesaSelectata.miscare(targetRow, targetCol)) { // mutare ilegala
-            return new MoveResult(error.MUTARE_ILEGALA);
+            return new MoveResultDTO(error.MUTARE_ILEGALA);
         }
 
         String rocadaNotatie = null;
@@ -111,7 +111,7 @@ public class ChessBoard {
         if(esteRegeleMeuInSah())
         {
             rollBack(targetRow, targetCol, fromRow, fromCol, piesaSelectata);
-            return new MoveResult(getAllPiecesDTO(), true, false, culoareCurenta, currentFormattedMove, isCapture);
+            return new MoveResultDTO(getAllPiecesDTO(), true, false, culoareCurenta, currentFormattedMove, isCapture);
         }
 
 
@@ -132,9 +132,9 @@ public class ChessBoard {
         allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
         promoted = false;
         if(isCheckMate == true)
-            return new MoveResult(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture);
+            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture);
         // sah, sah-mat
-        return new MoveResult(
+        return new MoveResultDTO(
                 getAllPiecesDTO(),
                 isCheck,
                 isCheckMate,

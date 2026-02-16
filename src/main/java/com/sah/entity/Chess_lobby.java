@@ -1,6 +1,9 @@
 package com.sah.entity;
 
+import com.sah.enums.LobbyType;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Chess_lobby {
     @Id
@@ -12,6 +15,8 @@ public class Chess_lobby {
     private String player_white;
     @Column(nullable = false)
     private String player_black;
+    @Column(nullable = false)
+    private LobbyType lobbyType;
 
     public String getLobby_Id() { return lobby_Id; }
 
@@ -23,4 +28,7 @@ public class Chess_lobby {
 
     public String getPlayer_black() { return player_black; }
     public void setPlayer_black(String player_black) { this.player_black = player_black; }
+
+    public LobbyType getLobbyType() { return lobbyType; }
+    public void setLobbyType(LobbyType lobbyType) { this.lobbyType = lobbyType; }
 }
