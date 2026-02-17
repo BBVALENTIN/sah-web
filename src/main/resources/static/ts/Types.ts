@@ -1,4 +1,4 @@
-import { MessageType } from "./Enums.js";
+import {MessageType, LobbyType, Formats} from "./Enums.js";
 
 export interface PiesaDTO {
     tip: String;
@@ -39,3 +39,10 @@ export interface Message {
     type: MessageType;
 }
 
+export interface Lobby {
+    lobbyId: string;
+    format: Formats;
+    lobbyType: LobbyType;
+    playerWhite: string | null;
+    playerBlack: string | null; // de schimbat cand o sa adaug 1v1 cu playeri
+}

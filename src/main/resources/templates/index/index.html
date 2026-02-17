@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Bine ai venit pe site</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}">
 </head>
 <body>
+    <div th:insert="fragments/header :: header"></div>
     <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
     <a th:href="@{/game/play}">Joaca un sah</a>
     <button id="createLobbyButton">Creeaza un lobby de sah</button>

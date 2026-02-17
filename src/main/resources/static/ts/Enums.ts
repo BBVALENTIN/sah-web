@@ -24,3 +24,8 @@ export enum LobbyType {
     ONGOING = 'ONGOING',
     FINISHED = 'FINISHED'
 }
+
+export enum Formats {
+    BLITZ = 'BLITZ',
+    CLASSICAL = 'CLASSICAL'
+}
