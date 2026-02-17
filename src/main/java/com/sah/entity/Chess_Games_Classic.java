@@ -18,6 +18,8 @@ public class Chess_Games_Classic {
     private int number_of_moves = 0;
     @Column(nullable = false)
     private String PGN;
+    @Column(nullable = false)
+    private String lobbyId;
 
     public Long getClassicGameId() { return ClassicGameId; }
 
@@ -33,5 +35,7 @@ public class Chess_Games_Classic {
     public String getPGN() { return PGN; }
     public void setPGN(String PGN) { this.PGN = PGN; }
 
+    public String getLobbyId() {return this.lobbyId; }
+    public void setLobbyId(String lobbyId) { this.lobbyId = lobbyId; }
 
 }

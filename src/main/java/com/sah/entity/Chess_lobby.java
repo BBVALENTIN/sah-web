@@ -1,34 +1,47 @@
 package com.sah.entity;
 
+import com.sah.enums.FormatType;
 import com.sah.enums.LobbyType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-public class Chess_lobby {
+import java.time.LocalDateTime;
+
+@Entity
+public class Chess_Lobby {
     @Id
-    private String lobby_Id;
+    private String lobbyId;
 
-    @Column(nullable = false, name = "format")
-    private String format;
     @Column(nullable = false)
-    private String player_white;
-    @Column(nullable = false)
-    private String player_black;
+    private FormatType format;
+    // TO CHANGE FROM NULLABLE = TRUE TO NULLABLE = FALSE WHEN DONE
+    @Column(nullable = true)
+    private String playerWhite;
+    @Column(nullable = true)
+    private String playerBlack;
     @Column(nullable = false)
     private LobbyType lobbyType;
+    @Column(nullable = true) // TO CHANGE
+    private Long gameId;
+    @Column(nullable = true) // TO CHANGE
+    private Long chatId;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
-    public String getLobby_Id() { return lobby_Id; }
+    public String getLobbyId() { return lobbyId; }
+    public void setLobbyId(String randomGeneratedLobbyId) { this.lobbyId = randomGeneratedLobbyId; }
 
-    public String getFormat() { return format; }
-    public void setFormat(String format) { this.format = format; }
+    public FormatType getFormat() { return format; }
+    public void setFormat(FormatType format) { this.format = format; }
 
-    public String getPlayer_white() { return player_white; }
-    public void setPlayer_white(String player_white) { this.player_white = player_white; }
+    public String getPlayerWhite() { return playerWhite; }
+    public void setPlayerWhite(String playerWhite) { this.playerWhite = playerWhite; }
 
-    public String getPlayer_black() { return player_black; }
-    public void setPlayer_black(String player_black) { this.player_black = player_black; }
+    public String getPlayer_black() { return playerBlack; }
+    public void setPlayer_black(String playerBlack) { this.playerBlack = playerBlack; }
 
     public LobbyType getLobbyType() { return lobbyType; }
     public void setLobbyType(LobbyType lobbyType) { this.lobbyType = lobbyType; }
+
+    public LocalDateTime getCreatedAt() { return this.createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

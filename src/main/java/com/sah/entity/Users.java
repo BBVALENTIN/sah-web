@@ -22,6 +22,8 @@ public class Users {
     private boolean confirmed_account = false;
     @Column(nullable = false, name="number_of_games")
     private int number_of_games;
+    @Column(nullable = true)
+    private String country; // Temporariliy - maybe will change to CountryId and make a country table
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Roles> roles = new HashSet<>();
