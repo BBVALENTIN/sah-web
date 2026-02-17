@@ -1,15 +1,15 @@
 package com.sah.controller;
 
 import com.sah.dto.ChatMessageDTO;
+import com.sah.entity.Chess_Lobby;
+import com.sah.enums.LobbyType;
 import com.sah.service.ChessLobbyService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -22,10 +22,16 @@ public class ChessController {
         this.chessLobbyService = chessLobbyService;
     }
 
-    @PostMapping("/play/create")
-    public String createLobby() {
-        String lobby_Id = chessLobbyService.GenerateRandomLobbyId();
-        return "redirect:/play="+lobby_Id;
+    @PostMapping("/api/play/createQuick")
+    public String createQuickLobby() {
+        Chess_Lobby newLobby = chessLobbyService.createLobby(LobbyType.AVAILABLE);
+        return "redirect:/play="+newLobby.getLobbyId();
+    }
+
+    @PostMapping("/api/play/create")
+    @ResponseBody
+    public Chess_Lobby createLobby(@RequestBody LobbyType Type) {
+        return chessLobbyService.createLobby(Type);
     }
 
     @MessageMapping("/chat.sendMessage")
