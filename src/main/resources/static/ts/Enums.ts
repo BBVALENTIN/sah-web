@@ -1,10 +1,10 @@
-export enum Enums {
-    PION = "PION",
-    TURA = "TURA",
-    CAL = "CAL",
-    NEBUN = "NEBUN",
-    REGINA = "REGINA",
-    REGE = "REGE"
+export enum TipPiesa {
+    PION = 'PION',
+    TURA = 'TURA',
+    CAL = 'CAL',
+    NEBUN = 'NEBUN',
+    REGINA = 'REGINA',
+    REGE = 'REGE'
 }
 
 export enum Culoare {
@@ -17,4 +17,10 @@ export enum MessageType {
     CHAT = 'CHAT',
     JOIN = 'JOIN',
     LEAVE = 'LEAVE'
+}
+
+export enum LobbyType {
+    AVAILABLE = 'AVAILABLE',
+    ONGOING = 'ONGOING',
+    FINISHED = 'FINISHED'
 }
