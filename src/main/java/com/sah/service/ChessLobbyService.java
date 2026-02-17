@@ -32,8 +32,8 @@ public class ChessLobbyService {
         return sb.toString();
     }
 
-    public Stream<lobbyDTO> getAllAvailablesLobbies() {
-        return lobbyRepository.findByTip(LobbyType.AVAILABLE).stream().map(lobby -> new lobbyDTO(
+    public Stream<lobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
+        return lobbyRepository.findByTip(typeOfLobby).stream().map(lobby -> new lobbyDTO(
                 lobby.getLobby_Id(),
                 lobby.getLobbyType()
         ));
