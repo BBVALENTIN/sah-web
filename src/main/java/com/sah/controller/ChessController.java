@@ -23,9 +23,10 @@ public class ChessController {
     }
 
     @PostMapping("/api/play/createQuick")
-    public String createQuickLobby() {
+    @ResponseBody
+    public Chess_Lobby createQuickLobby() {
         Chess_Lobby newLobby = chessLobbyService.createLobby(LobbyType.AVAILABLE);
-        return "redirect:/play="+newLobby.getLobbyId();
+        return newLobby;
     }
 
     @PostMapping("/api/play/create")

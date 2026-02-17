@@ -59,4 +59,9 @@ public class ChessLobbyService {
         Chess_Games_Classic newClassicGame = new Chess_Games_Classic(); // to put the on
         return newClassicGame;
     }
+
+    //Implement save in the database here
+    public void saveDb() {
+
+    }
 }

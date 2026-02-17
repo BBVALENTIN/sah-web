@@ -9,11 +9,6 @@
 <body>
     <div th:insert="fragments/header :: header"></div>
     <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
-    <a th:href="@{/game/play}">Joaca un sah</a>
-    <button id="createLobbyButton">Creeaza un lobby de sah</button>
-    <form action="/play/create" method="POST">
-        <button type="submit">Play</button>
-    </form>
     <script src="/js/script.js"></script>
 </body>
 </html>
