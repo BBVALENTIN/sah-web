@@ -5,22 +5,25 @@ interface lobbyDTO {
     lobbyId: string;
     lobbyType: LobbyType;
 }
-
 document.addEventListener(("DOMContentLoaded"), () => {
 
     const showAvailableLobbiesButton = document.getElementById('showAvailableLobbiesButton') as HTMLButtonElement;
+    const lobbiesContainer = document.getElementById('lobbiesContainer') as HTMLElement;
     showAvailableLobbies();
 
-    async function showAvailableLobbies():Promise<lobbyDTO[]> {
+    async function showAvailableLobbies():Promise<void> {
         let lobbies = null;
         const responseAvailableLobbies = await fetch(`/api/lobbies/${LobbyType.AVAILABLE}`);
 
         if(responseAvailableLobbies.ok) {
             lobbies = await responseAvailableLobbies.json();
         }
-        console.log(lobbies);
-        return lobbies;
+        renderLobbyList(lobbies);
     }
+
+    showAvailableLobbiesButton.addEventListener('click', () => {
+        showAvailableLobbies();
+    });
 
     const createLobbyButton = document.getElementById("createLobbyButton") as HTMLButtonElement;
 
@@ -47,4 +50,22 @@ document.addEventListener(("DOMContentLoaded"), () => {
             console.log(e);
         }
     });
+
+    function renderLobbyList(lobbies: lobbyDTO[]) {
+        lobbiesContainer.innerHTML = '';
+
+        if(lobbies.length === 0) {
+            lobbiesContainer.innerHTML = '<p>No available lobbies, you can be the first to create one!</p>';
+            return;
+        }
+        lobbies.forEach(lobby => {
+            const lobbyDiv = document.createElement('div');
+            lobbyDiv.classList.add('lobby-item');
+            lobbyDiv.textContent = `Lobby ID: ${lobby.lobbyId} | Type: ${lobby.lobbyType}`;
+            lobbyDiv.addEventListener('click', () => {
+               window.location.href = `play=${lobby.lobbyId}`;
+            });
+            lobbiesContainer.appendChild(lobbyDiv);
+        });
+    }
 });
