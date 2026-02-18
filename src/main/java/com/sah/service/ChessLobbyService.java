@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
@@ -37,11 +38,11 @@ public class ChessLobbyService {
         return sb.toString();
     }
 
-    public Stream<lobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
+    public List<lobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
         return lobbyRepository.findByLobbyType(typeOfLobby).stream().map(lobby -> new lobbyDTO(
                 lobby.getLobbyId(),
                 lobby.getLobbyType()
-        ));
+        )).toList();
     }
 
     public Chess_Lobby createLobby(LobbyType Type) {
@@ -51,17 +52,12 @@ public class ChessLobbyService {
         newLobby.setLobbyType(Type);
         newLobby.setFormat(FormatType.CLASSICAL);
         newLobby.setCreatedAt(LocalDateTime.now().withNano(0));
-
+        lobbyRepository.save(newLobby);
         return newLobby;
     }
 
     public Chess_Games_Classic createClassicalGame() {
         Chess_Games_Classic newClassicGame = new Chess_Games_Classic(); // to put the on
         return newClassicGame;
-    }
-
-    //Implement save in the database here
-    public void saveDb() {
-
     }
 }

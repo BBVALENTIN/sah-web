@@ -5,6 +5,8 @@ import com.sah.enums.LobbyType;
 import com.sah.service.ChessLobbyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -23,8 +25,9 @@ public class LobbyController {
         return "/game/lobby";
     }
 
-    @GetMapping("/api/lobbies")
-    public Stream<lobbyDTO> getLobbies(LobbyType desiredLobby) {
+    @GetMapping("/api/lobbies/{desiredLobby}")
+    @ResponseBody
+    public List<lobbyDTO> getLobbies(@PathVariable LobbyType desiredLobby) {
         return chessLobbyService.getAllDesiredLobbies(desiredLobby);
     }
 }
