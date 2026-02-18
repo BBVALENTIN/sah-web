@@ -1,7 +1,27 @@
 import { LobbyType} from "./Enums.js";
-import {Lobby} from "./Types";
+import {Lobby} from "./Types.js";
+
+interface lobbyDTO {
+    lobbyId: string;
+    lobbyType: LobbyType;
+}
 
 document.addEventListener(("DOMContentLoaded"), () => {
+
+    const showAvailableLobbiesButton = document.getElementById('showAvailableLobbiesButton') as HTMLButtonElement;
+    showAvailableLobbies();
+
+    async function showAvailableLobbies():Promise<lobbyDTO[]> {
+        let lobbies = null;
+        const responseAvailableLobbies = await fetch(`/api/lobbies/${LobbyType.AVAILABLE}`);
+
+        if(responseAvailableLobbies.ok) {
+            lobbies = await responseAvailableLobbies.json();
+        }
+        console.log(lobbies);
+        return lobbies;
+    }
+
     const createLobbyButton = document.getElementById("createLobbyButton") as HTMLButtonElement;
 
     createLobbyButton.addEventListener(("click"), async () => {
