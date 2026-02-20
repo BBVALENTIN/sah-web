@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import com.sah.dto.lobbyDTO;
 
 import java.security.Principal;
 
@@ -29,9 +30,12 @@ public class ChessController {
         return newLobby;
     }
 
+//    @MessageMapping("/lobby.addAvailableLobby")
+//    @SendTo("/topic/public")
     @PostMapping("/api/play/create")
     @ResponseBody
-    public Chess_Lobby createLobby(@RequestBody LobbyType Type) {
+    public Chess_Lobby createLobby(@RequestBody LobbyType Type) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
+//        headerAccessor.getSessionAttributes().put("lobbyId", lobbyDTO.getLobbyId());
         return chessLobbyService.createLobby(Type);
     }
 
@@ -49,6 +53,7 @@ public class ChessController {
         headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
         return chatMessageDTO;
     }
+
 
     @GetMapping("/play={lobby_Id}")
     public String showLobby(@PathVariable String lobby_Id) {

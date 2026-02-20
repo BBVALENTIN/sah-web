@@ -1,5 +1,6 @@
 package com.sah.controller;
 
+import com.sah.dto.lobbyDTO;
 import com.sah.dto.loggedUser;
 import com.sah.service.CustomUserDetailsService;
 import com.sah.service.UsersService;
@@ -21,10 +22,13 @@ public class InfoController {
     }
 
     @GetMapping("/user")
-    public loggedUser getLoggedUser(Principal principal) {
+    public lobbyDTO getLoggedUser(Principal principal) {
+        lobbyDTO currentLobby = new lobbyDTO();
         if(principal == null) {
             throw new RuntimeException("Principal is null");
         }
-        return customUserDetailsService.loadInfo(principal);
+        currentLobby.setLoggedUsername(customUserDetailsService.loadInfo(principal));
+
+        return currentLobby;
     }
 }
