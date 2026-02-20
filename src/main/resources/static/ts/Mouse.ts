@@ -139,7 +139,6 @@
                     this.piesaSelectata.dragY = undefined;
                 }
                 this.piesaSelectata = undefined;
-                this.tabla.redesenare();
                 this.canvas.style.cursor = "default";
             }
         }
