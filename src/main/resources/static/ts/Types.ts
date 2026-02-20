@@ -33,6 +33,12 @@ export interface userInfo {
     username: string;
 }
 
+export interface lobbyInfo {
+    lobbyId: string;
+    lobbyType: LobbyType;
+    loggedUsername: userInfo;
+}
+
 export interface Message {
     sender: string;
     content: string;

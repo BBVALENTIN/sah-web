@@ -2,6 +2,8 @@ import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
+import {lobbyInfo} from "./Types";
+
 
 // LOGICA FRONTEND MESAJE
 async function initializeApp() {
@@ -9,9 +11,10 @@ async function initializeApp() {
     try {
         const respInfo = await fetch("/info/user");
         if (respInfo.ok) {
-            const userInfo = await respInfo.json();
-            loggedUsername = userInfo.username;
-            connect(loggedUsername);
+            const lobbyInfo: lobbyInfo = await respInfo.json();
+            loggedUsername = lobbyInfo.loggedUsername.username;
+            const lobbyId: string = lobbyInfo.lobbyId;
+            connect(loggedUsername, lobbyId);
         }
     } catch (e) {
         console.error("Failed to fetch user info", e);
@@ -33,7 +36,7 @@ const size: number = Tabla.squareSize * 8;
 canvas.width = size;
 canvas.height = size;
 
-const tabla: Tabla = new Tabla(ctx);
+export const tabla: Tabla = new Tabla(ctx);
 export const moveList:MoveList = new MoveList("move-list");
 
 export const mouse: Mouse = new Mouse(canvas, tabla);

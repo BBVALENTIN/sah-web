@@ -1,5 +1,6 @@
-import {Message, userInfo} from "./Types.js";
+import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
 import {MessageType} from "./Enums.js";
+import {mouse, moveList, tabla} from "./Main.js";
 
 declare var SockJS: any;
 declare var Stomp: any;
@@ -20,16 +21,7 @@ if(!messageInput) {
     alert("Nu poti trimite mesaje goale");
 }
 
-
-let respInfo = await fetch("/info/user");
-if(respInfo.ok) {
-    const userInfoJSON:userInfo = await respInfo.json();
-    loggedUsername = userInfoJSON.username;
-    userId = userInfoJSON.userId;
-    console.log("username: ", loggedUsername, "userId: ", userId);
-}
-
-export function connect(loggedUsername: string):void{
+export function connect(loggedUsername: string, lobbyId: string):void{
     if(!loggedUsername) {
         alert("Error - not seeing the user");
         return;
@@ -44,6 +36,7 @@ export function connect(loggedUsername: string):void{
             state.connected = true;
             console.log("Connected");
             state.stompClient.subscribe('/topic/public', onMessageReceived);
+            state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived)
 
             state.stompClient.send('/app/chat.addUser', {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
             );
@@ -100,4 +93,24 @@ function onMessageReceived(payload: any) {
     }
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+function onMoveReceived(payload: any) {
+    const result: Mutare_Reusita = JSON.parse(payload.body);
+
+    tabla.setPiecesFromServer(result.updatedPieces);
+    mouse.culoareCurenta = result.culoareCurenta;
+    moveList.addMove(result.pgn);
+    tabla.redesenare();
+
+    if (result.checkmate) {
+        mouse.soundManager.play("checkmate");
+        mouse.soundManager.play("end");
+    } else if (result.check) {
+        mouse.soundManager.play("check");
+    } else if (result.captures) {
+        mouse.soundManager.play("capture");
+    } else {
+        mouse.soundManager.play("move");
+    }
 }

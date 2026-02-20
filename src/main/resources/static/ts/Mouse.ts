@@ -4,6 +4,7 @@
     import {Mutare, Mutare_Reusita} from "./Types.js";
     import {moveList} from "./Main.js";
     import {Culoare} from "./Enums.js";
+    import {state} from "./WebSockets.js";
 
 
     export class Mouse {
@@ -117,20 +118,18 @@
                 console.log("from: ", moveData.fromRow, moveData.fromCol);
                 console.log("to: ", moveData.toRow, moveData.toCol);
 
-                const result:Mutare_Reusita = await this.handleMutareAPI(e);
-                console.log(result);
-
-                if(result.checkmate){
-                    this.soundManager.play("checkmate");
-                    this.soundManager.play("end")
-                }
-                else if(result.check) { this.soundManager.play("check");}
-                else if(result.captures) {this.soundManager.play("capture");}
-                else {this.soundManager.play("move"); }
-
-                moveList.addMove(result.pgn);
-                this.tabla.setPiecesFromServer(result.updatedPieces);
-                this.culoareCurenta = result.culoareCurenta;
+                state.stompClient.send(
+                    "/app/chess.move",
+                    {},
+                    JSON.stringify({
+                        fromRow: this.piesaSelectata!.row,
+                        fromCol: this.piesaSelectata!.col,
+                        toRow: row,
+                        toCol: col,
+                        // player: loggedUsername,
+                        // lobbyId: lobbyId
+                    })
+                );
             } catch(err){
                 console.log("eroare cine stie de ce");
             } finally {
