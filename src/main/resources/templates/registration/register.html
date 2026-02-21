@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>înregistrează-te</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h1>Creează-ți un cont pentru a te putea juca!</h1>
-    <form th:action ="@{/register}" method="post">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="Introdu emailul" required>
-        <label>Username</label>
-        <input type="text" name="username" placeholder="Introdu numele" required>
-        <label>Parola</label>
-        <input type = "password" name = "password" placeholder="Introdu parola" required>
+    <div id="registerContent">
+        <form th:action ="@{/register}" method="post">
+            <h2>Creeaza-ti un cont</h2>
 
-        <button type="submit">Register</button>
-    </form>
-    <a th:href="@{/login}">Dacă ai cont, logheaza-te aici</a>
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Introdu emailul" required>
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Introdu numele" required>
+            <label>Parola</label>
+            <input type = "password" name = "password" placeholder="Introdu parola" required>
+
+            <button type="submit">Register</button>
+            <a th:href="@{/login}">Dacă ai cont, logheaza-te aici</a>
+        </form>
+    </div>
 </body>
 </html>

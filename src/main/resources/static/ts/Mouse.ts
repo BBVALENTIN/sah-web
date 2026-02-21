@@ -64,14 +64,6 @@
                 this.culoareCurenta = await resp.json();
         }
 
-        async getMovePGN(): Promise<string>{
-            let movePGN = "";
-            const resp: Response = await fetch(`api/chess/PGN_THIS`);
-            if(resp.ok) { movePGN = await resp.text(); }
-
-            return movePGN;
-        }
-
         public onMouseDown(e:any):void {
             const { col, row, x, y} = this.getSquareFromMouse(e);
             const piesa = this.tabla.getPiesa(row, col);

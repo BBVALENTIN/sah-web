@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Loghează-te</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <h1>Loghează-te pentru a putea juca</h1>
-    <form th:action="@{/login}" method="post">
-        <label>Username</label>
-        <input type="text" name="username" placeholder="Introdu numele" required>
-        <label>Parola</label>
-        <input type="password" name="password" placeholder="Introdu parola" required>
+    <div id="loginContent">
+        <form th:action="@{/login}" method="post">
+            <h2>Loghează-te pentru a putea juca</h2>
 
-        <button type="submit">Log in</button>
-    </form>
-    <a th:href="@{/register}">Dacă nu ai un cont, îți poți creea unul aici</a></body>
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Introdu numele" required>
+            <label>Parola</label>
+            <input type="password" name="password" placeholder="Introdu parola" required>
+            <button type="submit">Log in</button>
+            <p th:if="${loginError}" th:text="${loginError}" style="color: red;"></p>
+            <a th:href="@{/register}">Dacă nu ai un cont, îți poți creea unul aici</a>
+        </form>
+    </div>
+</body>
 </html>
