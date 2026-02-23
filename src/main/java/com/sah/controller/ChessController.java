@@ -1,6 +1,7 @@
 package com.sah.controller;
 
 import com.sah.dto.ChatMessageDTO;
+import com.sah.dto.CreateLobbyRequest;
 import com.sah.entity.Chess_Lobby;
 import com.sah.enums.LobbyType;
 import com.sah.service.ChessLobbyService;
@@ -25,8 +26,8 @@ public class ChessController {
 
     @PostMapping("/api/play/createQuick")
     @ResponseBody
-    public Chess_Lobby createQuickLobby() {
-        Chess_Lobby newLobby = chessLobbyService.createLobby(LobbyType.AVAILABLE);
+    public Chess_Lobby createQuickLobby(@RequestBody String username) {
+        Chess_Lobby newLobby = chessLobbyService.createLobby(LobbyType.AVAILABLE, username);
         return newLobby;
     }
 
@@ -34,9 +35,10 @@ public class ChessController {
 //    @SendTo("/topic/public")
     @PostMapping("/api/play/create")
     @ResponseBody
-    public Chess_Lobby createLobby(@RequestBody LobbyType Type) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
+    public Chess_Lobby createLobby(@RequestBody CreateLobbyRequest request) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
 //        headerAccessor.getSessionAttributes().put("lobbyId", lobbyDTO.getLobbyId());
-        return chessLobbyService.createLobby(Type);
+        System.out.println("usernameul de bagat in db: "+ request.getUsername());
+        return chessLobbyService.createLobby(request.getLobbyType(), request.getUsername());
     }
 
     @MessageMapping("/chat.sendMessage")

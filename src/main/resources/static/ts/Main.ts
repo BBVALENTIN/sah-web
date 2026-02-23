@@ -2,16 +2,16 @@ import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
-import {lobbyInfo} from "./Types";
+import {lobbyInfo} from "./Types.js";
+import {getInfoUser} from "./APIs.js";
 
 
 // LOGICA FRONTEND MESAJE
 async function initializeApp() {
     let loggedUsername = "";
     try {
-        const respInfo = await fetch("/info/user");
-        if (respInfo.ok) {
-            const lobbyInfo: lobbyInfo = await respInfo.json();
+        const lobbyInfo = await getInfoUser();
+        if (lobbyInfo != undefined) {
             loggedUsername = lobbyInfo.loggedUsername.username;
             const lobbyId: string = lobbyInfo.lobbyId;
             connect(loggedUsername, lobbyId);

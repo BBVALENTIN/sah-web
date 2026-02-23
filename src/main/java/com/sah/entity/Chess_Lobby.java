@@ -36,8 +36,8 @@ public class Chess_Lobby {
     public String getPlayerWhite() { return playerWhite; }
     public void setPlayerWhite(String playerWhite) { this.playerWhite = playerWhite; }
 
-    public String getPlayer_black() { return playerBlack; }
-    public void setPlayer_black(String playerBlack) { this.playerBlack = playerBlack; }
+    public String getPlayerBlack() { return playerBlack; }
+    public void setPlayerBlack(String playerBlack) { this.playerBlack = playerBlack; }
 
     public LobbyType getLobbyType() { return lobbyType; }
     public void setLobbyType(LobbyType lobbyType) { this.lobbyType = lobbyType; }

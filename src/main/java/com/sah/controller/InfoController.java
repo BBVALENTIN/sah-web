@@ -21,8 +21,8 @@ public class InfoController {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    @GetMapping("/user")
-    public lobbyDTO getLoggedUser(Principal principal) {
+    @GetMapping("/lobby")
+    public lobbyDTO getLobbyInfo(Principal principal) {
         lobbyDTO currentLobby = new lobbyDTO();
         if(principal == null) {
             throw new RuntimeException("Principal is null");
@@ -30,5 +30,14 @@ public class InfoController {
         currentLobby.setLoggedUsername(customUserDetailsService.loadInfo(principal));
 
         return currentLobby;
+    }
+
+    @GetMapping("/user")
+    public loggedUser getCurrentUser(Principal principal) {
+        if(principal == null) {
+            throw new RuntimeException("Principal is null");
+        }
+
+        return customUserDetailsService.loadInfo(principal);
     }
 }

@@ -1,5 +1,6 @@
 import { LobbyType} from "./Enums.js";
 import {Lobby} from "./Types.js";
+import {loggedUsername} from "./APIs.js";
 
 interface lobbyDTO {
     lobbyId: string;
@@ -34,7 +35,7 @@ document.addEventListener(("DOMContentLoaded"), () => {
                 headers: {
                     'Content-Type': "application/json"
                 },
-                body: JSON.stringify(LobbyType.AVAILABLE)
+                body: JSON.stringify({type: LobbyType.AVAILABLE, username: loggedUsername})
             });
             if (!response.ok) {
                 console.error("Nu s-a putut crea lobby");
