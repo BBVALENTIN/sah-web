@@ -1,14 +1,17 @@
-import {lobbyInfo, userInfo} from "./Types.js";
+import type {lobbyInfo, userInfo} from "./Types.js";
 
-const userInfoJson = async ():Promise<userInfo | undefined> => {
+export let loggedUsername: string | undefined = undefined;
+export const initUser = async () => {
     const response = await fetch('/info/user');
     if(response.ok) {
-        return await response.json();
+        const data = await response.json();
+        loggedUsername = data.username;
+        return loggedUsername;
     }
-    return undefined;
-}
-const userInfo = await userInfoJson();
-export let loggedUsername: string | undefined = userInfo?.username;
+    return undefined
+};
+
+initUser().then(name => console.log("Username: ", name));
 
 export async function getAllPGN() {
     const responsePGN = await fetch('/api/chess/PGN_ALL');

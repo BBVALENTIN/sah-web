@@ -1,5 +1,5 @@
 import { LobbyType} from "./Enums.js";
-import {Lobby} from "./Types.js";
+import type {Lobby} from "./Types.js";
 import {loggedUsername} from "./APIs.js";
 
 interface lobbyDTO {
@@ -7,13 +7,13 @@ interface lobbyDTO {
     lobbyType: LobbyType;
 }
 document.addEventListener(("DOMContentLoaded"), () => {
-
+    console.log("S");
     const showAvailableLobbiesButton = document.getElementById('showAvailableLobbiesButton') as HTMLButtonElement;
     const lobbiesContainer = document.getElementById('lobbiesContainer') as HTMLElement;
     showAvailableLobbies();
 
     async function showAvailableLobbies():Promise<void> {
-        let lobbies = null;
+        let lobbies: lobbyDTO[] = [];
         const responseAvailableLobbies = await fetch(`/api/lobbies/${LobbyType.AVAILABLE}`);
 
         if(responseAvailableLobbies.ok) {
@@ -29,6 +29,7 @@ document.addEventListener(("DOMContentLoaded"), () => {
     const createLobbyButton = document.getElementById("createLobbyButton") as HTMLButtonElement;
 
     createLobbyButton.addEventListener(("click"), async () => {
+        console.log("clicked");
         try {
             const response = await fetch("/api/play/create", {
                 method: 'POST',
