@@ -111,7 +111,7 @@ public class ChessBoard {
         if(esteRegeleMeuInSah())
         {
             rollBack(targetRow, targetCol, fromRow, fromCol, piesaSelectata);
-            return new MoveResultDTO(getAllPiecesDTO(), true, false, culoareCurenta, currentFormattedMove, isCapture);
+            return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
         }
 
 
