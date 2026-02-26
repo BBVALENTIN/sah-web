@@ -1,12 +1,11 @@
 package com.sah.controller;
 
+import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.lobbyDTO;
 import com.sah.enums.LobbyType;
 import com.sah.service.ChessLobbyService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -29,5 +28,15 @@ public class LobbyController {
     @ResponseBody
     public List<lobbyDTO> getLobbies(@PathVariable LobbyType desiredLobby) {
         return chessLobbyService.getAllDesiredLobbies(desiredLobby);
+    }
+
+    @PostMapping("/api/joinLobby")
+    @ResponseBody
+    public String joinLobby(@RequestBody JoinLobbyRequest request) {
+        if(chessLobbyService.checkJoinable(request.getLobbyId()) == false) {
+            return "Lobby is full";
+        }
+        chessLobbyService.assignLobbyPlayer(chessLobbyService.getLobbyFromId(request.getLobbyId()), request.getUsername());
+        return "play="+request.getLobbyId();
     }
 }

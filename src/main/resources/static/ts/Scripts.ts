@@ -36,7 +36,7 @@ document.addEventListener(("DOMContentLoaded"), () => {
                 headers: {
                     'Content-Type': "application/json"
                 },
-                body: JSON.stringify({type: LobbyType.AVAILABLE, username: loggedUsername})
+                body: JSON.stringify({lobbyType: LobbyType.AVAILABLE, username: loggedUsername})
             });
             if (!response.ok) {
                 console.error("Nu s-a putut crea lobby");
@@ -64,8 +64,26 @@ document.addEventListener(("DOMContentLoaded"), () => {
             const lobbyDiv = document.createElement('div');
             lobbyDiv.classList.add('lobby-item');
             lobbyDiv.textContent = `Lobby ID: ${lobby.lobbyId} | Type: ${lobby.lobbyType}`;
-            lobbyDiv.addEventListener('click', () => {
-               window.location.href = `play=${lobby.lobbyId}`;
+            lobbyDiv.addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/joinLobby', {
+                       method: 'POST',
+                       headers: {
+                           'Content-type': 'application/json'
+                       },
+                       body: JSON.stringify({lobbyId: lobby.lobbyId, username: loggedUsername})
+                    });
+
+                    if(!response.ok) {
+                        console.log("eroare la intrarea in lobby");
+                        return;
+                    }
+                    const hrefLocation: string = await response.text();
+                    window.location.href = hrefLocation;
+                }
+                catch (e) {
+                    console.log(e);
+                }
             });
             lobbiesContainer.appendChild(lobbyDiv);
         });
