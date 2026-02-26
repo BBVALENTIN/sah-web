@@ -57,7 +57,7 @@ public class ChessLobbyService {
         newLobby.setLobbyType(Type);
         newLobby.setFormat(FormatType.CLASSICAL);
         newLobby.setCreatedAt(LocalDateTime.now().withNano(0));
-        assignLobbyPlayer(randomLobbyId, username);
+        System.out.println("username "+ username);
         lobbyRepository.save(newLobby);
         return newLobby;
     }
@@ -67,9 +67,9 @@ public class ChessLobbyService {
         return newClassicGame;
     }
 
-    public void assignLobbyPlayer(String lobbyId, String username) {
-        Chess_Lobby lobby = lobbyRepository.findByLobbyId(lobbyId);
-        if(isLobbyEmpty(lobbyId) == true)
+    public void assignLobbyPlayer(Chess_Lobby lobby, String username) {
+        // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
+        if(isLobbyFull(lobby))
             throw new RuntimeException("Lobby is full");
         if(lobby.getPlayerWhite() == null && lobby.getPlayerBlack() == null) {
             if(ThreadLocalRandom.current().nextInt(1, 10) > 5) {
@@ -79,17 +79,29 @@ public class ChessLobbyService {
                 lobby.setPlayerBlack(username);
             }
         }
-        if(lobby.getPlayerBlack() == null) {
-            lobby.setPlayerBlack(username);
-        }
         else {
-            lobby.setPlayerWhite(username);
+            if (lobby.getPlayerBlack() == null) {
+                lobby.setPlayerBlack(username);
+            } else {
+                lobby.setPlayerWhite(username);
+            }
         }
+        lobbyRepository.save(lobby);
     }
 
-    public boolean isLobbyEmpty(String lobbyId) {
-        Chess_Lobby lobby = lobbyRepository.findByLobbyId(lobbyId);
+    public boolean isLobbyEmpty(Chess_Lobby lobby) {
         return lobby.getPlayerBlack() == null && lobby.getPlayerWhite() == null;
+    }
+
+    public boolean isLobbyFull(Chess_Lobby lobby) {
+        return lobby.getPlayerWhite() != null && lobby.getPlayerBlack() != null;
+    }
+
+    public boolean checkJoinable(String lobbyId) {
+        Chess_Lobby lobby = lobbyRepository.findByLobbyId(lobbyId);
+        if(!isLobbyFull(lobby))
+            return true;
+        return false;
     }
 
     public void registerPlayer(String sessionId, String lobbyId) {
@@ -98,5 +110,9 @@ public class ChessLobbyService {
 
     public void handlePlayerDisconnect(String sessionId) {
         String lobbyId = sessionId;
+    }
+
+    public Chess_Lobby getLobbyFromId(String lobbyId) {
+        return lobbyRepository.findByLobbyId(lobbyId);
     }
 }

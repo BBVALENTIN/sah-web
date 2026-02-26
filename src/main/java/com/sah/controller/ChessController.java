@@ -37,7 +37,7 @@ public class ChessController {
     @ResponseBody
     public Chess_Lobby createLobby(@RequestBody CreateLobbyRequest request) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
 //        headerAccessor.getSessionAttributes().put("lobbyId", lobbyDTO.getLobbyId());
-        System.out.println("usernameul de bagat in db: "+ request.getUsername());
+        System.out.println("usernameul de bagat in db si tipul"+ request.getUsername() + request.getLobbyType());
         return chessLobbyService.createLobby(request.getLobbyType(), request.getUsername());
     }
 
