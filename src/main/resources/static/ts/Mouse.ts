@@ -1,10 +1,11 @@
     import { Tabla } from "./Tabla.js";
     import { SoundManager } from "./audio/soundManager.js";
     import { Piesa } from "./piese/Piesa.js";
-    import {Mutare, Mutare_Reusita} from "./Types.js";
+    import {lobbyInfo, Mutare, Mutare_Reusita} from "./Types.js";
     import {moveList} from "./Main.js";
     import {Culoare} from "./Enums.js";
     import {state} from "./WebSockets.js";
+    import {loggedUsername, getInfoUser} from "./APIs.js";
 
 
     export class Mouse {
@@ -16,6 +17,7 @@
         offsetY: number;
         winner: 1 | 0 | -1 | undefined;
         culoareCurenta: Culoare | undefined;
+        lobbyInfo: lobbyInfo | undefined;
         constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
             this.canvas = canvas;
             this.tabla = tabla;
@@ -28,6 +30,10 @@
             this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
         }
 
+        private async initLobby() {
+            this.lobbyInfo = await getInfoUser();
+            console.log("Lobby info loaded: ", this.lobbyInfo)
+        }
          async handleMutareAPI(e: any):Promise<Mutare_Reusita> {
              const { col, row, x, y} = this.getSquareFromMouse(e);
              let mutare: Promise<Mutare_Reusita>;
@@ -118,20 +124,21 @@
                         fromCol: this.piesaSelectata!.col,
                         toRow: row,
                         toCol: col,
-                        // player: loggedUsername,
-                        // lobbyId: lobbyId
+                        player: loggedUsername,
+                        lobbyId: this.lobbyInfo?.lobbyId
                     })
                 );
             } catch(err){
                 console.log("eroare cine stie de ce");
             } finally {
                 if(this.piesaSelectata) {
+                    this.tabla.redesenare(this.tabla.piese);
                     this.piesaSelectata.isDragging = false;
                     this.piesaSelectata.dragX = undefined;
                     this.piesaSelectata.dragY = undefined;
+                    this.piesaSelectata = undefined;
+                    this.canvas.style.cursor = "default";
                 }
-                this.piesaSelectata = undefined;
-                this.canvas.style.cursor = "default";
             }
         }
     }
