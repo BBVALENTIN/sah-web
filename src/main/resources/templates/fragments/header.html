@@ -36,10 +36,13 @@
                 </ul>
             </div>
 
-            <div sec:authorize="isAuthenticated()" class="your-profile">
+            <div sec:authorize="isAuthenticated()" id="yourProfile" class="your-profile">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="btn btn-secondary" href="#">Your profile</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#">Your profile</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Logout</a>
+                        </div>
                     </li>
                 </ul>
             </div>
