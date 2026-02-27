@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.dto.lobbyDTO;
+import com.sah.dto.LobbyDTO;
 import com.sah.entity.Chess_Games_Classic;
 import com.sah.entity.Chess_Lobby;
 import com.sah.enums.FormatType;
@@ -9,15 +9,11 @@ import com.sah.enums.LobbyType;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
 
 @Service
 public class ChessLobbyService {
@@ -43,11 +39,16 @@ public class ChessLobbyService {
         return sb.toString();
     }
 
-    public List<lobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
-        return lobbyRepository.findByLobbyType(typeOfLobby).stream().map(lobby -> new lobbyDTO(
+    public List<LobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
+        return lobbyRepository.findByLobbyType(typeOfLobby).stream().map(lobby -> new LobbyDTO(
                 lobby.getLobbyId(),
                 lobby.getLobbyType()
         )).toList();
+    }
+
+    public LobbyDTO getLobbyDTO(String lobbyId) {
+        Chess_Lobby lobby = getLobbyFromId(lobbyId);
+        return new LobbyDTO(lobbyId, lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
     }
 
     public Chess_Lobby createLobby(LobbyType Type, String username) {
@@ -67,10 +68,16 @@ public class ChessLobbyService {
         return newClassicGame;
     }
 
+    public LobbyDTO convertLobbyDTO(Chess_Lobby lobby) {
+        LobbyDTO lobbyDTO = new LobbyDTO(lobby.getLobbyId(), lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
+        return lobbyDTO;
+    }
     public void assignLobbyPlayer(Chess_Lobby lobby, String username) {
         // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
-        if(isLobbyFull(lobby))
+        if(isLobbyFull(lobby)){
+            lobby.setLobbyType(LobbyType.ONGOING);
             throw new RuntimeException("Lobby is full");
+        }
         if(lobby.getPlayerWhite() == null && lobby.getPlayerBlack() == null) {
             if(ThreadLocalRandom.current().nextInt(1, 10) > 5) {
                 lobby.setPlayerWhite(username);
@@ -106,6 +113,10 @@ public class ChessLobbyService {
 
     public void registerPlayer(String sessionId, String lobbyId) {
             sessionLobbyMap.put(sessionId, lobbyId);
+    }
+
+    public String getLobbyIdFromSession(String sessionId) {
+        return sessionLobbyMap.get(sessionId);
     }
 
     public void handlePlayerDisconnect(String sessionId) {

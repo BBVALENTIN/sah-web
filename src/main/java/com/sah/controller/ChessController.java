@@ -5,13 +5,13 @@ import com.sah.dto.CreateLobbyRequest;
 import com.sah.entity.Chess_Lobby;
 import com.sah.enums.LobbyType;
 import com.sah.service.ChessLobbyService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.sah.dto.lobbyDTO;
 
 import java.security.Principal;
 
@@ -57,8 +57,9 @@ public class ChessController {
     }
 
 
-    @GetMapping("/play={lobby_Id}")
-    public String showLobby(@PathVariable String lobby_Id) {
+    @GetMapping("/play={lobbyId}")
+    public String showLobby(@PathVariable String lobbyId, HttpSession session, Principal principal) {
+        chessLobbyService.registerPlayer(session.getId(), lobbyId);
         return "game/play";
     }
 }

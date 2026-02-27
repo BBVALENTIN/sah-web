@@ -1,14 +1,13 @@
 package com.sah.controller;
 
 import com.sah.dto.JoinLobbyRequest;
-import com.sah.dto.lobbyDTO;
+import com.sah.dto.LobbyDTO;
 import com.sah.enums.LobbyType;
 import com.sah.service.ChessLobbyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Controller
 public class LobbyController {
@@ -26,7 +25,7 @@ public class LobbyController {
 
     @GetMapping("/api/lobbies/{desiredLobby}")
     @ResponseBody
-    public List<lobbyDTO> getLobbies(@PathVariable LobbyType desiredLobby) {
+    public List<LobbyDTO> getLobbies(@PathVariable LobbyType desiredLobby) {
         return chessLobbyService.getAllDesiredLobbies(desiredLobby);
     }
 
