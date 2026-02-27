@@ -31,7 +31,7 @@ export async function getMovePGN(): Promise<string>{
     return movePGN;
 }
 
-export async function getInfoUser(): Promise<lobbyInfo | undefined> {
+export async function getInfoLobby(): Promise<lobbyInfo | undefined> {
     const response = await fetch('/info/lobby');
     if(response.ok) {
         return await response.json();

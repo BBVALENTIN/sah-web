@@ -99,7 +99,7 @@ function onMessageReceived(payload: any) {
 
 function onMoveReceived(payload: any) {
     const result: Mutare_Reusita = JSON.parse(payload.body);
-
+    console.log("MUTARE REUSITA? ", result);
     tabla.setPiecesFromServer(result.updatedPieces);
     mouse.culoareCurenta = result.culoareCurenta;
     moveList.addMove(result.pgn);

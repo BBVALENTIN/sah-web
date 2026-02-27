@@ -1,6 +1,6 @@
 import { LobbyType} from "./Enums.js";
-import type {Lobby} from "./Types.js";
 import {loggedUsername} from "./APIs.js";
+import {lobbyInfo} from "./Types";
 
 interface lobbyDTO {
     lobbyId: string;
@@ -43,7 +43,7 @@ document.addEventListener(("DOMContentLoaded"), () => {
                 return;
             }
 
-            const lobby: Lobby = await response.json();
+            const lobby: lobbyInfo = await response.json();
             console.log(lobby);
 
             window.location.href = `play=${lobby.lobbyId}`

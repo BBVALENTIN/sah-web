@@ -3,14 +3,14 @@ import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
 import {lobbyInfo} from "./Types.js";
-import {getInfoUser} from "./APIs.js";
+import {getInfoLobby} from "./APIs.js";
 
 
 // LOGICA FRONTEND MESAJE
 async function initializeApp() {
     let loggedUsername = "";
     try {
-        const lobbyInfo = await getInfoUser();
+        const lobbyInfo = await getInfoLobby();
         if (lobbyInfo != undefined) {
             loggedUsername = lobbyInfo.loggedUsername.username;
             const lobbyId: string = lobbyInfo.lobbyId;
@@ -55,8 +55,20 @@ async function loadBoard():Promise<void>
 initializeApp();
 loadBoard();
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    let playerWhite = document.getElementById('chessPlayerWhite') as HTMLDivElement;
+    let playerBlack = document.getElementById('chessPlayerBlack') as HTMLDivElement;
     resignBtn.addEventListener("click", () => {
         moveList.resign(mouse.culoareCurenta!);
     });
+    try {
+        const lobbyInfo = await getInfoLobby();
+        if(lobbyInfo != undefined) {
+            playerWhite.innerText = lobbyInfo.playerWhite;
+            playerBlack.innerText = lobbyInfo.playerBlack;
+        }
+    }
+    catch(e) {
+        console.log(e);
+    }
 });

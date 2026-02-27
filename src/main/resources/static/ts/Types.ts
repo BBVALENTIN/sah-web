@@ -37,18 +37,12 @@ export interface lobbyInfo {
     lobbyId: string;
     lobbyType: LobbyType;
     loggedUsername: userInfo;
+    playerWhite: string;
+    playerBlack: string;
 }
 
 export interface Message {
     sender: string;
     content: string;
     type: MessageType;
-}
-
-export interface Lobby {
-    lobbyId: string;
-    format: Formats;
-    lobbyType: LobbyType;
-    playerWhite: string | null;
-    playerBlack: string | null; // de schimbat cand o sa adaug 1v1 cu playeri
 }

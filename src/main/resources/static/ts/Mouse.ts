@@ -5,7 +5,7 @@
     import {moveList} from "./Main.js";
     import {Culoare} from "./Enums.js";
     import {state} from "./WebSockets.js";
-    import {loggedUsername, getInfoUser} from "./APIs.js";
+    import {loggedUsername, getInfoLobby} from "./APIs.js";
 
 
     export class Mouse {
@@ -31,7 +31,7 @@
         }
 
         private async initLobby() {
-            this.lobbyInfo = await getInfoUser();
+            this.lobbyInfo = await getInfoLobby();
             console.log("Lobby info loaded: ", this.lobbyInfo)
         }
          async handleMutareAPI(e: any):Promise<Mutare_Reusita> {
