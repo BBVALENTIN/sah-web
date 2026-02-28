@@ -8,15 +8,16 @@ addEventListener('DOMContentLoaded', async () => {
         let userInfoJSON = null;
         if(responseUserInfo.ok) {
             userInfoJSON = await responseUserInfo.json();
-            loggedUser = userInfoJSON.loggedUsername?.username;
+            loggedUser = userInfoJSON.username;
         }
     }
 
-    fetchUserInfo();
+    await fetchUserInfo();
     console.log(loggedUser);
     quickPlayNav.addEventListener('click', async () => {
         // let availableLobbies = [];
         // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
+        console.log("user logat: ", loggedUser);
         const responsePlay = await fetch('/api/play/createQuick', {
             method: 'POST',
             headers: {
