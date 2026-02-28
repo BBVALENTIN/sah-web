@@ -1,15 +1,28 @@
-import {getInfoUser} from '../ts-transpiled/APIs.js';
-
 addEventListener('DOMContentLoaded', async () => {
     const quickPlayNav = document.getElementById('quickPlayNav');
-    const lobbyInfo = await getInfoUser();
+    const yourProfile = document.getElementById('yourProfile');
+    let loggedUser = null;
+
+    async function fetchUserInfo() {
+        const responseUserInfo = await fetch('/info/user');
+        let userInfoJSON = null;
+        if(responseUserInfo.ok) {
+            userInfoJSON = await responseUserInfo.json();
+            loggedUser = userInfoJSON.loggedUsername?.username;
+        }
+    }
+
+    fetchUserInfo();
+    console.log(loggedUser);
     quickPlayNav.addEventListener('click', async () => {
+        // let availableLobbies = [];
+        // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
         const responsePlay = await fetch('/api/play/createQuick', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(lobbyInfo.loggedUsername.username)
+            body: JSON.stringify(loggedUser)
         });
         if(!responsePlay.ok) {
             console.error('API error');
