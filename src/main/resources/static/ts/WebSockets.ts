@@ -38,7 +38,8 @@ export function connect(loggedUsername: string, lobbyId: string):void{
             state.connected = true;
             console.log("Connected");
             state.stompClient.subscribe('/topic/public', onMessageReceived);
-            state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived)
+            state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
+            state.stompClient.subscribe(`/user/queue/errors`, onErrorsReceived);
 
             state.stompClient.send('/app/chat.addUser', {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
             );
@@ -115,4 +116,9 @@ function onMoveReceived(payload: any) {
     } else {
         mouse.soundManager.play("move");
     }
+}
+
+function onErrorsReceived(payload: any) {
+    const errorCodes = JSON.parse(payload.body);
+    tabla.redesenare();
 }

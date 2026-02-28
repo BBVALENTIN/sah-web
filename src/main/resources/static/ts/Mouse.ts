@@ -25,6 +25,7 @@
             this.offsetX = 0;
             this.offsetY = 0;
             this.winner = undefined;
+            this.initLobby();
             this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
             this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
             this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
@@ -103,6 +104,11 @@
         public async onMouseUp(e: any): Promise<void> {
             if(!this.piesaSelectata) { return; }
             const { col, row } = this.getSquareFromMouse(e);
+            const currentLobbyId = this.lobbyInfo?.lobbyId;
+            if(!currentLobbyId) {
+                console.error("nu stim lobbyId");
+                return;
+            }
 
             const moveData = {
                 fromRow: this.piesaSelectata.row,
@@ -125,7 +131,7 @@
                         toRow: row,
                         toCol: col,
                         player: loggedUsername,
-                        lobbyId: this.lobbyInfo?.lobbyId
+                        lobbyId: currentLobbyId
                     })
                 );
             } catch(err){
