@@ -5,6 +5,7 @@ import com.sah.dto.PiesaDTO;
 import com.sah.game.ChessBoard;
 import com.sah.dto.MoveResultDTO;
 import com.sah.game.piese.Piese;
+import com.sah.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,14 +19,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/chess")
 public class ChessApiController {
-    private final ChessBoard chessBoard;
+    private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ChessBoard chessBoard;
 
     @Autowired
-    public ChessApiController(ChessBoard chessBoard, SimpMessagingTemplate messagingTemplate) {
-        this.chessBoard = chessBoard;
+    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard) {
+        this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
+        this.chessBoard = chessBoard;
     }
+
 
     // For single player
     @PostMapping("/move")
@@ -83,7 +87,8 @@ public class ChessApiController {
 
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request) {
-        MoveResultDTO result = chessBoard.faMiscare(request.getFromRow(), request.getFromCol(), request.getToRow(), request.getToCol());
+        ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
+        MoveResultDTO result = lobbyBoard.faMiscare(request.getFromRow(), request.getFromCol(), request.getToRow(), request.getToCol());
 
         if(result.getErrorCodes() == null) {
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
