@@ -97,5 +97,11 @@ public class ChessApiController {
             messagingTemplate.convertAndSendToUser(request.getPlayer(), "/queue/errors", result.getErrorCodes());
         }
     }
+
+    @GetMapping("/onlineState/{lobbyId}")
+    public List<PiesaDTO> getOnlineState(@PathVariable String lobbyId) {
+        ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
+        return lobbyBoard.getAllPiecesDTO();
+    }
 }
 

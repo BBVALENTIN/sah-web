@@ -5,7 +5,12 @@ import { connect, sendMessage } from "./WebSockets.js"
 import {lobbyInfo} from "./Types.js";
 import {getInfoLobby} from "./APIs.js";
 
-
+const lobbyInfo = await getInfoLobby();
+const lobbyId = lobbyInfo?.lobbyId;
+console.log(lobbyId);
+if(!lobbyId) {
+    console.log("nu avem lobbyId");
+}
 // LOGICA FRONTEND MESAJE
 async function initializeApp() {
     let loggedUsername = "";
@@ -44,13 +49,18 @@ const resignBtn = document.getElementById("resign-button")!;
 
 async function loadBoard():Promise<void>
 {
-    const response: Response = await fetch('/api/chess/state');
-    const piecesData = await response.json();
+    try {
+        const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
+        const piecesData = await response.json();
 
-    tabla.setPiecesFromServer(piecesData);
-    tabla.redesenare();
+        tabla.setPiecesFromServer(piecesData);
+        tabla.redesenare();
 
-    await mouse.getTurn();
+        await mouse.getTurn();
+    }
+    catch (e) {
+        console.error("Eroare la incarcare de date - loadboard");
+    }
 }
 initializeApp();
 loadBoard();
@@ -62,7 +72,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         moveList.resign(mouse.culoareCurenta!);
     });
     try {
-        const lobbyInfo = await getInfoLobby();
         if(lobbyInfo != undefined) {
             playerWhite.innerText = lobbyInfo.playerWhite;
             playerBlack.innerText = lobbyInfo.playerBlack;

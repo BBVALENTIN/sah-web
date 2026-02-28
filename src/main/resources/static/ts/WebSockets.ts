@@ -36,6 +36,7 @@ export function connect(loggedUsername: string, lobbyId: string):void{
         { username: loggedUsername},
         function () {
             state.connected = true;
+
             console.log("Connected");
             state.stompClient.subscribe('/topic/public', onMessageReceived);
             state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
