@@ -1,13 +1,22 @@
 import { LobbyType} from "./Enums.js";
-import {loggedUsername} from "./APIs.js";
 import {lobbyInfo} from "./Types";
 
 interface lobbyDTO {
     lobbyId: string;
     lobbyType: LobbyType;
 }
-document.addEventListener(("DOMContentLoaded"), () => {
-    console.log("S");
+document.addEventListener(("DOMContentLoaded"), async () => {
+    let loggedUsername = "";
+    try{
+        const response = await fetch('/info/user');
+        if(response.ok) {
+            const responseJSON  = await response.json();
+            loggedUsername = responseJSON.loggedUsername;
+        }
+    }
+    catch (e) {
+        console.log(e);
+    }
     const showAvailableLobbiesButton = document.getElementById('showAvailableLobbiesButton') as HTMLButtonElement;
     const lobbiesContainer = document.getElementById('lobbiesContainer') as HTMLElement;
     showAvailableLobbies();

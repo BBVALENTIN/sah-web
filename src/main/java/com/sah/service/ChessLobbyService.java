@@ -58,6 +58,7 @@ public class ChessLobbyService {
         newLobby.setLobbyType(Type);
         newLobby.setFormat(FormatType.CLASSICAL);
         newLobby.setCreatedAt(LocalDateTime.now().withNano(0));
+        assignLobbyPlayer(newLobby, username);
         System.out.println("username "+ username);
         lobbyRepository.save(newLobby);
         return newLobby;
@@ -93,7 +94,6 @@ public class ChessLobbyService {
                 lobby.setPlayerWhite(username);
             }
         }
-        lobbyRepository.save(lobby);
     }
 
     public boolean isLobbyEmpty(Chess_Lobby lobby) {

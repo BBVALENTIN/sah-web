@@ -33,7 +33,6 @@
 
         private async initLobby() {
             this.lobbyInfo = await getInfoLobby();
-            console.log("Lobby info loaded: ", this.lobbyInfo)
         }
          async handleMutareAPI(e: any):Promise<Mutare_Reusita> {
              const { col, row, x, y} = this.getSquareFromMouse(e);

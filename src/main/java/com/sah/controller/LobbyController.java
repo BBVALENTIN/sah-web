@@ -3,6 +3,7 @@ package com.sah.controller;
 import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.LobbyDTO;
 import com.sah.enums.LobbyType;
+import com.sah.repository.LobbyRepository;
 import com.sah.service.ChessLobbyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,11 @@ import java.util.List;
 public class LobbyController {
 
     private final ChessLobbyService chessLobbyService;
+    private final LobbyRepository lobbyRepository;
 
-    public LobbyController(ChessLobbyService chessLobbyService) {
+    public LobbyController(ChessLobbyService chessLobbyService, LobbyRepository lobbyRepository) {
         this.chessLobbyService = chessLobbyService;
+        this.lobbyRepository = lobbyRepository;
     }
 
     @GetMapping("/lobbies")
@@ -36,6 +39,7 @@ public class LobbyController {
             return "Lobby is full";
         }
         chessLobbyService.assignLobbyPlayer(chessLobbyService.getLobbyFromId(request.getLobbyId()), request.getUsername());
+        lobbyRepository.save(chessLobbyService.getLobbyFromId(request.getLobbyId()));
         return "play="+request.getLobbyId();
     }
 }

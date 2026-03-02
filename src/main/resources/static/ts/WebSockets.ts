@@ -1,7 +1,7 @@
 import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
 import {MessageType} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
-import {getAllPGN} from "./APIs.js";
+import {getAllPGN, globalLobbyInfo} from "./APIs.js";
 
 declare var SockJS: any;
 declare var Stomp: any;
@@ -38,6 +38,7 @@ export function connect(loggedUsername: string, lobbyId: string):void{
             state.connected = true;
 
             console.log("Connected");
+
             state.stompClient.subscribe('/topic/public', onMessageReceived);
             state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
             state.stompClient.subscribe(`/user/queue/errors`, onErrorsReceived);
@@ -62,8 +63,6 @@ export function connect(loggedUsername: string, lobbyId: string):void{
 // }
 
 export function sendMessage() {
-    console.log("stompClient214:", state.stompClient);
-    console.log("connected:", state.stompClient?.connected);
     const messageContent = messageInput.value.trim();
     if(messageContent && state.stompClient && state.connected) {
         chatMessage = {

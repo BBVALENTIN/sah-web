@@ -1,6 +1,7 @@
 import type {lobbyInfo, userInfo} from "./Types.js";
 
 export let loggedUsername: string | undefined = undefined;
+export const globalLobbyInfo = await getInfoLobby();
 export const initUser = async () => {
     const response = await fetch('/info/user');
     if(response.ok) {

@@ -65,19 +65,21 @@ async function loadBoard():Promise<void>
 initializeApp();
 loadBoard();
 
-document.addEventListener("DOMContentLoaded", async () => {
-    let playerWhite = document.getElementById('chessPlayerWhite') as HTMLDivElement;
-    let playerBlack = document.getElementById('chessPlayerBlack') as HTMLDivElement;
-    resignBtn.addEventListener("click", () => {
-        moveList.resign(mouse.culoareCurenta!);
-    });
-    try {
-        if(lobbyInfo != undefined) {
-            playerWhite.innerText = lobbyInfo.playerWhite;
-            playerBlack.innerText = lobbyInfo.playerBlack;
-        }
-    }
-    catch(e) {
-        console.log(e);
-    }
+let playerWhite = document.getElementById('chessPlayerWhite') as HTMLDivElement;
+let playerBlack = document.getElementById('chessPlayerBlack') as HTMLDivElement;
+resignBtn.addEventListener("click", () => {
+    moveList.resign(mouse.culoareCurenta!);
 });
+try {
+    console.log("Im here:")
+    console.log("lobby info loaded: ", lobbyInfo);
+    if (lobbyInfo != undefined) {
+        if(lobbyInfo.playerWhite != null)
+            playerWhite.innerText = lobbyInfo.playerWhite;
+        if(lobbyInfo.playerBlack != null)
+            playerBlack.innerText = lobbyInfo.playerBlack;
+    }
+}
+catch (e) {
+    console.log(e);
+}
