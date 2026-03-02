@@ -1,5 +1,6 @@
 package com.sah.service;
 
+import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.LobbyDTO;
 import com.sah.entity.Chess_Games_Classic;
 import com.sah.entity.Chess_Lobby;
@@ -109,6 +110,16 @@ public class ChessLobbyService {
         if(!isLobbyFull(lobby))
             return true;
         return false;
+    }
+
+    public void joinLobby(JoinLobbyRequest request) {
+        Chess_Lobby lobby = getLobbyFromId(request.getLobbyId());
+        if(checkJoinable(lobby.getLobbyId()) == false) {
+            throw new RuntimeException("Lobby is already full");
+        }
+        assignLobbyPlayer(lobby,  request.getUsername());
+        lobby.setLobbyType(LobbyType.ONGOING);
+        lobbyRepository.save(lobby);
     }
 
     public void registerPlayer(String sessionId, String lobbyId) {

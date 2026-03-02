@@ -35,11 +35,7 @@ public class LobbyController {
     @PostMapping("/api/joinLobby")
     @ResponseBody
     public String joinLobby(@RequestBody JoinLobbyRequest request) {
-        if(chessLobbyService.checkJoinable(request.getLobbyId()) == false) {
-            return "Lobby is full";
-        }
-        chessLobbyService.assignLobbyPlayer(chessLobbyService.getLobbyFromId(request.getLobbyId()), request.getUsername());
-        lobbyRepository.save(chessLobbyService.getLobbyFromId(request.getLobbyId()));
+        chessLobbyService.joinLobby(request);
         return "play="+request.getLobbyId();
     }
 }
