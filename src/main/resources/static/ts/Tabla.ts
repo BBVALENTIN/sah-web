@@ -8,12 +8,21 @@ import {Regina} from "./piese/Regina.js";
 
 export class Tabla {
     static squareSize: number = 75;
-
+    lastMove?: {
+        fromRow: number,
+        fromCol: number,
+        toRow: number,
+        toCol: number
+    };
     ctx: CanvasRenderingContext2D;
     rows: number;
     cols: number;
     piese: Piesa[];
     imageCache: Record<string, HTMLImageElement>
+
+    setLastMove(fromRow: number, fromCol: number, toRow: number, toCol: number) {
+        this.lastMove = { fromRow, fromCol, toRow, toCol };
+    }
 
     constructor(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
@@ -42,6 +51,9 @@ export class Tabla {
                 }
             c = 1 - c;
         }
+
+        //highlight ultima miscare
+        this.desenareUltimaMiscare(this.ctx);
 
         //coordonate
         ctx.font = "600 14px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
@@ -127,5 +139,22 @@ export class Tabla {
 
     setPiecesFromServer(piecesData: any): void {
         this.piese = piecesData.map((p:any) => this.createPiesaFromData(p));
+    }
+
+    desenareUltimaMiscare(ctx: CanvasRenderingContext2D) {
+        const size = Tabla.squareSize;
+        if(!this.lastMove) return;
+
+        const {fromRow, fromCol, toRow, toCol} = this.lastMove;
+
+        this.drawHighlight(ctx, fromRow, fromCol);
+        this.drawHighlight(ctx, toRow, toCol);
+    }
+
+    drawHighlight(ctx: CanvasRenderingContext2D, row: number, col: number) {
+        ctx.fillStyle = 'rgba(255, 255, 0, 0.4)';
+        const size = Tabla.squareSize;
+        console.log(row*size, col*size, size, size);
+        ctx.fillRect(col*size, row*size, size, size);
     }
 }

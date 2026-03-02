@@ -110,17 +110,9 @@
                 return;
             }
 
-            const moveData = {
-                fromRow: this.piesaSelectata.row,
-                fromCol: this.piesaSelectata.col,
-                toRow: row,
-                toCol: col
-            };
+            this.tabla.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
 
             try {
-
-                console.log("from: ", moveData.fromRow, moveData.fromCol);
-                console.log("to: ", moveData.toRow, moveData.toCol);
 
                 state.stompClient.send(
                     "/app/chess.move",
