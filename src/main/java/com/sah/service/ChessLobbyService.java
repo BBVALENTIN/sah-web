@@ -7,6 +7,7 @@ import com.sah.entity.Chess_Lobby;
 import com.sah.enums.FormatType;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -21,13 +22,15 @@ public class ChessLobbyService {
 
     private final LobbyRepository lobbyRepository;
     private final Map<String, String> sessionLobbyMap = new ConcurrentHashMap<>();
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public static final String  lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-=";
     public static final SecureRandom random = new SecureRandom();
     public static final int length = 5;
 
-    public ChessLobbyService(LobbyRepository lobbyRepository) {
+    public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate) {
         this.lobbyRepository = lobbyRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     public String GenerateRandomLobbyId() {
@@ -53,16 +56,11 @@ public class ChessLobbyService {
     }
 
     public Chess_Lobby createLobby(LobbyType Type, String username) {
-        Chess_Lobby newLobby = new Chess_Lobby();
-        String randomLobbyId = GenerateRandomLobbyId();
-        newLobby.setLobbyId(randomLobbyId);
-        newLobby.setLobbyType(Type);
-        newLobby.setFormat(FormatType.CLASSICAL);
-        newLobby.setCreatedAt(LocalDateTime.now().withNano(0));
-        assignLobbyPlayer(newLobby, username);
-        System.out.println("username "+ username);
-        lobbyRepository.save(newLobby);
-        return newLobby;
+
+    }
+
+    public void joinLobby(JoinLobbyRequest request) {
+
     }
 
     public Chess_Games_Classic createClassicalGame() {
@@ -110,16 +108,6 @@ public class ChessLobbyService {
         if(!isLobbyFull(lobby))
             return true;
         return false;
-    }
-
-    public void joinLobby(JoinLobbyRequest request) {
-        Chess_Lobby lobby = getLobbyFromId(request.getLobbyId());
-        if(checkJoinable(lobby.getLobbyId()) == false) {
-            throw new RuntimeException("Lobby is already full");
-        }
-        assignLobbyPlayer(lobby,  request.getUsername());
-        lobby.setLobbyType(LobbyType.ONGOING);
-        lobbyRepository.save(lobby);
     }
 
     public void registerPlayer(String sessionId, String lobbyId) {
