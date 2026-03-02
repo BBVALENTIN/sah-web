@@ -2,7 +2,6 @@ import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
-import {lobbyInfo} from "./Types.js";
 import {getInfoLobby} from "./APIs.js";
 
 const lobbyInfo = await getInfoLobby();

@@ -2,7 +2,6 @@
     import { SoundManager } from "./audio/soundManager.js";
     import { Piesa } from "./piese/Piesa.js";
     import {lobbyInfo, Mutare, Mutare_Reusita} from "./Types.js";
-    import {moveList} from "./Main.js";
     import {Culoare} from "./Enums.js";
     import {state} from "./WebSockets.js";
     import {loggedUsername, getInfoLobby} from "./APIs.js";
@@ -33,25 +32,6 @@
 
         private async initLobby() {
             this.lobbyInfo = await getInfoLobby();
-        }
-         async handleMutareAPI(e: any):Promise<Mutare_Reusita> {
-             const { col, row, x, y} = this.getSquareFromMouse(e);
-             let mutare: Promise<Mutare_Reusita>;
-             let errorText: any;
-             const moveData = {
-                 fromRow: this.piesaSelectata!.row,
-                 fromCol: this.piesaSelectata!.col,
-                 toRow: row,
-                 toCol: col
-             };
-            const respMutare: Response = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
-            if(!respMutare.ok) {
-                const errorText = await respMutare.text();
-                throw new Error("errortext is here");
-            }
-
-             mutare = await respMutare.json();
-             return mutare;
         }
 
         getSquareFromMouse(e: any){
