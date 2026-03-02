@@ -1,7 +1,8 @@
-import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
+import { Message, Mutare_Reusita, userInfo} from "./Types.js";
 import {MessageType} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
-import {getAllPGN, globalLobbyInfo} from "./APIs.js";
+import {getAllPGN, getInfoLobby, globalLobbyInfo} from "./APIs.js";
+import {Tabla} from "./Tabla";
 
 declare var SockJS: any;
 declare var Stomp: any;
@@ -14,7 +15,6 @@ export const state = {
     stompClient: null as any,
     connected: false
 };
-
 let messageInput = document.querySelector('#message') as HTMLInputElement;
 let chatMessage: Message;
 let messageArea = document.querySelector("#messageArea") as HTMLElement;
@@ -22,12 +22,16 @@ let PGN = getAllPGN(); // will be used in case of disconnection
 if(!messageInput) {
     alert("Nu poti trimite mesaje goale");
 }
+const playerBlack = document.getElementById('chessPlayerBlack') as HTMLDivElement;
+const playerWhite = document.getElementById('chessPlayerWhite') as HTMLDivElement
 
-export function connect(loggedUsername: string, lobbyId: string):void{
-    if(!loggedUsername) {
+export function connect(username: string, lobbyId: string):void{
+    if(!username) {
         alert("Error - not seeing the user");
         return;
     }
+
+    loggedUsername = username;
 
     const socket = new SockJS('/ws');
     state.stompClient = Stomp.over(socket);
@@ -41,6 +45,10 @@ export function connect(loggedUsername: string, lobbyId: string):void{
 
             state.stompClient.subscribe('/topic/public', onMessageReceived);
             state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
+            state.stompClient.subscribe(`/topic/lobby/${lobbyId}`, function (payload: any) {
+                const updatedLobby = JSON.parse(payload.body);
+                updatePlayerNamesUI(updatedLobby);
+            });
             state.stompClient.subscribe(`/user/queue/errors`, onErrorsReceived);
 
             state.stompClient.send('/app/chat.addUser', {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
@@ -62,6 +70,14 @@ export function connect(loggedUsername: string, lobbyId: string):void{
 //     });
 // }
 
+function updatePlayerNamesUI(lobby: any) {
+    const playerBlackDiv = document.getElementById('chessPlayerBlack');
+    const playerWhiteDiv = document.getElementById('chessPlayerWhite');
+
+    if (playerBlackDiv) playerBlackDiv.innerText = lobby.playerBlack || "Waiting...";
+    if (playerWhiteDiv) playerWhiteDiv.innerText = lobby.playerWhite || "Waiting...";
+}
+
 export function sendMessage() {
     const messageContent = messageInput.value.trim();
     if(messageContent && state.stompClient && state.connected) {
@@ -79,7 +95,6 @@ export function sendMessage() {
 
 function onMessageReceived(payload: any) {
     let message = JSON.parse(payload.body);
-
     let messageElement = document.createElement("div");
 
     if(message.type === MessageType.JOIN) {

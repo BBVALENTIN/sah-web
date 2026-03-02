@@ -27,7 +27,7 @@ public class ChessController {
     @PostMapping("/api/play/createQuick")
     @ResponseBody
     public Chess_Lobby createQuickLobby(@RequestBody String username) {
-        Chess_Lobby newLobby = chessLobbyService.createLobby(LobbyType.AVAILABLE, username);
+        Chess_Lobby newLobby = chessLobbyService.createLobby(username);
         return newLobby;
     }
 
@@ -37,8 +37,7 @@ public class ChessController {
     @ResponseBody
     public Chess_Lobby createLobby(@RequestBody CreateLobbyRequest request) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
 //        headerAccessor.getSessionAttributes().put("lobbyId", lobbyDTO.getLobbyId());
-        System.out.println("usernameul de bagat in db si tipul"+ request.getUsername() + request.getLobbyType());
-        return chessLobbyService.createLobby(request.getLobbyType(), request.getUsername());
+        return chessLobbyService.createLobby(request.getUsername());
     }
 
     @MessageMapping("/chat.sendMessage")
@@ -51,7 +50,6 @@ public class ChessController {
     @MessageMapping("/chat.addUser")
     @SendTo("/topic/public")
     public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, SimpMessageHeaderAccessor headerAccessor) {
-        // add username in websocket session
         headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
         return chatMessageDTO;
     }

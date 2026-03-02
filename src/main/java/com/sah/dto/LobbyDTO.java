@@ -8,14 +8,12 @@ import com.sah.enums.LobbyType;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class LobbyDTO {
     public String lobbyId;
-    public loggedUser loggedUsername;
     public LobbyType lobbyType;
-    public String playerWhite;
-    public String playerBlack;
+    public String playerWhite = "Waiting...";
+    public String playerBlack = "Waiting...";
 
     public LobbyDTO(String lobbyId, LobbyType lobbyType) {
         this.lobbyId = lobbyId;

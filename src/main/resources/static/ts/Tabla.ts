@@ -53,7 +53,7 @@ export class Tabla {
         }
 
         //highlight ultima miscare
-        this.desenareUltimaMiscare(this.ctx);
+        // this.desenareUltimaMiscare(this.ctx);
 
         //coordonate
         ctx.font = "600 14px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
@@ -156,5 +156,10 @@ export class Tabla {
         const size = Tabla.squareSize;
         console.log(row*size, col*size, size, size);
         ctx.fillRect(col*size, row*size, size, size);
+    }
+
+    rotateBoard() {
+        this.ctx.translate(this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.rotate(Math.PI);
     }
 }

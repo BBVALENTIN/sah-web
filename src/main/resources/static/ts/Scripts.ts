@@ -11,7 +11,7 @@ document.addEventListener(("DOMContentLoaded"), async () => {
         const response = await fetch('/info/user');
         if(response.ok) {
             const responseJSON  = await response.json();
-            loggedUsername = responseJSON.loggedUsername;
+            loggedUsername = responseJSON.username;
         }
     }
     catch (e) {

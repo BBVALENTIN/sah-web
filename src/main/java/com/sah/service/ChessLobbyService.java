@@ -7,6 +7,7 @@ import com.sah.entity.Chess_Lobby;
 import com.sah.enums.FormatType;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
+import jakarta.persistence.Lob;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -55,12 +56,31 @@ public class ChessLobbyService {
         return new LobbyDTO(lobbyId, lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
     }
 
-    public Chess_Lobby createLobby(LobbyType Type, String username) {
+    // IMPORTANT LOBBY STUFF
+    public Chess_Lobby createLobby(String username) {
+        Chess_Lobby lobby = new Chess_Lobby();
+        String randomLobbyId = GenerateRandomLobbyId();
+        lobby.setLobbyId(randomLobbyId);
+        lobby.setLobbyType(LobbyType.AVAILABLE);
+        lobby.setFormat(FormatType.CLASSICAL);
+        lobby.setCreatedAt(LocalDateTime.now().withNano(0));
+        assignLobbyPlayer(lobby, username);
+        lobbyRepository.save(lobby);
 
+        return lobby;
     }
 
     public void joinLobby(JoinLobbyRequest request) {
+        Chess_Lobby lobby = getLobbyFromId(request.getLobbyId());
+        assignLobbyPlayer(lobby, request.getUsername());
+        lobbyRepository.save(lobby);
+        updatedLobbyNotify(request.getLobbyId());
+    }
 
+    public void updatedLobbyNotify(String lobbyId) {
+        LobbyDTO updatedLobbyDTO = getLobbyDTO(lobbyId);
+        simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, updatedLobbyDTO);
+        System.out.println("JHADEHGIDFHGAIL5432096092436== = 6=5 4-6- - UPDATED LOBBY" + updatedLobbyDTO.playerBlack +  updatedLobbyDTO.playerWhite);
     }
 
     public Chess_Games_Classic createClassicalGame() {
@@ -74,8 +94,7 @@ public class ChessLobbyService {
     }
     public void assignLobbyPlayer(Chess_Lobby lobby, String username) {
         // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
-        if(isLobbyFull(lobby)){
-            lobby.setLobbyType(LobbyType.ONGOING);
+        if(isLobbyFull(lobby)) {
             throw new RuntimeException("Lobby is full");
         }
         if(lobby.getPlayerWhite() == null && lobby.getPlayerBlack() == null) {
@@ -95,19 +114,13 @@ public class ChessLobbyService {
         }
     }
 
+    // to be used
     public boolean isLobbyEmpty(Chess_Lobby lobby) {
         return lobby.getPlayerBlack() == null && lobby.getPlayerWhite() == null;
     }
 
     public boolean isLobbyFull(Chess_Lobby lobby) {
         return lobby.getPlayerWhite() != null && lobby.getPlayerBlack() != null;
-    }
-
-    public boolean checkJoinable(String lobbyId) {
-        Chess_Lobby lobby = lobbyRepository.findByLobbyId(lobbyId);
-        if(!isLobbyFull(lobby))
-            return true;
-        return false;
     }
 
     public void registerPlayer(String sessionId, String lobbyId) {

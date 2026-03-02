@@ -1,4 +1,4 @@
-import type {lobbyInfo} from "./Types.js";
+import type {lobbyInfo, userInfo} from "./Types.js";
 
 export let loggedUsername: string | undefined = undefined;
 export const globalLobbyInfo = await getInfoLobby();
@@ -22,6 +22,14 @@ export async function getAllPGN() {
     }
     console.error("Nu s-au citit date din API PGN");
     return undefined;
+}
+
+export async function getMovePGN(): Promise<string>{
+    let movePGN = "";
+    const resp: Response = await fetch(`api/chess/PGN_THIS`);
+    if(resp.ok) { movePGN = await resp.text(); }
+
+    return movePGN;
 }
 
 export async function getInfoLobby(): Promise<lobbyInfo | undefined> {

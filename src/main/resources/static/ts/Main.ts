@@ -4,21 +4,38 @@ import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
 import {getInfoLobby} from "./APIs.js";
 
+const pWhite = document.getElementById('chessPlayerWhite');
+const pBlack = document.getElementById('chessPlayerBlack');
 const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
+let loggedUsername = "";
 console.log(lobbyId);
 if(!lobbyId) {
     console.log("nu avem lobbyId");
 }
+try{
+    const response = await fetch('/info/user');
+    if(response.ok) {
+        const data = await response.json();
+        loggedUsername = data.username;
+    }
+}
+catch (e) {
+    console.log(e);
+}
 // LOGICA FRONTEND MESAJE
 async function initializeApp() {
-    let loggedUsername = "";
     try {
         const lobbyInfo = await getInfoLobby();
-        if (lobbyInfo != undefined) {
-            loggedUsername = lobbyInfo.loggedUsername.username;
+        if (lobbyInfo) {
+
+            if(pWhite) pWhite.innerText = lobbyInfo.playerWhite || "Waiting...";
+            if(pBlack) pBlack.innerText = lobbyInfo.playerBlack || "Waiting...";
+
+            const username = loggedUsername;
             const lobbyId: string = lobbyInfo.lobbyId;
-            connect(loggedUsername, lobbyId);
+            connect(username, lobbyId);
+            await loadBoard(lobbyId);
         }
     } catch (e) {
         console.error("Failed to fetch user info", e);
@@ -46,7 +63,7 @@ export const moveList:MoveList = new MoveList("move-list");
 export const mouse: Mouse = new Mouse(canvas, tabla);
 const resignBtn = document.getElementById("resign-button")!;
 
-async function loadBoard():Promise<void>
+async function loadBoard(lobbyId: string):Promise<void>
 {
     try {
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
@@ -62,23 +79,8 @@ async function loadBoard():Promise<void>
     }
 }
 initializeApp();
-loadBoard();
 
-let playerWhite = document.getElementById('chessPlayerWhite') as HTMLDivElement;
-let playerBlack = document.getElementById('chessPlayerBlack') as HTMLDivElement;
+
 resignBtn.addEventListener("click", () => {
     moveList.resign(mouse.culoareCurenta!);
 });
-try {
-    console.log("Im here:")
-    console.log("lobby info loaded: ", lobbyInfo);
-    if (lobbyInfo != undefined) {
-        if(lobbyInfo.playerWhite != null)
-            playerWhite.innerText = lobbyInfo.playerWhite;
-        if(lobbyInfo.playerBlack != null)
-            playerBlack.innerText = lobbyInfo.playerBlack;
-    }
-}
-catch (e) {
-    console.log(e);
-}

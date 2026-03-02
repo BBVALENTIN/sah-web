@@ -5,6 +5,9 @@ import com.sah.dto.loggedUser;
 import com.sah.service.ChessLobbyService;
 import com.sah.service.CustomUserDetailsService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,18 +28,15 @@ public class InfoController {
         this.chessLobbyService = chessLobbyService;
     }
 
+    @SendTo("/topic/public")
     @GetMapping("/lobby")
-    public LobbyDTO getLobbyInfo(Principal principal, HttpSession session) {
-        if(principal == null) {
-            throw new RuntimeException("Principal is null");
-        }
+    public LobbyDTO getLobbyInfo(HttpSession session) {
         String lobbyId = chessLobbyService.getLobbyIdFromSession(session.getId());
         if(lobbyId == null) {
             throw new RuntimeException("User is not in a lobby");
         }
 
         LobbyDTO currentLobby = chessLobbyService.getLobbyDTO(lobbyId);
-        currentLobby.setLoggedUsername(customUserDetailsService.loadInfo(principal));
 
         return currentLobby;
     }
