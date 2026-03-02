@@ -13,9 +13,13 @@ body {
     background-color: var(--bodyGray);
 }
 
-#content {
+
+.content {
+    background-color: var(--bodyGray);
     display: flex;
     flex-direction: column;
+    color: white;
+    font-family: Segoe UI Variable, sans-serif;
 }
 
 #chessCanvas{

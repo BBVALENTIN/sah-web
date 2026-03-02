@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <title>Bine ai venit pe site</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div th:insert="fragments/header :: header"></div>
-    <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
+    <div class="content">
+        <div th:insert="fragments/header :: header"></div>
+        <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
+    </div>
     <script src="/js/script.js"></script>
 </body>
 </html>
