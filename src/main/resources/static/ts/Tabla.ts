@@ -19,6 +19,7 @@ export class Tabla {
     cols: number;
     piese: Piesa[];
     imageCache: Record<string, HTMLImageElement>
+    isBlack: boolean;
 
     setLastMove(fromRow: number, fromCol: number, toRow: number, toCol: number) {
         this.lastMove = { fromRow, fromCol, toRow, toCol };
@@ -30,17 +31,22 @@ export class Tabla {
         this.cols = 8;
         this.piese = [];
         this.imageCache = {};
+        this.isBlack = false;
     }
 
     getPiesa(row: number, col: number): Piesa | undefined {
         return this.piese.find(p => p.row === row && p.col === col);
     }
 
+    setOrientare(isBlack: boolean) {
+        this.isBlack = isBlack;
+    }
+
     redesenare(piese: Piesa[] = this.piese, piesaSelectata?: Piesa): void {
         let c = 0;
         const ctx = this.ctx;
         const size = Tabla.squareSize;
-
+        const boardSize = size * 8;
 
         for(let row = 0; row < this.rows; row++){
             for(let col = 0; col < this.cols; col++)
@@ -52,30 +58,50 @@ export class Tabla {
             c = 1 - c;
         }
 
-        //coordonate
-        ctx.font = "600 14px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-        ctx.fillStyle = "#4a4a4a";
+        this.desenareUltimaMiscare(this.ctx);
 
-        for (let col = 0; col < 8; col++) {
-            const letter = String.fromCharCode(97 + col);
-            ctx.fillText(letter, col * size + size - 14, 8 * size - 6);
-        }
 
-        for (let row = 0; row < 8; row++) {
-            const number = 8 - row;
-            ctx.fillText(number.toString(), 4, row * size + 14);
-        }
-
-        piese.forEach(p => p.desen(this.ctx));
+        piese.forEach(p => this.deseneazaPiesaOrientata(p));
 
         if(piesaSelectata && piesaSelectata.img.complete) {
-            piesaSelectata.desen(ctx);
+            this.deseneazaPiesaOrientata(piesaSelectata);
         }
 
-        //highlight ultima miscare
-        this.desenareUltimaMiscare(this.ctx);
+        this.desenareCoordonate();
     }
 
+    private deseneazaPiesaOrientata(piesa: Piesa) {
+        const size = Tabla.squareSize;
+
+        const vizualCol = this.isBlack ? 7 - piesa.col : piesa.col;
+        const vizualRow = this.isBlack ? 7 - piesa.row : piesa.row;
+
+        if (piesa.isDragging && piesa.dragX !== undefined && piesa.dragY !== undefined) {
+            piesa.desen(this.ctx);
+        } else {
+            const x = vizualCol * size;
+            const y = vizualRow * size;
+
+            if (piesa.img.complete) {
+                this.ctx.drawImage(piesa.img, x, y, size, size);
+            }
+        }
+    }
+
+    private desenareCoordonate() {
+        const ctx = this.ctx;
+        const size = Tabla.squareSize;
+        ctx.font = "600 14px Inter, sans-serif";
+        ctx.fillStyle = "#4a4a4a";
+
+        for (let i = 0; i < 8; i++) {
+            const letter = String.fromCharCode(97 + (this.isBlack ? 7 - i : i));
+            const number = this.isBlack ? i + 1 : 8 - i;
+
+            ctx.fillText(letter, i * size + size - 14, 8 * size - 6);
+            ctx.fillText(number.toString(), 4, i * size + 14);
+        }
+    }
     createPiesaFromData(data: any):Piesa
     {
         const { tip, color, row, col} = data;
@@ -145,7 +171,14 @@ export class Tabla {
         const size = Tabla.squareSize;
         if(!this.lastMove) return;
 
-        const {fromRow, fromCol, toRow, toCol} = this.lastMove;
+        let {fromRow, fromCol, toRow, toCol} = this.lastMove;
+
+        if(this.isBlack) {
+            fromRow = 7 - fromRow;
+            fromCol = 7 - fromCol;
+            toRow = 7 - toRow;
+            toCol = 7 - toCol;
+        }
 
         this.drawHighlight(ctx, fromRow, fromCol);
         this.drawHighlight(ctx, toRow, toCol);
@@ -156,10 +189,5 @@ export class Tabla {
         const size = Tabla.squareSize;
         console.log(row*size, col*size, size, size);
         ctx.fillRect(col*size, row*size, size, size);
-    }
-
-    rotateBoard() {
-        this.ctx.translate(this.ctx.canvas.width, this.ctx.canvas.height);
-        this.ctx.rotate(Math.PI);
     }
 }

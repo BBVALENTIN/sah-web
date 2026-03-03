@@ -34,6 +34,10 @@ async function initializeApp() {
 
             const username = loggedUsername;
             const lobbyId: string = lobbyInfo.lobbyId;
+            const isBlack = (lobbyInfo.playerBlack === loggedUsername);
+            console.log("Player is black? ", isBlack);
+            tabla.setOrientare(isBlack);
+            tabla.redesenare();
             connect(username, lobbyId);
             await loadBoard(lobbyId);
         }

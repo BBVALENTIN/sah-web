@@ -38,9 +38,14 @@
             const rect: DOMRect = this.canvas.getBoundingClientRect();
             const x: number = e.clientX - rect.left;
             const y: number = e.clientY - rect.top;
-            const col: number = Math.floor(x / Tabla.squareSize);
-            const row: number = Math.floor(y / Tabla.squareSize);
 
+            let col: number = Math.floor(x / Tabla.squareSize);
+            let row: number = Math.floor(y / Tabla.squareSize);
+
+            if(this.tabla.isBlack) {
+                col = 7 - col;
+                row = 7 - row;
+            }
             return { col, row, x, y};
         }
 
@@ -53,16 +58,17 @@
         public onMouseDown(e:any):void {
             const { col, row, x, y} = this.getSquareFromMouse(e);
             const piesa = this.tabla.getPiesa(row, col);
-            if(piesa && piesa.color === this.culoareCurenta)
-            {
+            if (piesa && piesa.color === this.culoareCurenta) {
                 this.piesaSelectata = piesa;
                 this.piesaSelectata.isDragging = true;
-                piesa.dragX = x - (x % Tabla.squareSize);
-                piesa.dragY = y - ( y % Tabla.squareSize);
-                this.offsetX = x - piesa.col * Tabla.squareSize;
-                this.offsetY = y - piesa.row * Tabla.squareSize;
 
-                this.tabla.redesenare((this.tabla.piese.filter(p => p!== piesa)));
+                const vizualCol = this.tabla.isBlack ? 7 - piesa.col : piesa.col;
+                const vizualRow = this.tabla.isBlack ? 7 - piesa.row : piesa.row;
+
+                this.offsetX = x - vizualCol * Tabla.squareSize;
+                this.offsetY = y - vizualRow * Tabla.squareSize;
+
+                this.tabla.redesenare(this.tabla.piese.filter(p => p !== piesa));
             }
         }
         public async MouseMove(e:any):Promise<void> {
