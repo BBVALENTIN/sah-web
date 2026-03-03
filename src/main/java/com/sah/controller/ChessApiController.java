@@ -59,20 +59,20 @@ public class ChessApiController {
     }
 
 
-    @GetMapping("/reset")
-    public List<PiesaDTO> ResetBoard()
-    {
-        chessBoard.pieseList.clear();
-        for(int i = 0; i < 8; i++)
-            for(int j = 0; j < 8; j++)
-                chessBoard.board[i][j] = null;
-        chessBoard.allFormattedMoves = "";
-        chessBoard.initializeBoard();
-        List<PiesaDTO> dto = new ArrayList<>();
-        for(Piese p : chessBoard.getAllPieces())
-            dto.add(ChessBoard.toDTO(p));
-        return dto;
-    }
+//    @GetMapping("/reset")
+//    public List<PiesaDTO> ResetBoard()
+//    {
+//        chessBoard.pieseList.clear();
+//        for(int i = 0; i < 8; i++)
+//            for(int j = 0; j < 8; j++)
+//                chessBoard.board[i][j] = null;
+//        chessBoard.allFormattedMoves = "";
+//        chessBoard.initializeBoard();
+//        List<PiesaDTO> dto = new ArrayList<>();
+//        for(Piese p : chessBoard.getAllPieces())
+//            dto.add(ChessBoard.toDTO(p));
+//        return dto;
+//    }
 
     @GetMapping("/PGN_ALL")
     public String getPGN()
@@ -101,6 +101,8 @@ public class ChessApiController {
     @GetMapping("/onlineState/{lobbyId}")
     public List<PiesaDTO> getOnlineState(@PathVariable String lobbyId) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
+        System.out.println("All my pieces for lobby " + lobbyId);
+        System.out.println(lobbyBoard.getAllPiecesDTO());
         return lobbyBoard.getAllPiecesDTO();
     }
 }

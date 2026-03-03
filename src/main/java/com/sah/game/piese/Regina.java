@@ -1,10 +1,11 @@
 package com.sah.game.piese;
 
+import com.sah.game.ChessBoard;
 import com.sah.game.Tip;
 
 public class Regina extends Piese{
-    public Regina(int color, int row, int col) {
-        super(color, row, col);
+    public Regina(int color, int row, int col, ChessBoard game) {
+        super(color, row, col, game);
         tip = Tip.REGINA;
     }
 

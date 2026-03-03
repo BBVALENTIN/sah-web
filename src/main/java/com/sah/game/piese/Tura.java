@@ -4,8 +4,8 @@ import com.sah.game.ChessBoard;
 import com.sah.game.Tip;
 
 public class Tura extends Piese {
-    public Tura(int color, int row, int col){
-        super(color, row, col);
+    public Tura(int color, int row, int col, ChessBoard game){
+        super(color, row, col, game);
         tip = Tip.TURA;
     }
 

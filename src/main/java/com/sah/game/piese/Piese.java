@@ -11,8 +11,9 @@ public class Piese {
     public Piese lovestePiese;
     public String img;
     public Tip tip;
+    protected ChessBoard game;
 
-    public Piese(int color, int row, int col)
+    public Piese(int color, int row, int col, ChessBoard game)
     {
         this.color = color;
         this.col = col;
@@ -20,6 +21,7 @@ public class Piese {
         precol = col;
         prerow = row;
         this.miscata = false;
+        this.game = game;
     }
     public void setPosition(int row, int col) {
         this.prerow = this.row;
@@ -29,7 +31,7 @@ public class Piese {
         this.miscata = true;
     }
     public Piese getLovesteP(int targetRow, int targetCol) {
-        Piese lovestePiese = ChessBoard.board[targetRow][targetCol];
+        Piese lovestePiese = game.board[targetRow][targetCol];
         if (lovestePiese != null && lovestePiese != this) {
             return lovestePiese;
         }
@@ -51,7 +53,7 @@ public class Piese {
             int start = Math.min(this.col, targetCol) + 1;
             int end = Math.max(this.col, targetCol);
             for (int c = start; c < end; c++) {
-                Piese piesa = ChessBoard.board[this.row][c];
+                Piese piesa = game.board[this.row][c];
                 if (piesa != null) {
                     lovestePiese = piesa;
                     return true;
@@ -63,7 +65,7 @@ public class Piese {
             int start = Math.min(this.row, targetRow) + 1;
             int end = Math.max(this.row, targetRow);
             for (int r = start; r < end; r++) {
-                Piese piesa = ChessBoard.board[r][this.col];
+                Piese piesa = game.board[r][this.col];
                 if (piesa != null) {
                     lovestePiese = piesa;
                     return true;
@@ -102,8 +104,8 @@ public class Piese {
             int i = this.row - 1;
             int j = this.col - 1;
             while (i > targetRow && j > targetCol) {
-                if (ChessBoard.board[i][j] != null) {
-                    lovestePiese = ChessBoard.board[i][j];
+                if (game.board[i][j] != null) {
+                    lovestePiese = game.board[i][j];
                     return true;
                 }
                 i--;
@@ -116,8 +118,8 @@ public class Piese {
             int i = this.row - 1;
             int j = this.col + 1;
             while (i > targetRow && j < targetCol) {
-                if (ChessBoard.board[i][j] != null) {
-                    lovestePiese = ChessBoard.board[i][j];
+                if (game.board[i][j] != null) {
+                    lovestePiese = game.board[i][j];
                     return true;
                 }
                 i--;
@@ -130,8 +132,8 @@ public class Piese {
             int i = this.row + 1;
             int j = this.col - 1;
             while (i < targetRow && j > targetCol) {
-                if (ChessBoard.board[i][j] != null) {
-                    lovestePiese = ChessBoard.board[i][j];
+                if (game.board[i][j] != null) {
+                    lovestePiese = game.board[i][j];
                     return true;
                 }
                 i++;
@@ -144,8 +146,8 @@ public class Piese {
             int i = this.row + 1;
             int j = this.col + 1;
             while (i < targetRow && j < targetCol) {
-                if (ChessBoard.board[i][j] != null) {
-                    lovestePiese = ChessBoard.board[i][j];
+                if (game.board[i][j] != null) {
+                    lovestePiese = game.board[i][j];
                     return true;
                 }
                 i++;

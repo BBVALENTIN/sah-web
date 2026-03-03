@@ -1,11 +1,12 @@
 package com.sah.game.piese;
 
+import com.sah.game.ChessBoard;
 import com.sah.game.Tip;
 
 public class Cal extends Piese {
-    public Cal(int color, int row, int col)
+    public Cal(int color, int row, int col, ChessBoard game)
     {
-        super(color, row, col);
+        super(color, row, col, game);
         tip = Tip.CAL;
     }
 

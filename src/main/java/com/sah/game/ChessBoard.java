@@ -11,9 +11,9 @@ import java.util.List;
 
 @Service
 public class ChessBoard {
-    public static Piese[][] board = new Piese[8][8];
-    public static Piese rocada;
-    public  Piese rege, sahP, piesaSelectata, piesaCapturata;
+    public Piese[][] board = new Piese[8][8];
+    public Piese rocada;
+    public Piese rege, sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
     public static final int alb = 1, negru = -1;
@@ -32,29 +32,31 @@ public class ChessBoard {
     }
 
     public void initializeBoard() {
-        for (int i = 0; i < 8; i++) {
-            board[1][i] = new Pion(negru, 1, i);
-        }
-        board[0][0] = new Tura(negru, 0, 0);
-        board[0][7] = new Tura(negru, 0, 7);
-        board[0][1] = new Cal(negru, 0, 1);
-        board[0][6] = new Cal(negru, 0, 6);
-        board[0][2] = new Nebun(negru, 0, 2);
-        board[0][5] = new Nebun(negru, 0, 5);
-        board[0][3] = new Regina(negru, 0, 3);
-        board[0][4] = new Rege(negru, 0, 4);
+        this.board = new Piese[8][8];
 
         for (int i = 0; i < 8; i++) {
-            board[6][i] = new Pion(alb, 6, i);
+            board[1][i] = new Pion(negru, 1, i, this);
         }
-        board[7][7] = new Tura(alb, 7, 7);
-        board[7][0] = new Tura(alb, 7, 0);
-        board[7][1] = new Cal(alb, 7, 1);
-        board[7][6] = new Cal(alb, 7, 6);
-        board[7][5] = new Nebun(alb, 7, 5);
-        board[7][2] = new Nebun(alb, 7, 2);
-        board[7][3] = new Regina(alb, 7, 3);
-        board[7][4] = new Rege(alb, 7, 4);
+        board[0][0] = new Tura(negru, 0, 0, this);
+        board[0][7] = new Tura(negru, 0, 7, this);
+        board[0][1] = new Cal(negru, 0, 1, this);
+        board[0][6] = new Cal(negru, 0, 6, this);
+        board[0][2] = new Nebun(negru, 0, 2, this);
+        board[0][5] = new Nebun(negru, 0, 5, this);
+        board[0][3] = new Regina(negru, 0, 3, this);
+        board[0][4] = new Rege(negru, 0, 4, this);
+
+        for (int i = 0; i < 8; i++) {
+            board[6][i] = new Pion(alb, 6, i, this);
+        }
+        board[7][7] = new Tura(alb, 7, 7, this);
+        board[7][0] = new Tura(alb, 7, 0, this);
+        board[7][1] = new Cal(alb, 7, 1, this);
+        board[7][6] = new Cal(alb, 7, 6, this);
+        board[7][5] = new Nebun(alb, 7, 5, this);
+        board[7][2] = new Nebun(alb, 7, 2, this);
+        board[7][3] = new Regina(alb, 7, 3, this);
+        board[7][4] = new Rege(alb, 7, 4, this);
 
         pieseList = getAllPieces();
         culoareCurenta = alb;
@@ -237,19 +239,28 @@ public class ChessBoard {
         return false;
     }
 
-    public static PiesaDTO toDTO(Piese p) {
+    public static PiesaDTO toDTO(Piese p, int r, int c) {
         return new PiesaDTO(
                 p.tip.name(),
                 p.color,
-                p.row,
-                p.col
+                r,
+                c
         );
+    }
+
+    public Piese[][] getBoard() {
+        return board;
     }
 
     public synchronized List<PiesaDTO> getAllPiecesDTO() {
         List<PiesaDTO> dto = new ArrayList<>();
-        for (Piese p : pieseList) {
-            dto.add(toDTO(p));
+        for(int r = 0; r < 8; r++) {
+            for(int c = 0; c < 8; c++) {
+                Piese p = board[r][c];
+                if(p != null) {
+                    dto.add(toDTO(p, r, c));
+                }
+            }
         }
         return dto;
     }
@@ -259,7 +270,7 @@ public class ChessBoard {
         Piese rege = getRege(opponent);
         if(rege == null)
             return null;
-        return toDTO(rege);
+        return toDTO(rege, rege.row, rege.col); // maybe buggy
     }
 
     public boolean esteSahMat(Piese rege)
@@ -360,11 +371,11 @@ public class ChessBoard {
     {
         promoted = false;
         if(row == 7 && piesa.color == negru && piesa.tip == Tip.PION) {
-            board[row][col] = new Regina(piesa.color, row, col);
+            board[row][col] = new Regina(piesa.color, row, col, this);
             promoted = true;
         }
         else if (row == 0 && piesa.color == alb) {
-            board[row][col] = new Regina(piesa.color, row, col);
+            board[row][col] = new Regina(piesa.color, row, col, this);
             promoted = true;
         }
     }
