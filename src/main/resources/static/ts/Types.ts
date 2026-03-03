@@ -17,6 +17,14 @@ export interface Mutare_Reusita {
     culoareCurenta: 1 | 0 | -1;
     pgn: string;
     captures: boolean;
+    lastMove: LastMove;
+}
+
+interface LastMove {
+    fromRow: number;
+    fromCol: number;
+    toRow: number;
+    toCol: number;
 }
 
 export interface Mutare_Error {

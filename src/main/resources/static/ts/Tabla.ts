@@ -52,9 +52,6 @@ export class Tabla {
             c = 1 - c;
         }
 
-        //highlight ultima miscare
-        // this.desenareUltimaMiscare(this.ctx);
-
         //coordonate
         ctx.font = "600 14px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
         ctx.fillStyle = "#4a4a4a";
@@ -74,6 +71,9 @@ export class Tabla {
         if(piesaSelectata && piesaSelectata.img.complete) {
             piesaSelectata.desen(ctx);
         }
+
+        //highlight ultima miscare
+        this.desenareUltimaMiscare(this.ctx);
     }
 
     createPiesaFromData(data: any):Piesa

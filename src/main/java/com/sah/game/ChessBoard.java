@@ -2,6 +2,7 @@ package com.sah.game;
 
 import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
+import com.sah.dto.LastMove;
 import com.sah.game.piese.*;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class ChessBoard {
     public static short oldSize;
     public boolean promoted, isCheckMate;
     public ErrorCodes error;
+    public LastMove lastMove;
 
     private static int culoareCurenta = alb;
 
@@ -60,8 +62,8 @@ public class ChessBoard {
     }
 
     public synchronized MoveResultDTO faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
-
         piesaSelectata = board[fromRow][fromCol];
+        lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol);
         if (piesaSelectata == null) { // piesa inexistenta
             return new MoveResultDTO(error.PIESA_NEDETECTATA);
         }
@@ -132,7 +134,7 @@ public class ChessBoard {
         allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
         promoted = false;
         if(isCheckMate == true)
-            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture);
+            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture, lastMove);
         // sah, sah-mat
         return new MoveResultDTO(
                 getAllPiecesDTO(),
@@ -140,7 +142,8 @@ public class ChessBoard {
                 isCheckMate,
                 culoareCurenta,
                 currentFormattedMove,
-                isCapture
+                isCapture,
+                lastMove
         );
 //        return new MoveResult(true, "Mutare validă", getAllPiecesDTO(), isCheck, isCheckMate);
     }

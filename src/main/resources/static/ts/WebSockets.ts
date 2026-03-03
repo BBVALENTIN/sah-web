@@ -114,7 +114,11 @@ function onMessageReceived(payload: any) {
 }
 
 function onMoveReceived(payload: any) {
+    console.log('whbahfdaha', payload);
     const result: Mutare_Reusita = JSON.parse(payload.body);
+    if(result.lastMove.fromRow !== undefined && result.lastMove.toRow !== undefined) {
+        tabla.setLastMove(result.lastMove.fromRow, result.lastMove.fromCol, result.lastMove.toRow, result.lastMove.toCol);
+    }
     console.log("MUTARE REUSITA? ", result);
     tabla.setPiecesFromServer(result.updatedPieces);
     mouse.culoareCurenta = result.culoareCurenta;
