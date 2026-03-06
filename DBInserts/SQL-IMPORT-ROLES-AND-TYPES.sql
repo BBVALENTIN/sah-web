@@ -1,0 +1,14 @@
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_USER');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_ADMIN');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_CM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_FM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_IM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_GM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_WCM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_WFM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_WIM');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_WGM');
+
+ INSERT INTO dbo.lobby_types(lobby_type) values ('AVAILABLE');
+ INSERT INTO dbo.lobby_types(lobby_type) values('ONGOING');
+ INSERT INTO dbo.lobby_types(lobby_type) values('FINISHED');
