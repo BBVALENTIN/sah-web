@@ -9,7 +9,7 @@ import java.text.DateFormat;
 @Entity
 @Getter
 @Setter
-public class Chess_Chats {
+public class ChessLobbyChats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;

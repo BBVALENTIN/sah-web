@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Chess_Lobby {
+public class ChessLobbies {
     @Id
     private String lobbyId;
 

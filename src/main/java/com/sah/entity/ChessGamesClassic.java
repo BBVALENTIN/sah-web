@@ -3,7 +3,7 @@ package com.sah.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class Chess_Games_Classic {
+public class ChessGamesClassic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ClassicGameId;

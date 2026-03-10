@@ -2,12 +2,11 @@ package com.sah.service;
 
 import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.LobbyDTO;
-import com.sah.entity.Chess_Games_Classic;
-import com.sah.entity.Chess_Lobby;
+import com.sah.entity.ChessGamesClassic;
+import com.sah.entity.ChessLobbies;
 import com.sah.enums.FormatType;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
-import jakarta.persistence.Lob;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -52,13 +51,13 @@ public class ChessLobbyService {
     }
 
     public LobbyDTO getLobbyDTO(String lobbyId) {
-        Chess_Lobby lobby = getLobbyFromId(lobbyId);
+        ChessLobbies lobby = getLobbyFromId(lobbyId);
         return new LobbyDTO(lobbyId, lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
     }
 
     // IMPORTANT LOBBY STUFF
-    public Chess_Lobby createLobby(String username) {
-        Chess_Lobby lobby = new Chess_Lobby();
+    public ChessLobbies createLobby(String username) {
+        ChessLobbies lobby = new ChessLobbies();
         String randomLobbyId = GenerateRandomLobbyId();
         lobby.setLobbyId(randomLobbyId);
         lobby.setLobbyType(LobbyType.AVAILABLE);
@@ -71,7 +70,7 @@ public class ChessLobbyService {
     }
 
     public void joinLobby(JoinLobbyRequest request) {
-        Chess_Lobby lobby = getLobbyFromId(request.getLobbyId());
+        ChessLobbies lobby = getLobbyFromId(request.getLobbyId());
         assignLobbyPlayer(lobby, request.getUsername());
         lobbyRepository.save(lobby);
         updatedLobbyNotify(request.getLobbyId());
@@ -83,16 +82,16 @@ public class ChessLobbyService {
         System.out.println("JHADEHGIDFHGAIL5432096092436== = 6=5 4-6- - UPDATED LOBBY" + updatedLobbyDTO.playerBlack +  updatedLobbyDTO.playerWhite);
     }
 
-    public Chess_Games_Classic createClassicalGame() {
-        Chess_Games_Classic newClassicGame = new Chess_Games_Classic(); // to put the on
+    public ChessGamesClassic createClassicalGame() {
+        ChessGamesClassic newClassicGame = new ChessGamesClassic(); // to put the on
         return newClassicGame;
     }
 
-    public LobbyDTO convertLobbyDTO(Chess_Lobby lobby) {
+    public LobbyDTO convertLobbyDTO(ChessLobbies lobby) {
         LobbyDTO lobbyDTO = new LobbyDTO(lobby.getLobbyId(), lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
         return lobbyDTO;
     }
-    public void assignLobbyPlayer(Chess_Lobby lobby, String username) {
+    public void assignLobbyPlayer(ChessLobbies lobby, String username) {
         // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
         if(isLobbyFull(lobby)) {
             throw new RuntimeException("Lobby is full");
@@ -115,11 +114,11 @@ public class ChessLobbyService {
     }
 
     // to be used
-    public boolean isLobbyEmpty(Chess_Lobby lobby) {
+    public boolean isLobbyEmpty(ChessLobbies lobby) {
         return lobby.getPlayerBlack() == null && lobby.getPlayerWhite() == null;
     }
 
-    public boolean isLobbyFull(Chess_Lobby lobby) {
+    public boolean isLobbyFull(ChessLobbies lobby) {
         return lobby.getPlayerWhite() != null && lobby.getPlayerBlack() != null;
     }
 
@@ -135,7 +134,7 @@ public class ChessLobbyService {
         String lobbyId = sessionId;
     }
 
-    public Chess_Lobby getLobbyFromId(String lobbyId) {
+    public ChessLobbies getLobbyFromId(String lobbyId) {
         return lobbyRepository.findByLobbyId(lobbyId);
     }
 }

@@ -2,8 +2,7 @@ package com.sah.controller;
 
 import com.sah.dto.ChatMessageDTO;
 import com.sah.dto.CreateLobbyRequest;
-import com.sah.entity.Chess_Lobby;
-import com.sah.enums.LobbyType;
+import com.sah.entity.ChessLobbies;
 import com.sah.service.ChessLobbyService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,8 +25,8 @@ public class ChessController {
 
     @PostMapping("/api/play/createQuick")
     @ResponseBody
-    public Chess_Lobby createQuickLobby(@RequestBody String username) {
-        Chess_Lobby newLobby = chessLobbyService.createLobby(username);
+    public ChessLobbies createQuickLobby(@RequestBody String username) {
+        ChessLobbies newLobby = chessLobbyService.createLobby(username);
         return newLobby;
     }
 
@@ -35,7 +34,7 @@ public class ChessController {
 //    @SendTo("/topic/public")
     @PostMapping("/api/play/create")
     @ResponseBody
-    public Chess_Lobby createLobby(@RequestBody CreateLobbyRequest request) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
+    public ChessLobbies createLobby(@RequestBody CreateLobbyRequest request) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
 //        headerAccessor.getSessionAttributes().put("lobbyId", lobbyDTO.getLobbyId());
         return chessLobbyService.createLobby(request.getUsername());
     }
