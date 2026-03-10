@@ -20,4 +20,6 @@ public class ChessLobbyChats {
     private Long content;
     @Column(nullable = false)
     private DateFormat sendDate;
+    @Column(nullable = false)
+    private boolean reported;
 }
