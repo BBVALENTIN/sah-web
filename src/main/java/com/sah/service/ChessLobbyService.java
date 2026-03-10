@@ -14,6 +14,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -71,9 +72,11 @@ public class ChessLobbyService {
 
     public void joinLobby(JoinLobbyRequest request) {
         ChessLobbies lobby = getLobbyFromId(request.getLobbyId());
-        assignLobbyPlayer(lobby, request.getUsername());
-        lobbyRepository.save(lobby);
-        updatedLobbyNotify(request.getLobbyId());
+        if(isAlreadyAssigned(lobby, request.getUsername()) == false) {
+            assignLobbyPlayer(lobby, request.getUsername());
+            lobbyRepository.save(lobby);
+            updatedLobbyNotify(request.getLobbyId());
+        }
     }
 
     public void updatedLobbyNotify(String lobbyId) {
@@ -94,7 +97,7 @@ public class ChessLobbyService {
     public void assignLobbyPlayer(ChessLobbies lobby, String username) {
         // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
         if(isLobbyFull(lobby)) {
-            throw new RuntimeException("Lobby is full");
+            throw new RuntimeException("Lobby is full or player is already assigned");
         }
         if(lobby.getPlayerWhite() == null && lobby.getPlayerBlack() == null) {
             if(ThreadLocalRandom.current().nextInt(1, 10) > 5) {
@@ -111,6 +114,10 @@ public class ChessLobbyService {
                 lobby.setPlayerWhite(username);
             }
         }
+    }
+
+    private boolean isAlreadyAssigned(ChessLobbies lobby, String username) {
+        return Objects.equals(lobby.getPlayerBlack(), username) || Objects.equals(lobby.getPlayerWhite(), username);
     }
 
     // to be used
