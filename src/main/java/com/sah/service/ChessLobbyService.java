@@ -25,7 +25,7 @@ public class ChessLobbyService {
     private final Map<String, String> sessionLobbyMap = new ConcurrentHashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public static final String  lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-=";
+    public static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     public static final SecureRandom random = new SecureRandom();
     public static final int length = 5;
 
@@ -34,7 +34,7 @@ public class ChessLobbyService {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-    public String GenerateRandomLobbyId() {
+    private String GenerateRandomLobbyId() {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < length; i++) {
             int index = random.nextInt(lobbyIdPossibleCharacters.length());
@@ -42,6 +42,15 @@ public class ChessLobbyService {
         }
 
         return sb.toString();
+    }
+
+    private String assignLobbyId() {
+        String lobbyId;
+        do {
+            lobbyId = GenerateRandomLobbyId();
+
+        } while (lobbyRepository.findByLobbyId(lobbyId) != null);
+        return lobbyId;
     }
 
     public List<LobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
@@ -59,7 +68,7 @@ public class ChessLobbyService {
     // IMPORTANT LOBBY STUFF
     public ChessLobbies createLobby(String username) {
         ChessLobbies lobby = new ChessLobbies();
-        String randomLobbyId = GenerateRandomLobbyId();
+        String randomLobbyId = assignLobbyId();
         lobby.setLobbyId(randomLobbyId);
         lobby.setLobbyType(LobbyType.AVAILABLE);
         lobby.setFormat(FormatType.CLASSICAL);
@@ -74,6 +83,8 @@ public class ChessLobbyService {
         ChessLobbies lobby = getLobbyFromId(request.getLobbyId());
         if(isAlreadyAssigned(lobby, request.getUsername()) == false) {
             assignLobbyPlayer(lobby, request.getUsername());
+            if(isLobbyFull(lobby))
+                lobby.setLobbyType(LobbyType.ONGOING);
             lobbyRepository.save(lobby);
             updatedLobbyNotify(request.getLobbyId());
         }
@@ -82,7 +93,6 @@ public class ChessLobbyService {
     public void updatedLobbyNotify(String lobbyId) {
         LobbyDTO updatedLobbyDTO = getLobbyDTO(lobbyId);
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, updatedLobbyDTO);
-        System.out.println("JHADEHGIDFHGAIL5432096092436== = 6=5 4-6- - UPDATED LOBBY" + updatedLobbyDTO.playerBlack +  updatedLobbyDTO.playerWhite);
     }
 
     public ChessGamesClassic createClassicalGame() {

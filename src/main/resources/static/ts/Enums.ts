@@ -22,7 +22,8 @@ export enum MessageType {
 export enum LobbyType {
     AVAILABLE = 'AVAILABLE',
     ONGOING = 'ONGOING',
-    FINISHED = 'FINISHED'
+    FINISHED = 'FINISHED',
+    ABORTED = 'ABORTED'
 }
 
 export enum Formats {
