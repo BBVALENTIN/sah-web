@@ -22,8 +22,6 @@ let PGN = getAllPGN(); // will be used in case of disconnection
 if(!messageInput) {
     alert("Nu poti trimite mesaje goale");
 }
-const playerBlack = document.getElementById('chessPlayerBlack') as HTMLDivElement;
-const playerWhite = document.getElementById('chessPlayerWhite') as HTMLDivElement
 
 export function connect(username: string, lobbyId: string):void{
     if(!username) {

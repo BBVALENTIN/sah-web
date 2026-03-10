@@ -4,8 +4,8 @@ import {MoveList} from "./MoveList.js";
 import { connect, sendMessage } from "./WebSockets.js"
 import {getInfoLobby} from "./APIs.js";
 
-const pWhite = document.getElementById('chessPlayerWhite');
-const pBlack = document.getElementById('chessPlayerBlack');
+const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
+const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
 const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
 let loggedUsername = "";
@@ -29,10 +29,17 @@ async function initializeApp() {
         const lobbyInfo = await getInfoLobby();
         if (lobbyInfo) {
 
-            if(pWhite) pWhite.innerText = lobbyInfo.playerWhite || "Waiting...";
-            if(pBlack) pBlack.innerText = lobbyInfo.playerBlack || "Waiting...";
-
             const username = loggedUsername;
+            console.log(username);
+            if(lobbyInfo &&lobbyInfo.playerWhite === username)
+            {
+                currentPlayerSide.innerText = username;
+                otherPlayerSide.innerText = lobbyInfo.playerBlack ? lobbyInfo.playerBlack : 'Waiting . . .';
+            }
+            else if(lobbyInfo && lobbyInfo.playerBlack === username) {
+                currentPlayerSide.innerText = username;
+                otherPlayerSide.innerText = lobbyInfo.playerWhite ? lobbyInfo.playerWhite : 'Waiting . . .';
+            }
             const lobbyId: string = lobbyInfo.lobbyId;
             const isBlack = (lobbyInfo.playerBlack === loggedUsername);
             console.log("Player is black? ", isBlack);
