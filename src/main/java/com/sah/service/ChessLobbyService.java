@@ -48,7 +48,6 @@ public class ChessLobbyService {
         String lobbyId;
         do {
             lobbyId = GenerateRandomLobbyId();
-
         } while (lobbyRepository.findByLobbyId(lobbyId) != null);
         return lobbyId;
     }
@@ -90,7 +89,7 @@ public class ChessLobbyService {
         }
     }
 
-    public void updatedLobbyNotify(String lobbyId) {
+    private void updatedLobbyNotify(String lobbyId) {
         LobbyDTO updatedLobbyDTO = getLobbyDTO(lobbyId);
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, updatedLobbyDTO);
     }

@@ -1,5 +1,5 @@
-import { Message, Mutare_Reusita, userInfo} from "./Types.js";
-import {MessageType} from "./Enums.js";
+import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
+import {LobbyType, MessageType} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
 import {getAllPGN, getInfoLobby, globalLobbyInfo} from "./APIs.js";
 import {Tabla} from "./Tabla";
@@ -44,7 +44,7 @@ export function connect(username: string, lobbyId: string):void{
             state.stompClient.subscribe('/topic/public', onMessageReceived);
             state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
             state.stompClient.subscribe(`/topic/lobby/${lobbyId}`, function (payload: any) {
-                const updatedLobby = JSON.parse(payload.body);
+                const updatedLobby: lobbyInfo = JSON.parse(payload.body);
                 updatePlayerNamesUI(updatedLobby);
             });
             state.stompClient.subscribe(`/user/queue/errors`, onErrorsReceived);
@@ -68,12 +68,18 @@ export function connect(username: string, lobbyId: string):void{
 //     });
 // }
 
-function updatePlayerNamesUI(lobby: any) {
-    const playerBlackDiv = document.getElementById('chessPlayerBlack');
-    const playerWhiteDiv = document.getElementById('chessPlayerWhite');
-
-    if (playerBlackDiv) playerBlackDiv.innerText = lobby.playerBlack || "Waiting...";
-    if (playerWhiteDiv) playerWhiteDiv.innerText = lobby.playerWhite || "Waiting...";
+function updatePlayerNamesUI(lobbyInfo: lobbyInfo) {
+    const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
+    const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
+    if(lobbyInfo &&lobbyInfo.playerWhite === loggedUsername)
+    {
+        currentPlayerSide.innerText = loggedUsername;
+        otherPlayerSide.innerText = lobbyInfo.playerBlack ? lobbyInfo.playerBlack : 'Waiting . . .';
+    }
+    else if(lobbyInfo && lobbyInfo.playerBlack === loggedUsername) {
+        currentPlayerSide.innerText = loggedUsername;
+        otherPlayerSide.innerText = lobbyInfo.playerWhite ? lobbyInfo.playerWhite : 'Waiting . . .';
+    }
 }
 
 export function sendMessage() {
@@ -94,7 +100,6 @@ export function sendMessage() {
 function onMessageReceived(payload: any) {
     let message = JSON.parse(payload.body);
     let messageElement = document.createElement("div");
-
     if(message.type === MessageType.JOIN) {
         messageElement.classList.add("event-message");
         messageElement.innerHTML = `<div>${message.sender} joined!</div>`;

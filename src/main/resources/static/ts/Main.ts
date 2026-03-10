@@ -30,7 +30,6 @@ async function initializeApp() {
         if (lobbyInfo) {
 
             const username = loggedUsername;
-            console.log(username);
             if(lobbyInfo &&lobbyInfo.playerWhite === username)
             {
                 currentPlayerSide.innerText = username;
