@@ -1,25 +1,31 @@
 package com.sah.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.text.DateFormat;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChessLobbyChats {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatId;
+    private String chatId;
 
     @Column(nullable = false)
     private Long senderId;
+    @Column
+    private String senderName;
     @Column(nullable = false)
-    private Long content;
+    private String content;
     @Column(nullable = false)
-    private DateFormat sendDate;
+    private LocalDateTime sendDate;
     @Column(nullable = false)
     private boolean reported;
 }
