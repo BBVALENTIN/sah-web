@@ -59,15 +59,6 @@ export function connect(username: string, lobbyId: string):void{
     )
 }
 
-// function onConnected() {
-//     stompClient.subscribe('/topic/public', onMessageReceived);
-//
-//     stompClient.publish({
-//         destination: "/app/chat.addUser",
-//         body: JSON.stringify({type: MessageType.JOIN})
-//     });
-// }
-
 function updatePlayerNamesUI(lobbyInfo: lobbyInfo) {
     const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
     const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
