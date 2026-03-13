@@ -4,9 +4,14 @@ import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.LobbyDTO;
 import com.sah.entity.ChessGamesClassic;
 import com.sah.entity.ChessLobbies;
+import com.sah.entity.ChessLobbyChats;
+import com.sah.entity.Users;
 import com.sah.enums.FormatType;
+import com.sah.enums.MessageType;
+import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
+import com.sah.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +29,20 @@ public class ChessLobbyService {
     private final LobbyRepository lobbyRepository;
     private final Map<String, String> sessionLobbyMap = new ConcurrentHashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChessLobbyChatService chessLobbyChatService;
+    private final ChessLobbyChatRepository lobbyChatRepository;
+    private final UserRepository userRepository;
 
     public static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     public static final SecureRandom random = new SecureRandom();
     public static final int length = 5;
 
-    public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate) {
+    public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatService chessLobbyChatService, ChessLobbyChatRepository lobbyChatRepository, UserRepository userRepository) {
         this.lobbyRepository = lobbyRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.chessLobbyChatService = chessLobbyChatService;
+        this.lobbyChatRepository = lobbyChatRepository;
+        this.userRepository = userRepository;
     }
 
     private String GenerateRandomLobbyId() {
@@ -67,6 +78,7 @@ public class ChessLobbyService {
     // IMPORTANT LOBBY STUFF
     public ChessLobbies createLobby(String username) {
         ChessLobbies lobby = new ChessLobbies();
+        Users user = userRepository.findByUsername(username);
         String randomLobbyId = assignLobbyId();
         lobby.setLobbyId(randomLobbyId);
         lobby.setLobbyType(LobbyType.AVAILABLE);
@@ -74,6 +86,12 @@ public class ChessLobbyService {
         lobby.setCreatedAt(LocalDateTime.now().withNano(0));
         assignLobbyPlayer(lobby, username);
         lobbyRepository.save(lobby);
+
+        // assign lobby chat
+        String lobbyChatId = chessLobbyChatService.assignLobbyChatId();
+        ChessLobbyChats lobbyChat = new ChessLobbyChats(lobbyChatId, user.getId(), username, "JOINED" , LocalDateTime.now(), false);
+
+        lobbyChatRepository.save(lobbyChat);
 
         return lobby;
     }

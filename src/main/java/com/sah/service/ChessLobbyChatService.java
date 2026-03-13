@@ -9,7 +9,7 @@ import java.security.SecureRandom;
 @Service
 public class ChessLobbyChatService {
     private String chatIdPossibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ";
-    private final short maxSize = 7;
+    private final short maxSize = 5;
     private static final SecureRandom random = new SecureRandom();
 
     @Autowired
@@ -17,6 +17,7 @@ public class ChessLobbyChatService {
 
     private String generateChatId() {
         StringBuilder sb = new StringBuilder();
+        sb.append("CH");
         for(int i = 0; i < maxSize; i++) {
             int index = random.nextInt(chatIdPossibleChars.length());
             sb.append(chatIdPossibleChars.charAt(index));
@@ -24,7 +25,7 @@ public class ChessLobbyChatService {
         return sb.toString();
     }
 
-    private String assignLobbyChatId() {
+    public String assignLobbyChatId() {
         String lobbyChatId;
         do {
             lobbyChatId = generateChatId();
