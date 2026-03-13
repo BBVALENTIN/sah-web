@@ -10,6 +10,7 @@ declare var Stomp: any;
 //LOGICA FRONTEND CHAT + BASIC
 let loggedUsername: string = "";
 let userId: number = 0;
+let currentLobbyId: string = "";
 
 export const state = {
     stompClient: null as any,
@@ -30,7 +31,7 @@ export function connect(username: string, lobbyId: string):void{
     }
 
     loggedUsername = username;
-
+    currentLobbyId = lobbyId;
     const socket = new SockJS('/ws');
     state.stompClient = Stomp.over(socket);
 
@@ -79,10 +80,10 @@ export function sendMessage() {
         chatMessage = {
             sender: loggedUsername,
             content: messageContent,
-            type: MessageType.CHAT
+            type: MessageType.CHAT,
         };
 
-        state.stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        state.stompClient.send(`/app/chat.sendMessage/${currentLobbyId}`, {}, JSON.stringify(chatMessage));
 
         messageInput.value = "";
     }
