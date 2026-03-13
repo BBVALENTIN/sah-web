@@ -8,7 +8,3 @@
  INSERT INTO dbo.roles(name) VALUES ('ROLE_WFM');
  INSERT INTO dbo.roles(name) VALUES ('ROLE_WIM');
  INSERT INTO dbo.roles(name) VALUES ('ROLE_WGM');
-
- INSERT INTO dbo.lobby_types(lobby_type) values ('AVAILABLE');
- INSERT INTO dbo.lobby_types(lobby_type) values('ONGOING');
- INSERT INTO dbo.lobby_types(lobby_type) values('FINISHED');
