@@ -30,8 +30,9 @@ public class ChessLobbies {
     private LobbyType lobbyType;
     @Column(nullable = true) // TO CHANGE
     private String gameId;
-    @Column(nullable = true) // TO CHANGE
-    private String chatId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_id", nullable = false)
+    private ChessLobbyChats chat;
     @Column(nullable = false)
     private LocalDateTime createdAt;
 }

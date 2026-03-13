@@ -78,20 +78,19 @@ public class ChessLobbyService {
     // IMPORTANT LOBBY STUFF
     public ChessLobbies createLobby(String username) {
         ChessLobbies lobby = new ChessLobbies();
-        Users user = userRepository.findByUsername(username);
         String randomLobbyId = assignLobbyId();
         lobby.setLobbyId(randomLobbyId);
         lobby.setLobbyType(LobbyType.AVAILABLE);
         lobby.setFormat(FormatType.CLASSICAL);
         lobby.setCreatedAt(LocalDateTime.now().withNano(0));
         assignLobbyPlayer(lobby, username);
+
+        ChessLobbyChats chat = new ChessLobbyChats();
+        chat.setChatId(chessLobbyChatService.assignLobbyChatId());
+
+        lobby.setChat(chat);
+
         lobbyRepository.save(lobby);
-
-        // assign lobby chat
-        String lobbyChatId = chessLobbyChatService.assignLobbyChatId();
-        ChessLobbyChats lobbyChat = new ChessLobbyChats(lobbyChatId, user.getId(), username, "JOINED" , LocalDateTime.now(), false);
-
-        lobbyChatRepository.save(lobbyChat);
 
         return lobby;
     }

@@ -2,10 +2,12 @@ package com.sah.service;
 
 import com.sah.dto.ChatMessageDTO;
 import com.sah.entity.ChessLobbies;
+import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
 import com.sah.enums.MessageType;
 import com.sah.repository.ChessLobbyChatRepository;
+import com.sah.repository.LobbyChatMessagesService;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,9 @@ public class ChessLobbyChatService {
     private LobbyRepository lobbyRepository;
 
     private SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
+    private LobbyChatMessagesService lobbyChatMessagesService;
+
 
     private String generateChatId() {
         StringBuilder sb = new StringBuilder();
@@ -51,12 +56,25 @@ public class ChessLobbyChatService {
         return lobbyChatId;
     }
 
-    public ChatMessageDTO sendMessage(String username, String content, String lobbyId) {
-        Users user = userRepository.findByUsername(username);
-        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
-        ChessLobbyChats message = new ChessLobbyChats(lobby.getChatId(), user.getId(), username, content, LocalDateTime.now(), false);
+    public ChessLobbyChatMessages sendMessage(String lobbyId,
+                                              String sender,
+                                              String content) {
 
-        chessLobbyChatRepository.save(message);
-        return new ChatMessageDTO(content, username, MessageType.CHAT, lobby.getLobbyId());
+        ChessLobbies lobby = lobbyRepository.findById(lobbyId)
+                .orElseThrow();
+
+        ChessLobbyChats chat = lobby.getChat();
+
+        Users user = userRepository.findByUsername(sender);
+
+        ChessLobbyChatMessages message = new ChessLobbyChatMessages();
+
+        message.setSenderId(user.getId());
+        message.setSenderName(sender);
+        message.setContent(content);
+        message.setSendDate(LocalDateTime.now());
+        message.setChat(chat);
+
+        return lobbyChatMessagesService.save(message);
     }
 }
