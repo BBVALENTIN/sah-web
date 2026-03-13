@@ -11,5 +11,4 @@ import java.util.List;
 public interface LobbyRepository extends JpaRepository<ChessLobbies, String> {
     ChessLobbies findByLobbyId(String lobbyId);
     List<ChessLobbies> findByLobbyType(LobbyType lobbyType);
-    ChessLobbies findByChatId(String chatId);
 }

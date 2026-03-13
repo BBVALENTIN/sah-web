@@ -3,6 +3,8 @@ package com.sah.controller;
 import com.sah.dto.ChatMessageDTO;
 import com.sah.dto.MoveRequestDTO;
 import com.sah.dto.PiesaDTO;
+import com.sah.entity.ChessLobbyChatMessages;
+import com.sah.enums.MessageType;
 import com.sah.game.ChessBoard;
 import com.sah.dto.MoveResultDTO;
 import com.sah.game.piese.Piese;
@@ -10,6 +12,7 @@ import com.sah.service.ChessLobbyChatService;
 import com.sah.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -113,10 +116,26 @@ public class ChessApiController {
         return lobbyBoard.getAllPiecesDTO();
     }
 
-    @GetMapping("/sendMessage/${lobbyId}")
-    public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO, @PathVariable String lobbyId, Principal principal) {
-        chessLobbyChatService.sendMessage(chatMessageDTO.getSender(), chatMessageDTO.getContent(), )
+    @MessageMapping("/chat.sendMessage/{lobbyId}")
+    @SendTo("/topic/chat/{lobbyId}")
+    public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO,
+                                      @DestinationVariable String lobbyId,
+                                      Principal principal) {
+
+        ChessLobbyChatMessages savedMessage =
+                chessLobbyChatService.sendMessage(
+                        lobbyId,
+                        principal.getName(),
+                        chatMessageDTO.getContent()
+                );
+
+        return new ChatMessageDTO(
+                savedMessage.getSenderName(),
+                savedMessage.getContent(),
+                MessageType.CHAT
+        );
     }
+
 
     @MessageMapping("/chat.addUser")
     @SendTo("/topic/public")
