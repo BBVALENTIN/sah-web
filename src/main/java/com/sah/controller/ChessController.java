@@ -39,20 +39,6 @@ public class ChessController {
         return chessLobbyService.createLobby(request.getUsername());
     }
 
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/topic/public")
-    public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO, Principal principal) {
-        chatMessageDTO.setSender(principal.getName());
-        return chatMessageDTO;
-    }
-
-    @MessageMapping("/chat.addUser")
-    @SendTo("/topic/public")
-    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
-        return chatMessageDTO;
-    }
-
 
     @GetMapping("/play={lobbyId}")
     public String showLobby(@PathVariable String lobbyId, HttpSession session, Principal principal) {

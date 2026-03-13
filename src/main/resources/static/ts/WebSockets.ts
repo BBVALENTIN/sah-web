@@ -41,7 +41,7 @@ export function connect(username: string, lobbyId: string):void{
 
             console.log("Connected");
 
-            state.stompClient.subscribe('/topic/public', onMessageReceived);
+            state.stompClient.subscribe(`/topic/chat/${lobbyId}`, onMessageReceived);
             state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
             state.stompClient.subscribe(`/topic/lobby/${lobbyId}`, function (payload: any) {
                 const updatedLobby: lobbyInfo = JSON.parse(payload.body);
@@ -117,7 +117,6 @@ function onMessageReceived(payload: any) {
 }
 
 function onMoveReceived(payload: any) {
-    console.log('whbahfdaha', payload);
     const result: Mutare_Reusita = JSON.parse(payload.body);
     if(result.lastMove.fromRow !== undefined && result.lastMove.toRow !== undefined) {
         tabla.setLastMove(result.lastMove.fromRow, result.lastMove.fromCol, result.lastMove.toRow, result.lastMove.toCol);

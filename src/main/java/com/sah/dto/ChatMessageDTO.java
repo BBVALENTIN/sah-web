@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 public class ChatMessageDTO {
     private String content;
-    private String sender; // will change to User
+    private String sender;
     private MessageType type;
+    private String chatId;
 }

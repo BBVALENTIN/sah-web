@@ -1,18 +1,23 @@
 package com.sah.controller;
 
+import com.sah.dto.ChatMessageDTO;
 import com.sah.dto.MoveRequestDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.game.ChessBoard;
 import com.sah.dto.MoveResultDTO;
 import com.sah.game.piese.Piese;
+import com.sah.service.ChessLobbyChatService;
 import com.sah.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +27,14 @@ public class ChessApiController {
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChessBoard chessBoard;
+    private final ChessLobbyChatService chessLobbyChatService;
 
     @Autowired
-    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard) {
+    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard, ChessLobbyChatService chessLobbyChatService) {
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
         this.chessBoard = chessBoard;
+        this.chessLobbyChatService = chessLobbyChatService;
     }
 
 
@@ -104,6 +111,18 @@ public class ChessApiController {
         System.out.println("All my pieces for lobby " + lobbyId);
         System.out.println(lobbyBoard.getAllPiecesDTO());
         return lobbyBoard.getAllPiecesDTO();
+    }
+
+    @GetMapping("/sendMessage/${lobbyId}")
+    public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO, @PathVariable String lobbyId, Principal principal) {
+        chessLobbyChatService.sendMessage(chatMessageDTO.getSender(), chatMessageDTO.getContent(), )
+    }
+
+    @MessageMapping("/chat.addUser")
+    @SendTo("/topic/public")
+    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, SimpMessageHeaderAccessor headerAccessor) {
+        headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
+        return chatMessageDTO;
     }
 }
 
