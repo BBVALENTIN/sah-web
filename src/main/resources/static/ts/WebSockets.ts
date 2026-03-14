@@ -50,7 +50,7 @@ export function connect(username: string, lobbyId: string):void{
             });
             state.stompClient.subscribe(`/user/queue/errors`, onErrorsReceived);
 
-            state.stompClient.send('/app/chat.addUser', {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
+            state.stompClient.send(`/app/chat.addUser/${lobbyId}`, {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
             );
         },
         function(error: any) {

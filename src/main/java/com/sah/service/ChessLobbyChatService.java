@@ -77,4 +77,8 @@ public class ChessLobbyChatService {
 
         return lobbyChatMessagesService.save(message);
     }
+
+    public ChatMessageDTO addUser(String sender, String lobbyId) {
+        return new ChatMessageDTO(sender, "", MessageType.JOIN);
+    }
 }

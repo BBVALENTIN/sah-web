@@ -137,11 +137,12 @@ public class ChessApiController {
     }
 
 
-    @MessageMapping("/chat.addUser")
-    @SendTo("/topic/public")
-    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
-        return chatMessageDTO;
+    @MessageMapping("/chat.addUser/{lobbyId}")
+    @SendTo("/topic/chat/{lobbyId}")
+    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId) {
+        System.out.println("CHAT MESSAGE DTO " + chatMessageDTO);
+        System.out.println("LOBBY ID; " + lobbyId);
+        return chessLobbyChatService.addUser(chatMessageDTO.getSender(), lobbyId);
     }
 }
 
