@@ -70,7 +70,7 @@ public class ChessBoard {
             return new MoveResultDTO(error.PIESA_NEDETECTATA);
         }
 
-        if (piesaSelectata.color != culoareCurenta) { // rand gresit
+        if (piesaSelectata.color != culoareCurenta) { // NU MUTA PIESA DE CULOAREA ASTA!
             return new MoveResultDTO(error.RAND_GRESIT);
         }
         if (!piesaSelectata.miscare(targetRow, targetCol)) { // mutare ilegala
@@ -96,11 +96,10 @@ public class ChessBoard {
 
             rocada = null;
         }
-        boolean isCapture = board[targetRow][targetCol] != null;
-        if(isCapture == true) {
-            piesaCapturata = board[targetRow][targetCol];
-        }
-        else piesaCapturata = null;
+
+        piesaCapturata = getPiesaCapturata(targetRow, targetCol);
+        boolean isCapture = piesaCapturata != null;
+
         oldList = new ArrayList<>(pieseList);
 
 
@@ -118,18 +117,14 @@ public class ChessBoard {
             return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
         }
 
-
-        culoareCurenta *= -1;
-        numberOfMoves++;
+        switchTurn();
 
         Piese regeAdvers = getRege(false);
 
         boolean isCheck = esteRegeInSah(regeAdvers);
-        isCheckMate = esteSahMat(regeAdvers);
 
         if (isCheck) {
             isCheckMate = esteSahMat(regeAdvers);
-
         }
 
 
@@ -188,6 +183,16 @@ public class ChessBoard {
             board[targetRow][targetCol] = piesaCapturata;
         }
         piesaSelectata.setPosition(fromRow, fromCol);
+    }
+
+
+    public Piese getPiesaCapturata(int targetRow, int targetCol) {
+        return board[targetRow][targetCol];
+    }
+
+    public void switchTurn() {
+        culoareCurenta *= -1;
+        numberOfMoves++;
     }
 
     public static int getCuloareCurenta() {
