@@ -1,5 +1,6 @@
 package com.sah.game;
 
+import com.sah.dto.MoveDataNotationDTO;
 import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.dto.LastMove;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// daca e o mutare duplicata nu se mai insereaza anotatia
 @Service
 public class ChessBoard {
     public Piese[][] board = new Piese[8][8];
@@ -17,14 +18,14 @@ public class ChessBoard {
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
     public static final int alb = 1, negru = -1;
-    public String allFormattedMoves = "", currentFormattedMove;
     public short numberOfMoves;
     public static short oldSize;
     public boolean promoted, isCheckMate;
     public ErrorCodes error;
     public LastMove lastMove;
+    private MoveNotation moveNotation = new MoveNotation();
 
-    private static int culoareCurenta = alb;
+    public static int culoareCurenta = alb;
 
 
     public ChessBoard() {
@@ -77,13 +78,13 @@ public class ChessBoard {
             return new MoveResultDTO(error.MUTARE_ILEGALA);
         }
 
-        String rocadaNotatie = null;
+        NotatieRocada rocadaNotatie = null;
 
         if (rocada != null) {
             if (rocada.col == 7) {
-                rocadaNotatie = "Rocada-Mica"; // O-O
+                rocadaNotatie = NotatieRocada.MICA; // O-O
             } else {
-                rocadaNotatie = "Rocada-Mare"; // O-O-O
+                rocadaNotatie = NotatieRocada.MARE; // O-O-O
             }
 
             int rookOldRow = rocada.row;
@@ -127,8 +128,9 @@ public class ChessBoard {
             isCheckMate = esteSahMat(regeAdvers);
         }
 
+        MoveDataNotationDTO dto = new MoveDataNotationDTO(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, culoareCurenta, rocadaNotatie, oldList);
+        String currentFormattedMove = moveNotation.formatMove(dto);
 
-        allFormatedMoves(formattedMoves(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, rocadaNotatie, isCapture));
         promoted = false;
         if(isCheckMate == true)
             return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture, lastMove);
@@ -384,92 +386,4 @@ public class ChessBoard {
             promoted = true;
         }
     }
-    // moving a pawn to row 4 (from up to bottom), col 4 = e4
-    public String formattedMoves(Piese piesa, int fromRow, int fromCol, int targetRow, int targetCol, boolean isCheck, boolean isCheckMate, String rocadaNotatie, boolean isCapture)
-    {
-        if(rocadaNotatie != null)
-        {
-            if ("Rocada-Mare".equals(rocadaNotatie)) { return"O-O-O";}
-            if ("Rocada-Mica".equals(rocadaNotatie)) { return "O-O";}
-        }
-
-        char pieceChar;
-        switch(piesa.tip){
-            case CAL -> pieceChar = 'N';
-            case NEBUN -> pieceChar = 'B';
-            case REGE ->  pieceChar = 'K';
-            case REGINA -> pieceChar = 'Q';
-            case TURA ->  pieceChar = 'R';
-            default -> pieceChar = '?';
-        }
-
-        char colChar = (char)('a'+targetCol);
-        int boardRow = 8 - targetRow;
-
-        char fromColChar = (char)('a'+fromCol);
-        int fromBoardRow = 8 - fromRow;
-
-        String disambiguation = "";
-        if(piesa.tip != Tip.PION)
-        {
-            for(Piese p: oldList)
-            {
-                if(p == piesa)
-                    continue;
-                if((p.color == piesa.color && piesa.tip == p.tip) && p.poateAjunge(targetRow, targetCol))
-                {
-                    if(p.col == fromCol) {
-                        disambiguation = "" + fromBoardRow;
-                    }
-                    else {
-                        disambiguation = "" + fromColChar;
-                    }
-                }
-            }
-        }
-
-        String notation = "";
-
-        if(piesa.tip == Tip.PION) {
-            if (isCapture)
-            {
-                notation = fromColChar+"x"+colChar+boardRow;
-            }
-            else {
-                notation = ""+colChar+boardRow;
-            }
-        }
-        else
-        {
-            if(isCapture)
-                notation = "" + pieceChar + disambiguation + "x" + colChar + boardRow;
-            else
-                notation = "" + pieceChar + disambiguation + colChar + boardRow;
-        }
-
-        if(promoted == true){
-            notation = notation + "=Q";
-        }
-        if(isCheck && !isCheckMate) {
-            notation = notation + "+";
-        }
-        if(isCheckMate)
-        {
-            if(this.culoareCurenta == 1)
-                notation = notation + "#" + " 0-1";
-            else
-                notation = notation + "#" + " 1-0";
-        }
-
-        return notation;
-    }
-
-    public void allFormatedMoves(String notation)
-    {
-        if(numberOfMoves%2 ==0)
-            allFormattedMoves += numberOfMoves/2 + ".";
-        currentFormattedMove = notation;
-        allFormattedMoves += notation + " ";
-    }
-
 }
