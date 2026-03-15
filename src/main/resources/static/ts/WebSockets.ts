@@ -1,8 +1,6 @@
 import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
 import {Culoare, LobbyType, MessageType} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
-import {getAllPGN, getInfoLobby, globalLobbyInfo} from "./APIs.js";
-import {Tabla} from "./Tabla";
 
 declare var SockJS: any;
 declare var Stomp: any;
@@ -20,7 +18,6 @@ export const state = {
 let messageInput = document.querySelector('#message') as HTMLInputElement;
 let chatMessage: Message;
 let messageArea = document.querySelector("#messageArea") as HTMLElement;
-let PGN = getAllPGN(); // will be used in case of disconnection
 if(!messageInput) {
     alert("Nu poti trimite mesaje goale");
 }

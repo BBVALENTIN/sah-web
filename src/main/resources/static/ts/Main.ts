@@ -1,7 +1,7 @@
 import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
-import { connect, sendMessage } from "./WebSockets.js"
+import { connect, sendMessage, culoareCurenta } from "./WebSockets.js"
 import {getInfoLobby} from "./APIs.js";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
@@ -90,5 +90,5 @@ initializeApp();
 
 
 resignBtn.addEventListener("click", () => {
-    moveList.resign(mouse.culoareCurenta!);
+    moveList.resign(culoareCurenta!);
 });
