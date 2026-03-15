@@ -1,7 +1,7 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
-import com.sah.game.Tip;
+import com.sah.game.GameEnums.Tip;
 
 public class Regina extends Piese{
     public Regina(int color, int row, int col, ChessBoard game) {

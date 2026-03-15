@@ -1,7 +1,7 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
-import com.sah.game.Tip;
+import com.sah.game.GameEnums.Tip;
 
 public class Cal extends Piese {
     public Cal(int color, int row, int col, ChessBoard game)

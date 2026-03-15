@@ -1,6 +1,6 @@
 package com.sah.dto;
 
-import com.sah.game.NotatieRocada;
+import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.piese.Piese;
 import lombok.AllArgsConstructor;
 

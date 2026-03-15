@@ -2,7 +2,7 @@ package com.sah.dto;
 
 import java.util.List;
 
-import com.sah.game.ErrorCodes;
+import com.sah.game.GameEnums.ErrorCodes;
 
 public class MoveResultDTO {
     private List<PiesaDTO> updatedPieces;

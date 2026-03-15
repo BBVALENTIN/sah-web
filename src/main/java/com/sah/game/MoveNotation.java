@@ -1,6 +1,8 @@
 package com.sah.game;
 
 import com.sah.dto.MoveDataNotationDTO;
+import com.sah.game.GameEnums.NotatieRocada;
+import com.sah.game.GameEnums.Tip;
 import com.sah.game.piese.Piese;
 
 public class MoveNotation {

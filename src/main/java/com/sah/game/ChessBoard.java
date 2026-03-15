@@ -4,6 +4,9 @@ import com.sah.dto.MoveDataNotationDTO;
 import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.dto.LastMove;
+import com.sah.game.GameEnums.ErrorCodes;
+import com.sah.game.GameEnums.NotatieRocada;
+import com.sah.game.GameEnums.Tip;
 import com.sah.game.piese.*;
 import org.springframework.stereotype.Service;
 
