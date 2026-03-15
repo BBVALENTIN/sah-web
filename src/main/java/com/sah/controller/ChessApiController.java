@@ -84,17 +84,6 @@ public class ChessApiController {
 //        return dto;
 //    }
 
-    @GetMapping("/PGN_ALL")
-    public String getPGN()
-    {
-        return chessBoard.allFormattedMoves;
-    }
-
-    @GetMapping("/PGN_THIS")
-    public String getMovePGN() {
-        return chessBoard.currentFormattedMove;
-    }
-
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
