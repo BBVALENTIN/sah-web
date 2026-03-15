@@ -3,7 +3,7 @@
     import { Piesa } from "./piese/Piesa.js";
     import {lobbyInfo, Mutare, Mutare_Reusita} from "./Types.js";
     import {Culoare} from "./Enums.js";
-    import {state} from "./WebSockets.js";
+    import {state, culoareCurenta} from "./WebSockets.js";
     import {loggedUsername, getInfoLobby} from "./APIs.js";
 
 
@@ -15,7 +15,6 @@
         offsetX: number;
         offsetY: number;
         winner: 1 | 0 | -1 | undefined;
-        culoareCurenta: Culoare | undefined;
         lobbyInfo: lobbyInfo | undefined;
         constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
             this.canvas = canvas;
@@ -49,16 +48,10 @@
             return { col, row, x, y};
         }
 
-        async getTurn() {
-            const resp: Response = await fetch(`api/chess/turn`);
-            if(resp.ok)
-                this.culoareCurenta = await resp.json();
-        }
-
         public onMouseDown(e:any):void {
             const { col, row, x, y} = this.getSquareFromMouse(e);
             const piesa = this.tabla.getPiesa(row, col);
-            if (piesa && piesa.color === this.culoareCurenta) {
+            if (piesa && piesa.color === culoareCurenta) {
                 this.piesaSelectata = piesa;
                 this.piesaSelectata.isDragging = true;
 
@@ -74,7 +67,7 @@
         public async MouseMove(e:any):Promise<void> {
             const { col, row, x, y} = this.getSquareFromMouse(e);
             const piesa = this.tabla.getPiesa(row, col);
-            if(piesa && piesa.color == this.culoareCurenta)
+            if(piesa && piesa.color == culoareCurenta)
                 this.canvas.style.cursor = "grab";
             else
                 this.canvas.style.cursor = "default";

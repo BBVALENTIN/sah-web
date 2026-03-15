@@ -81,8 +81,6 @@ async function loadBoard(lobbyId: string):Promise<void>
 
         tabla.setPiecesFromServer(piecesData);
         tabla.redesenare();
-
-        await mouse.getTurn();
     }
     catch (e) {
         console.error("Eroare la incarcare de date - loadboard");

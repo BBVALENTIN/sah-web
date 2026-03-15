@@ -1,5 +1,5 @@
 import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
-import {LobbyType, MessageType} from "./Enums.js";
+import {Culoare, LobbyType, MessageType} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
 import {getAllPGN, getInfoLobby, globalLobbyInfo} from "./APIs.js";
 import {Tabla} from "./Tabla";
@@ -11,6 +11,7 @@ declare var Stomp: any;
 let loggedUsername: string = "";
 let userId: number = 0;
 let currentLobbyId: string = "";
+export let culoareCurenta: number = Culoare.ALB;
 
 export const state = {
     stompClient: null as any,
@@ -115,7 +116,7 @@ function onMoveReceived(payload: any) {
     }
     console.log("MUTARE REUSITA? ", result);
     tabla.setPiecesFromServer(result.updatedPieces);
-    mouse.culoareCurenta = result.culoareCurenta;
+    culoareCurenta = result.culoareCurenta;
     moveList.addMove(result.pgn);
     tabla.redesenare();
 
