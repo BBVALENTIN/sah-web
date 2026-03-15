@@ -14,7 +14,7 @@ export class MoveList {
     }
 
     addMove(pgn: string) {
-        if (!pgn || pgn === this.lastPGN) return;
+        if (!pgn) return;
         this.lastPGN = pgn;
 
         const color: "white" | "black" = this.moveCount % 2 === 0 ? "white" : "black";
