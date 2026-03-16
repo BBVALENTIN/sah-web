@@ -179,12 +179,6 @@ public class ChessBoard {
         return pieseList;
     }
 
-    public Piese getPiesa(int row, int col) {
-        if (row >= 0 && row < 8 && col >= 0 && col < 8) {
-            return board[row][col];
-        }
-        return null;
-    }
     public void rollBack(int targetRow, int targetCol, int fromRow, int fromCol, Piese piesaSelectata) {
         board[fromRow][fromCol] = piesaSelectata;
         if(piesaCapturata == null) {
@@ -210,13 +204,6 @@ public class ChessBoard {
         return culoareCurenta;
     }
 
-    public void checkRocada()
-    {
-        if(rocada != null) {
-            rocada.setPosition(rocada.row, rocada.col - 2);
-        }
-        rocada = null;
-    }
 
     public Piese getRege(boolean opponent) {
         for (Piese piesa : pieseList) {
@@ -279,14 +266,6 @@ public class ChessBoard {
             }
         }
         return dto;
-    }
-
-    //debug rege
-    public PiesaDTO getRegeDTO(boolean opponent) {
-        Piese rege = getRege(opponent);
-        if(rege == null)
-            return null;
-        return toDTO(rege, rege.row, rege.col); // maybe buggy
     }
 
     public boolean esteSahMat(Piese rege)
