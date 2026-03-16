@@ -91,7 +91,6 @@
             this.tabla.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
 
             try {
-
                 state.stompClient.send(
                     "/app/chess.move",
                     {},

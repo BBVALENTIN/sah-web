@@ -187,7 +187,6 @@ export class Tabla {
     drawHighlight(ctx: CanvasRenderingContext2D, row: number, col: number) {
         ctx.fillStyle = 'rgba(255, 255, 0, 0.4)';
         const size = Tabla.squareSize;
-        console.log(row*size, col*size, size, size);
         ctx.fillRect(col*size, row*size, size, size);
     }
 }
