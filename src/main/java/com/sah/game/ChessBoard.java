@@ -18,7 +18,7 @@ import java.util.List;
 public class ChessBoard {
     public Piese[][] board = new Piese[8][8];
     public Piese rocada;
-    public Piese rege, sahP, piesaSelectata, piesaCapturata;
+    public Piese sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
     public static final int alb = 1, negru = -1;

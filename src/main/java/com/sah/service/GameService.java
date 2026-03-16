@@ -12,7 +12,6 @@ public class GameService {
 
     public ChessBoard getOrCreateBoard(String lobbyId){
         return activeLobbies.computeIfAbsent(lobbyId, id -> {
-            System.out.println("Creating lobby " + lobbyId);
             ChessBoard newBoard = new ChessBoard();
             newBoard.initializeBoard();
             return newBoard;

@@ -125,8 +125,6 @@ public class ChessApiController {
     @MessageMapping("/chat.addUser/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
     public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId) {
-        System.out.println("CHAT MESSAGE DTO " + chatMessageDTO);
-        System.out.println("LOBBY ID; " + lobbyId);
         return chessLobbyChatService.addUser(chatMessageDTO.getSender(), lobbyId);
     }
 }

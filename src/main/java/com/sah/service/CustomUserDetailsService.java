@@ -35,8 +35,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     public loggedUser loadInfo(Principal principal) {
-        System.out.println("principal : " + principal);
-
         Users loggedUserAllInfo = userRepo.findByUsername(principal.getName());
 
         return new loggedUser(loggedUserAllInfo.getId(), loggedUserAllInfo.getUsername());
