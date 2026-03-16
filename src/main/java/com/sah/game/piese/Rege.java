@@ -22,6 +22,9 @@ public class Rege extends Piese {
            // rocada mica
            if(targetCol == col + 2 && targetRow == row && piesaInFata(targetRow, targetCol) == false)
            {
+               System.out.println("E ROCADA MICA POSIBILA? " +checkRocadaMare(color, row, precol+1, precol+2));
+               if(!checkRocadaMica(color, row, precol+1, precol+2))
+                   return false;
                if(board[prerow][precol+3].miscata == false){
                    game.rocada = board[prerow][precol+3];
                    return true;
@@ -31,6 +34,10 @@ public class Rege extends Piese {
            // rocada mare
            if(targetCol == col - 2 && targetRow == row && !piesaInFata(targetRow, targetCol))
            {
+               System.out.println("E ROCADA MARE POSIBILA? " +checkRocadaMare(color, row, precol-1, precol-2));
+               if(!checkRocadaMare(color, row, precol-1, precol-2)) {
+                   return false;
+               }
                if(board[prerow][precol-4].miscata == false){
                    game.rocada = board[prerow][precol-4];
                    return true;
@@ -38,5 +45,24 @@ public class Rege extends Piese {
            }
        }
         return false;
+    }
+
+    private boolean checkRocadaMica(int culoareCurenta, int targetRow, int square1, int square2) {
+        for(Piese p : game.pieseList) {
+            if(p.color == culoareCurenta)
+                continue;
+            if(p.miscare(targetRow, square1) || p.miscare(targetRow, square2))
+                return false;
+        }
+        return true;
+    }
+    private boolean checkRocadaMare(int culoareCurenta, int targetRow, int square1, int square2) {
+        for(Piese p : game.pieseList) {
+            if(p.color == culoareCurenta)
+                continue;
+            if(p.miscare(targetRow, square1) || p.miscare(targetRow, square2))
+                return false;
+        }
+        return true;
     }
 }
