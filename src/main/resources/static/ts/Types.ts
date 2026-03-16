@@ -54,3 +54,8 @@ export interface Message {
     content: string;
     type: MessageType;
 }
+
+export interface minimalState {
+    Piese: any;
+    culoareCurenta: number;
+}

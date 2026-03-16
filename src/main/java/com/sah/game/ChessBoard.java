@@ -39,10 +39,13 @@ public class ChessBoard {
     public void initializeBoard() {
         this.board = new Piese[8][8];
 
-
+        for (int i = 0; i < 8; i++) {
+            board[1][i] = new Pion(negru, 1, i, this);
+        }
         board[0][0] = new Tura(negru, 0, 0, this);
         board[0][7] = new Tura(negru, 0, 7, this);
-
+        board[0][1] = new Cal(negru, 0, 1, this);
+        board[0][6] = new Cal(negru, 0, 6, this);
         board[0][2] = new Nebun(negru, 0, 2, this);
         board[0][5] = new Nebun(negru, 0, 5, this);
         board[0][3] = new Regina(negru, 0, 3, this);

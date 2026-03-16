@@ -1,8 +1,9 @@
 import { Tabla } from './Tabla.js';
 import { Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
-import { connect, sendMessage, culoareCurenta } from "./WebSockets.js"
+import {connect, sendMessage, culoareCurenta, setCuloareCurenta} from "./WebSockets.js"
 import {getInfoLobby} from "./APIs.js";
+import {minimalState} from "./Types";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
@@ -77,8 +78,10 @@ async function loadBoard(lobbyId: string):Promise<void>
 {
     try {
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
-        const piecesData = await response.json();
-
+        const minimalState: minimalState = await response.json();
+        console.log(minimalState);
+        const piecesData = minimalState.Piese;
+        setCuloareCurenta(minimalState.culoareCurenta);
         tabla.setPiecesFromServer(piecesData);
         tabla.redesenare();
     }

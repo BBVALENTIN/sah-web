@@ -1,12 +1,9 @@
 package com.sah.controller;
 
-import com.sah.dto.ChatMessageDTO;
-import com.sah.dto.MoveRequestDTO;
-import com.sah.dto.PiesaDTO;
+import com.sah.dto.*;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.enums.MessageType;
 import com.sah.game.ChessBoard;
-import com.sah.dto.MoveResultDTO;
 import com.sah.game.piese.Piese;
 import com.sah.service.ChessLobbyChatService;
 import com.sah.service.GameService;
@@ -98,11 +95,10 @@ public class ChessApiController {
     }
 
     @GetMapping("/onlineState/{lobbyId}")
-    public List<PiesaDTO> getOnlineState(@PathVariable String lobbyId) {
+    public minimalStateDTO getOnlineState(@PathVariable String lobbyId) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
-        System.out.println("All my pieces for lobby " + lobbyId);
-        System.out.println(lobbyBoard.getAllPiecesDTO());
-        return lobbyBoard.getAllPiecesDTO();
+        minimalStateDTO minimalStateDTO = new minimalStateDTO(lobbyBoard.getAllPiecesDTO(), ChessBoard.culoareCurenta);
+        return minimalStateDTO;
     }
 
     @MessageMapping("/chat.sendMessage/{lobbyId}")

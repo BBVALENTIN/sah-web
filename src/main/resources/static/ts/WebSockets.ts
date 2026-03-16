@@ -133,3 +133,7 @@ function onErrorsReceived(payload: any) {
     const errorCodes = JSON.parse(payload.body);
     tabla.redesenare();
 }
+
+export function setCuloareCurenta(culoare: number) {
+    culoareCurenta = culoare;
+}
