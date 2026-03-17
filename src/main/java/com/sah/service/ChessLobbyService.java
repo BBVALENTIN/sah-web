@@ -87,7 +87,6 @@ public class ChessLobbyService {
 
         ChessLobbyChats chat = new ChessLobbyChats();
         chat.setChatId(chessLobbyChatService.assignLobbyChatId());
-
         lobby.setChat(chat);
 
         lobbyRepository.save(lobby);

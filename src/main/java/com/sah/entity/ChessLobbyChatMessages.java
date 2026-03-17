@@ -24,6 +24,5 @@ public class ChessLobbyChatMessages {
     private LocalDateTime sendDate;
 
     @ManyToOne
-    @JoinColumn(name = "chat_id")
     private ChessLobbyChats chat;
 }

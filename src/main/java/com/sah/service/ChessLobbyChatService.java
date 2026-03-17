@@ -79,6 +79,19 @@ public class ChessLobbyChatService {
     }
 
     public ChatMessageDTO addUser(String sender, String lobbyId) {
+        ChessLobbyChatMessages message = new ChessLobbyChatMessages();
+        ChessLobbies lobby = lobbyRepository.findById(lobbyId)
+                .orElseThrow();
+        Users user = userRepository.findByUsername(sender);
+        ChessLobbyChats chat = lobby.getChat();
+
+        message.setSenderId(user.getId());
+        message.setSenderName(sender);
+        message.setContent(MessageType.JOIN.toString());
+        message.setSendDate(LocalDateTime.now());
+        message.setChat(chat);
+
+        lobbyChatMessagesService.save(message);
         return new ChatMessageDTO(sender, "", MessageType.JOIN);
     }
 }
