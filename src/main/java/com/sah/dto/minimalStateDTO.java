@@ -13,4 +13,5 @@ import java.util.List;
 public class minimalStateDTO {
     public List<PiesaDTO> Piese;
     public int culoareCurenta; // de facut enum pentru culoare
+    public String currentPGN;
 }

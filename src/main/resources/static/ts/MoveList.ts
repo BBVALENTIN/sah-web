@@ -46,6 +46,12 @@ export class MoveList {
         }
     }
 
+    public addWholePGN(PGN: string) {
+        const result: string[] = PGN.split(" ");
+        for(let i = 0; i <= result.length; i++) {
+            this.addMove(result[i]);
+        }
+    }
 
     private createCell(className: string, text: string) {
         const div = document.createElement("div");

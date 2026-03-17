@@ -374,4 +374,8 @@ public class ChessBoard {
             promoted = true;
         }
     }
+
+    public String getPGN() {
+        return moveNotation.allFormattedMoves;
+    }
 }

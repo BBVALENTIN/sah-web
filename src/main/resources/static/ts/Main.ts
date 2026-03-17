@@ -82,6 +82,8 @@ async function loadBoard(lobbyId: string):Promise<void>
         console.log(minimalState);
         const piecesData = minimalState.Piese;
         setCuloareCurenta(minimalState.culoareCurenta);
+        if(minimalState.currentPGN != null )
+            moveList.addWholePGN(minimalState.currentPGN);
         tabla.setPiecesFromServer(piecesData);
         tabla.redesenare();
     }

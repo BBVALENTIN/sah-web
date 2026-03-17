@@ -94,10 +94,11 @@ public class MoveNotation {
             else
                 notation = notation + "#" + " 1-0";
         }
-
+        allPGN(notation);
         return notation;
     }
-    public void allFormatedMoves(String notation)
+
+    public void allPGN(String notation)
     {
             currentFormattedMove = notation;
             allFormattedMoves += notation + " ";
