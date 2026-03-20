@@ -1,16 +1,16 @@
 export enum TipPiesa {
-    PION = 'PION',
-    TURA = 'TURA',
-    CAL = 'CAL',
-    NEBUN = 'NEBUN',
-    REGINA = 'REGINA',
-    REGE = 'REGE'
+    PAWN = 'PAWN',
+    ROOK = 'ROOK',
+    KNIGHT = 'KNIGHT',
+    BISHOP = 'BISHOP',
+    QUEEN = 'QUEEN',
+    KING = 'KING'
 }
 
-export enum Culoare {
-    ALB = 1,
-    NEGRU = -1,
-    MECI_TERMINAT = 0
+export enum culoriPiesa {
+    ALB = "ALB",
+    NEGRU = "NEGRU",
+    OVER = "OVER"
 }
 
 export enum MessageType {
@@ -29,10 +29,4 @@ export enum LobbyType {
 export enum Formats {
     BLITZ = 'BLITZ',
     CLASSICAL = 'CLASSICAL'
-}
-
-export enum culoriPiesa {
-    ALB = "ALB",
-    NEGRU = "NEGRU",
-    OVER = "OVER"
 }

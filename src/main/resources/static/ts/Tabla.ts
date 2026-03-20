@@ -5,7 +5,7 @@ import {Cal} from "./piese/Cal.js";
 import {Tura} from "./piese/Tura.js";
 import {Rege} from "./piese/Rege.js";
 import {Regina} from "./piese/Regina.js";
-import {culoriPiesa} from "./Enums.js";
+import {culoriPiesa, TipPiesa} from "./Enums.js";
 
 export class Tabla {
     static squareSize: number = 75;
@@ -43,6 +43,38 @@ export class Tabla {
         this.isBlack = isBlack;
     }
 
+    async loadImages(): Promise<void> {
+        const tipuri = Object.values(TipPiesa);
+        const culori = [ "white", "black"];
+        const promises: Promise<void>[] = [];
+
+        culori.forEach(culoare => {
+            tipuri.forEach(tip => {
+                const imgKey = `${culoare}-${tip.toLowerCase()}`;
+
+                if (this.imageCache[imgKey]) return;
+
+                const img = new Image();
+                img.src = `./images/${imgKey}.png`;
+
+                const p = new Promise<void>((resolve) => {
+                    img.onload = () => {
+                        this.imageCache[imgKey] = img;
+                        resolve();
+                    };
+                    img.onerror = () => {
+                        console.error(`Nu am putut incarca imaginea la: ${img.src}`);
+                        resolve(); // Mergem mai departe chiar dacă una lipseste, AIAE
+                    };
+                });
+                promises.push(p);
+            });
+        });
+
+        await Promise.all(promises);
+        console.log("Toate imaginile au fost puse în cache.");
+    }
+
     redesenare(piese: Piesa[] = this.piese, piesaSelectata?: Piesa): void {
         let c = 0;
         const ctx = this.ctx;
@@ -64,7 +96,7 @@ export class Tabla {
 
         piese.forEach(p => this.deseneazaPiesaOrientata(p));
 
-        if(piesaSelectata && piesaSelectata.img.complete) {
+        if(piesaSelectata && piesaSelectata.img?.complete) {
             this.deseneazaPiesaOrientata(piesaSelectata);
         }
 
@@ -83,7 +115,7 @@ export class Tabla {
             const x = vizualCol * size;
             const y = vizualRow * size;
 
-            if (piesa.img.complete) {
+            if (piesa.img && piesa.img.complete) {
                 this.ctx.drawImage(piesa.img, x, y, size, size);
             }
         }
@@ -106,60 +138,24 @@ export class Tabla {
     createPiesaFromData(data: any):Piesa
     {
         console.log(data);
-        const { tip, color, row, col} = data;
-
+        const { tip, color, row, col } = data;
         let piesa: Piesa;
 
         switch (tip.toLowerCase()) {
-            case "pion":
-                piesa = new Pion(color, row, col);
-                break;
-            case "tura":
-                piesa = new Tura(color, row, col);
-                break;
-            case "cal":
-                piesa = new Cal(color, row, col);
-                break;
-            case "nebun":
-                piesa = new Nebun(color, row, col);
-                break;
-            case "regina":
-                piesa = new Regina(color, row, col);
-                break;
-            case "rege":
-                piesa = new Rege(color, row, col);
-                break;
-            default:
-                throw new Error(`Tip necunoscut ${tip.toLowerCase()}`);
+            case "pawn": piesa = new Pion(color, row, col); break;
+            case "queen": piesa = new Regina(color, row, col); break;
+            case "king": piesa = new Rege(color, row, col); break;
+            case "rook": piesa = new Tura(color, row, col); break;
+            case "bishop": piesa = new Nebun(color, row, col); break;
+            case "knight": piesa = new Cal(color, row, col); break;
+            default: throw new Error("Tip necunoscut");
         }
 
-        piesa.row = parseInt(row);
-        piesa.col = parseInt(col);
-
-        if (piesa.getX && piesa.getY) {
-            piesa.x = piesa.getX(piesa.col);
-            piesa.y = piesa.getY(piesa.row);
-        }
-
-        const colorStr = (color === culoriPiesa.ALB) ? "white" : "black";
-        const imgKey = `${colorStr}-${tip.toLowerCase()}`;
-        const imgAny = piesa.img as any;
+        const colorKey = (color === culoriPiesa.ALB) ? "white" : "black"; // pentru load in director
+        const imgKey = `${colorKey}-${tip.toLowerCase()}`;
 
         if (this.imageCache[imgKey]) {
             piesa.img = this.imageCache[imgKey];
-        } else {
-            if (piesa.img) {
-                this.imageCache[imgKey] = piesa.img;
-            }
-        }
-
-        if (piesa.img && !piesa.img.complete) {
-            if (!imgAny.hasRedrawListener) {
-                piesa.img.addEventListener('load', () => {
-                    this.redesenare();
-                });
-                imgAny.hasRedrawListener = true;
-            }
         }
 
         return piesa;

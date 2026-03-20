@@ -11,16 +11,15 @@ export class Piesa {
     isDragging?: boolean;
     dragX?: number;
     dragY?: number;
-    img: HTMLImageElement
+    img?: HTMLImageElement
     constructor(color: culoriPiesa, row: number, col: number) {
         this.color = color
         this.row = row;
         this.col = col;
-        this.img = new Image();
     }
 
     desen(ctx: CanvasRenderingContext2D): void {
-        if(!this.img.complete) return;
+        if(!this.img || !this.img.complete) return;
 
         let xPixeli = this.col * Tabla.squareSize;
         let yPixeli = this.row * Tabla.squareSize;
