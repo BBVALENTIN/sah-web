@@ -4,6 +4,7 @@ import com.sah.dto.MoveDataNotationDTO;
 import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.dto.LastMove;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
 import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.GameEnums.Tip;
@@ -11,6 +12,7 @@ import com.sah.game.piese.*;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 // daca e o mutare duplicata nu se mai insereaza anotatia
@@ -21,15 +23,15 @@ public class ChessBoard {
     public Piese sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
-    public static final int alb = 1, negru = -1;
     public short numberOfMoves;
-    public static short oldSize;
+    public short oldSize;
     public boolean promoted, isCheckMate;
     public ErrorCodes error;
     public LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
+    public Player playerWhite, playerBlack;
 
-    public static int culoareCurenta = alb;
+    public ColorType culoareCurenta = ColorType.ALB;
 
 
     public ChessBoard() {
@@ -37,34 +39,35 @@ public class ChessBoard {
     }
 
     public void initializeBoard() {
+        System.out.println("PLAYER WHITE: " + playerWhite + " PLAYER BLACK: " + playerBlack);
         this.board = new Piese[8][8];
 
         for (int i = 0; i < 8; i++) {
-            board[1][i] = new Pion(negru, 1, i, this);
+            board[1][i] = new Pion(ColorType.NEGRU, 1, i, this);
         }
-        board[0][0] = new Tura(negru, 0, 0, this);
-        board[0][7] = new Tura(negru, 0, 7, this);
-        board[0][1] = new Cal(negru, 0, 1, this);
-        board[0][6] = new Cal(negru, 0, 6, this);
-        board[0][2] = new Nebun(negru, 0, 2, this);
-        board[0][5] = new Nebun(negru, 0, 5, this);
-        board[0][3] = new Regina(negru, 0, 3, this);
-        board[0][4] = new Rege(negru, 0, 4, this);
+        board[0][0] = new Tura(ColorType.NEGRU, 0, 0, this);
+        board[0][7] = new Tura(ColorType.NEGRU, 0, 7, this);
+        board[0][1] = new Cal(ColorType.NEGRU, 0, 1, this);
+        board[0][6] = new Cal(ColorType.NEGRU, 0, 6, this);
+        board[0][2] = new Nebun(ColorType.NEGRU, 0, 2, this);
+        board[0][5] = new Nebun(ColorType.NEGRU, 0, 5, this);
+        board[0][3] = new Regina(ColorType.NEGRU, 0, 3, this);
+        board[0][4] = new Rege(ColorType.NEGRU, 0, 4, this);
 
         for (int i = 0; i < 8; i++) {
-            board[6][i] = new Pion(alb, 6, i, this);
+            board[6][i] = new Pion(ColorType.ALB, 6, i, this);
         }
-        board[7][7] = new Tura(alb, 7, 7, this);
-        board[7][0] = new Tura(alb, 7, 0, this);
-        board[7][1] = new Cal(alb, 7, 1, this);
-        board[7][6] = new Cal(alb, 7, 6, this);
-        board[7][5] = new Nebun(alb, 7, 5, this);
-        board[7][2] = new Nebun(alb, 7, 2, this);
-        board[7][3] = new Regina(alb, 7, 3, this);
-        board[7][4] = new Rege(alb, 7, 4, this);
+        board[7][7] = new Tura(ColorType.ALB, 7, 7, this);
+        board[7][0] = new Tura(ColorType.ALB, 7, 0, this);
+        board[7][1] = new Cal(ColorType.ALB, 7, 1, this);
+        board[7][6] = new Cal(ColorType.ALB, 7, 6, this);
+        board[7][5] = new Nebun(ColorType.ALB, 7, 5, this);
+        board[7][2] = new Nebun(ColorType.ALB, 7, 2, this);
+        board[7][3] = new Regina(ColorType.ALB, 7, 3, this);
+        board[7][4] = new Rege(ColorType.ALB, 7, 4, this);
 
         pieseList = getAllPieces();
-        culoareCurenta = alb;
+        culoareCurenta = ColorType.ALB;
         numberOfMoves = 1;
     }
 
@@ -124,7 +127,7 @@ public class ChessBoard {
 
         promoted = false;
         if(isCheckMate == true)
-            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, 0, currentFormattedMove, isCapture, lastMove);
+            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove);
         // sah, sah-mat
         return new MoveResultDTO(
                 getAllPiecesDTO(),
@@ -196,11 +199,14 @@ public class ChessBoard {
     }
 
     public void switchTurn() {
-        culoareCurenta *= -1;
+        if(culoareCurenta == ColorType.ALB)
+            culoareCurenta = ColorType.NEGRU;
+        else
+            culoareCurenta = ColorType.ALB;
         numberOfMoves++;
     }
 
-    public static int getCuloareCurenta() {
+    public ColorType getCuloareCurenta() {
         return culoareCurenta;
     }
 
@@ -365,11 +371,11 @@ public class ChessBoard {
     public void checkPromotion(Piese piesa, int row, int col)
     {
         promoted = false;
-        if(row == 7 && piesa.color == negru && piesa.tip == Tip.PION) {
+        if(row == 7 && piesa.color == ColorType.NEGRU && piesa.tip == Tip.PION) {
             board[row][col] = new Regina(piesa.color, row, col, this);
             promoted = true;
         }
-        else if (row == 0 && piesa.color == alb) {
+        else if (row == 0 && piesa.color == ColorType.ALB) {
             board[row][col] = new Regina(piesa.color, row, col, this);
             promoted = true;
         }

@@ -4,6 +4,7 @@ import com.sah.dto.*;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.enums.MessageType;
 import com.sah.game.ChessBoard;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.piese.Piese;
 import com.sah.service.ChessLobbyChatService;
 import com.sah.service.GameService;
@@ -17,6 +18,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.awt.*;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +62,9 @@ public class ChessApiController {
     }
 
     @GetMapping("/turn")
-    public int getCuloareCurenta()
+    public ColorType getCuloareCurenta()
     {
-        return ChessBoard.getCuloareCurenta();
+        return chessBoard.getCuloareCurenta();
     }
 
 
@@ -97,7 +99,7 @@ public class ChessApiController {
     @GetMapping("/onlineState/{lobbyId}")
     public minimalStateDTO getOnlineState(@PathVariable String lobbyId) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
-        minimalStateDTO minimalStateDTO = new minimalStateDTO(lobbyBoard.getAllPiecesDTO(), ChessBoard.culoareCurenta, lobbyBoard.getPGN());
+        minimalStateDTO minimalStateDTO = new minimalStateDTO(lobbyBoard.getAllPiecesDTO(), chessBoard.culoareCurenta, lobbyBoard.getPGN());
         return minimalStateDTO;
     }
 

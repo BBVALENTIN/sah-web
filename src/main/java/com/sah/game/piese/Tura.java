@@ -1,10 +1,11 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
 
 public class Tura extends Piese {
-    public Tura(int color, int row, int col, ChessBoard game){
+    public Tura(ColorType color, int row, int col, ChessBoard game){
         super(color, row, col, game);
         tip = Tip.TURA;
     }

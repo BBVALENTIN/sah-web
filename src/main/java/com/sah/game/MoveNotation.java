@@ -1,9 +1,12 @@
 package com.sah.game;
 
 import com.sah.dto.MoveDataNotationDTO;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.GameEnums.Tip;
 import com.sah.game.piese.Piese;
+
+import java.awt.*;
 
 public class MoveNotation {
     public String allFormattedMoves, currentFormattedMove;
@@ -89,7 +92,7 @@ public class MoveNotation {
         }
         if(dto.isCheckMate)
         {
-            if(dto.culoareCurenta == 1)
+            if(dto.culoareCurenta == ColorType.ALB)
                 notation = notation + "#" + " 0-1";
             else
                 notation = notation + "#" + " 1-0";

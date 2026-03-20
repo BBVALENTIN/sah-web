@@ -1,5 +1,6 @@
 package com.sah.dto;
 
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.piese.Piese;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ public class MoveDataNotationDTO {
     public int fromRow, fromCol;
     public int targetRow, targetCol;
     public boolean isCheck, isCheckMate, promoted, isCapture;
-    public int culoareCurenta;
+    public ColorType culoareCurenta;
     public NotatieRocada notatieRocada;
     public List<Piese> oldPieces;
 }

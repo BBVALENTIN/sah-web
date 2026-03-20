@@ -1,10 +1,11 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
 
 public class Pion extends Piese {
-    public Pion(int color, int row, int col, ChessBoard game) {
+    public Pion(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
         tip = Tip.PION;
     }
@@ -13,7 +14,7 @@ public class Pion extends Piese {
     public boolean miscare(int targetRow, int targetCol)
     {
         int directie;
-        if(color == 1)
+        if(color == ColorType.ALB)
             directie = -1;
         else
             directie = 1;

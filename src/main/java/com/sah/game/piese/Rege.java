@@ -1,11 +1,13 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
 
+import java.awt.*;
 
 public class Rege extends Piese {
-    public Rege(int color, int row, int col, ChessBoard game) {
+    public Rege(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
         tip = Tip.REGE;
     }
@@ -45,7 +47,7 @@ public class Rege extends Piese {
         return false;
     }
 
-    private boolean checkRocadaMica(int culoareCurenta, int targetRow, int square1, int square2) {
+    private boolean checkRocadaMica(ColorType culoareCurenta, int targetRow, int square1, int square2) {
         for(Piese p : game.pieseList) {
             if(p.color == culoareCurenta)
                 continue;
@@ -54,7 +56,7 @@ public class Rege extends Piese {
         }
         return true;
     }
-    private boolean checkRocadaMare(int culoareCurenta, int targetRow, int square1, int square2) {
+    private boolean checkRocadaMare(ColorType culoareCurenta, int targetRow, int square1, int square2) {
         for(Piese p : game.pieseList) {
             if(p.color == culoareCurenta)
                 continue;

@@ -1,19 +1,22 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
+
+import java.awt.*;
 
 public class Piese {
     public int x, y;
     public int col, row, precol, prerow;
-    public int color;
+    public ColorType color;
     public boolean miscata;
     public Piese lovestePiese;
     public String img;
     public Tip tip;
     protected ChessBoard game;
 
-    public Piese(int color, int row, int col, ChessBoard game)
+    public Piese(ColorType color, int row, int col, ChessBoard game)
     {
         this.color = color;
         this.col = col;
@@ -160,7 +163,7 @@ public class Piese {
 
 
     public String getColorAsString() {
-        if (this.color == 1) return "alb";
+        if (this.color == ColorType.ALB) return "alb";
         else return "negru";
     }
 }

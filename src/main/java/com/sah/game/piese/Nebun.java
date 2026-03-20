@@ -1,10 +1,11 @@
 package com.sah.game.piese;
 
 import com.sah.game.ChessBoard;
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
 
 public class Nebun  extends Piese {
-    public Nebun(int color, int row, int col, ChessBoard game)
+    public Nebun(ColorType color, int row, int col, ChessBoard game)
     {
         super(color, row, col, game);
         tip = Tip.NEBUN;

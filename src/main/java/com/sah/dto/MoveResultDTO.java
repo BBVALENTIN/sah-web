@@ -1,19 +1,21 @@
 package com.sah.dto;
 
+import java.awt.*;
 import java.util.List;
 
+import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
 
 public class MoveResultDTO {
     private List<PiesaDTO> updatedPieces;
     private boolean isCheck, isCheckmate;
     private ErrorCodes errorCodes;
-    private int culoareCurenta;
+    private ColorType culoareCurenta;
     private String pgn;
     private boolean captures;
     private LastMove lastMove;
 
-    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, int culoareCurenta, String pgn, boolean captures, LastMove lastMove) {
+    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, ColorType culoareCurenta, String pgn, boolean captures, LastMove lastMove) {
         this.updatedPieces = updatedPieces;
         this.isCheck = isCheck;
         this.isCheckmate = isCheckmate;
@@ -61,11 +63,11 @@ public class MoveResultDTO {
         isCheckmate = checkmate;
     }
 
-    public int getCuloareCurenta() {
+    public ColorType getCuloareCurenta() {
         return culoareCurenta;
     }
 
-    public void setCuloareCurenta(int culoareCurenta) {
+    public void setCuloareCurenta(ColorType culoareCurenta) {
         this.culoareCurenta = culoareCurenta;
     }
 
