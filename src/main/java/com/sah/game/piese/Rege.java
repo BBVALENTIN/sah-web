@@ -4,12 +4,10 @@ import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
 
-import java.awt.*;
-
 public class Rege extends Piese {
     public Rege(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
-        tip = Tip.REGE;
+        tip = Tip.KING;
     }
 
     @Override

@@ -6,8 +6,6 @@ import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.GameEnums.Tip;
 import com.sah.game.piese.Piese;
 
-import java.awt.*;
-
 public class MoveNotation {
     public String allFormattedMoves, currentFormattedMove;
 
@@ -32,11 +30,11 @@ public class MoveNotation {
 
         char pieceChar;
         switch(dto.piesa.tip){
-            case CAL -> pieceChar = 'N';
-            case NEBUN -> pieceChar = 'B';
-            case REGE ->  pieceChar = 'K';
-            case REGINA -> pieceChar = 'Q';
-            case TURA ->  pieceChar = 'R';
+            case KNIGHT -> pieceChar = 'N';
+            case BISHOP -> pieceChar = 'B';
+            case KING ->  pieceChar = 'K';
+            case QUEEN -> pieceChar = 'Q';
+            case ROOK ->  pieceChar = 'R';
             default -> pieceChar = '?';
         }
 
@@ -47,7 +45,7 @@ public class MoveNotation {
         int fromBoardRow = 8 - dto.fromRow;
 
         String disambiguation = "";
-        if(dto.piesa.tip != Tip.PION)
+        if(dto.piesa.tip != Tip.PAWN)
         {
             for(Piese p: dto.oldPieces)
             {
@@ -67,7 +65,7 @@ public class MoveNotation {
 
         String notation = "";
 
-        if(dto.piesa.tip == Tip.PION) {
+        if(dto.piesa.tip == Tip.PAWN) {
             if (dto.isCapture)
             {
                 notation = fromColChar+"x"+colChar+boardRow;

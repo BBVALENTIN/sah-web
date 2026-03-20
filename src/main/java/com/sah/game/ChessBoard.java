@@ -9,10 +9,8 @@ import com.sah.game.GameEnums.ErrorCodes;
 import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.GameEnums.Tip;
 import com.sah.game.piese.*;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 // daca e o mutare duplicata nu se mai insereaza anotatia
@@ -100,7 +98,7 @@ public class ChessBoard {
 
         mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
 
-        if(piesaSelectata.tip == Tip.PION)
+        if(piesaSelectata.tip == Tip.PAWN)
         {
             checkPromotion(piesaSelectata, targetRow, targetCol);
         }
@@ -213,7 +211,7 @@ public class ChessBoard {
 
     public Piese getRege(boolean opponent) {
         for (Piese piesa : pieseList) {
-            if (piesa.tip == Tip.REGE) {
+            if (piesa.tip == Tip.KING) {
                 if (opponent && piesa.color != culoareCurenta)
                     return piesa;
                 if (!opponent && piesa.color == culoareCurenta)
@@ -334,7 +332,7 @@ public class ChessBoard {
             if (piesa.color != rege.color)
                 continue; // salvam piesele de aceeasi culoare cu regele nostru
 
-            if(piesa.tip == Tip.REGE)
+            if(piesa.tip == Tip.KING)
                 continue;
 
             for(int r = 0; r < 8; r++)
@@ -371,7 +369,7 @@ public class ChessBoard {
     public void checkPromotion(Piese piesa, int row, int col)
     {
         promoted = false;
-        if(row == 7 && piesa.color == ColorType.NEGRU && piesa.tip == Tip.PION) {
+        if(row == 7 && piesa.color == ColorType.NEGRU && piesa.tip == Tip.PAWN) {
             board[row][col] = new Regina(piesa.color, row, col, this);
             promoted = true;
         }

@@ -7,7 +7,7 @@ import com.sah.game.GameEnums.Tip;
 public class Regina extends Piese{
     public Regina(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
-        tip = Tip.REGINA;
+        tip = Tip.QUEEN;
     }
 
     @Override

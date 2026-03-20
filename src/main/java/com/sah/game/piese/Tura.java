@@ -7,7 +7,7 @@ import com.sah.game.GameEnums.Tip;
 public class Tura extends Piese {
     public Tura(ColorType color, int row, int col, ChessBoard game){
         super(color, row, col, game);
-        tip = Tip.TURA;
+        tip = Tip.ROOK;
     }
 
     @Override

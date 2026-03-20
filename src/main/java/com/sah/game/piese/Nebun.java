@@ -8,7 +8,7 @@ public class Nebun  extends Piese {
     public Nebun(ColorType color, int row, int col, ChessBoard game)
     {
         super(color, row, col, game);
-        tip = Tip.NEBUN;
+        tip = Tip.BISHOP;
     }
 
     @Override

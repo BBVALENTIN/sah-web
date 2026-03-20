@@ -7,7 +7,7 @@ import com.sah.game.GameEnums.Tip;
 public class Pion extends Piese {
     public Pion(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
-        tip = Tip.PION;
+        tip = Tip.PAWN;
     }
 
     @Override

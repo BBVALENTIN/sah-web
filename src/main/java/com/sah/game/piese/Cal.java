@@ -4,13 +4,11 @@ import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
 
-import java.awt.*;
-
 public class Cal extends Piese {
     public Cal(ColorType color, int row, int col, ChessBoard game)
     {
         super(color, row, col, game);
-        tip = Tip.CAL;
+        tip = Tip.KNIGHT;
     }
 
     @Override
