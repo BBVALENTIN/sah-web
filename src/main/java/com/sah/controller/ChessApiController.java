@@ -21,7 +21,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import java.awt.*;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chess")
@@ -86,6 +88,17 @@ public class ChessApiController {
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
+        Piese piesa = lobbyBoard.board[request.getFromRow()][request.getFromCol()];
+
+        if (piesa == null) {
+            sendError(request.getPlayer(), "Nu există nicio piesă acolo!");
+            return;
+        }
+
+        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), request.getPlayer(), piesa.color)) {
+            sendError(request.getPlayer(), "Nu poți muta piesele adversarului!");
+            return;
+        }
         MoveResultDTO result = lobbyBoard.faMiscare(request.getFromRow(), request.getFromCol(), request.getToRow(), request.getToCol());
 
         if(result.getErrorCodes() == null) {
@@ -129,5 +142,11 @@ public class ChessApiController {
     public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId) {
         return chessLobbyChatService.addUser(chatMessageDTO.getSender(), lobbyId);
     }
+
+    private void sendError(String username, String message) {
+        Map<String, String> errorBody = new HashMap<>();
+        errorBody.put("error", message);
+
+        messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);    }
 }
 

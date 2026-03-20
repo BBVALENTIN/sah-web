@@ -27,7 +27,6 @@ public class ChessBoard {
     public ErrorCodes error;
     public LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
-    public Player playerWhite, playerBlack;
 
     public ColorType culoareCurenta = ColorType.ALB;
 
@@ -37,7 +36,6 @@ public class ChessBoard {
     }
 
     public void initializeBoard() {
-        System.out.println("PLAYER WHITE: " + playerWhite + " PLAYER BLACK: " + playerBlack);
         this.board = new Piese[8][8];
 
         for (int i = 0; i < 8; i++) {
