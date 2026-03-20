@@ -1,9 +1,9 @@
 import {Tabla} from "../Tabla.js";
-import {TipPiesa} from "../Enums.js";
+import {culoriPiesa, TipPiesa} from "../Enums.js";
 
 export class Piesa {
     readonly tip: TipPiesa | undefined;
-    color: 1 | -1;
+    color: culoriPiesa;
     row:number;
     col: number;
     x: number = 0;
@@ -12,7 +12,7 @@ export class Piesa {
     dragX?: number;
     dragY?: number;
     img: HTMLImageElement
-    constructor(color: 1 | -1, row: number, col: number) {
+    constructor(color: culoriPiesa, row: number, col: number) {
         this.color = color
         this.row = row;
         this.col = col;

@@ -1,5 +1,5 @@
-import {lobbyInfo, Message, Mutare_Reusita, userInfo} from "./Types.js";
-import {Culoare, LobbyType, MessageType} from "./Enums.js";
+import {lobbyInfo, Message, Mutare_Reusita} from "./Types.js";
+import {culoriPiesa, MessageType} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
 
 declare var SockJS: any;
@@ -9,7 +9,7 @@ declare var Stomp: any;
 let loggedUsername: string = "";
 let userId: number = 0;
 let currentLobbyId: string = "";
-export let culoareCurenta: number = Culoare.ALB;
+export let culoareCurenta: culoriPiesa = culoriPiesa.ALB;
 
 export const state = {
     stompClient: null as any,
@@ -134,6 +134,6 @@ function onErrorsReceived(payload: any) {
     tabla.redesenare();
 }
 
-export function setCuloareCurenta(culoare: number) {
+export function setCuloareCurenta(culoare: culoriPiesa) {
     culoareCurenta = culoare;
 }

@@ -30,3 +30,9 @@ export enum Formats {
     BLITZ = 'BLITZ',
     CLASSICAL = 'CLASSICAL'
 }
+
+export enum culoriPiesa {
+    ALB = "ALB",
+    NEGRU = "NEGRU",
+    OVER = "OVER"
+}

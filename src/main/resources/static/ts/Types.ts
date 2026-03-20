@@ -1,8 +1,8 @@
-import {MessageType, LobbyType, Formats} from "./Enums.js";
+import {MessageType, LobbyType, Formats, culoriPiesa} from "./Enums.js";
 
 export interface PiesaDTO {
     tip: String;
-    color: number;
+    color: culoriPiesa;
     row: number;
     col: number;
 }
@@ -14,7 +14,7 @@ export interface Mutare_Reusita {
     updatedPieces: PiesaDTO[];
     check: boolean;
     checkmate: boolean;
-    culoareCurenta: 1 | 0 | -1;
+    culoareCurenta: culoriPiesa;
     pgn: string;
     captures: boolean;
     lastMove: LastMove;
@@ -57,6 +57,6 @@ export interface Message {
 
 export interface minimalState {
     Piese: any;
-    culoareCurenta: number;
+    culoareCurenta: culoriPiesa;
     currentPGN: string;
 }

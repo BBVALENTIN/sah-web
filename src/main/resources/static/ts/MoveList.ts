@@ -1,5 +1,5 @@
 import {MoveRow} from "./Types.js";
-import {Culoare} from "./Enums.js";
+import {culoriPiesa} from "./Enums.js";
 
 export class MoveList {
     private container: HTMLElement;
@@ -67,11 +67,11 @@ export class MoveList {
         this.container.innerHTML = "";
     }
 
-    resign(culoareaCurenta: Culoare) {
+    resign(culoareaCurenta: culoriPiesa) {
         const whiteResigned: string = "0-1";
         const blackResigned: string = "1-0";
 
-        if(culoareaCurenta === Culoare.ALB)
+        if(culoareaCurenta === culoriPiesa.ALB)
         {
             this.addMove(whiteResigned);
         }

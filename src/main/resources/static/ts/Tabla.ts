@@ -5,6 +5,7 @@ import {Cal} from "./piese/Cal.js";
 import {Tura} from "./piese/Tura.js";
 import {Rege} from "./piese/Rege.js";
 import {Regina} from "./piese/Regina.js";
+import {culoriPiesa} from "./Enums.js";
 
 export class Tabla {
     static squareSize: number = 75;
@@ -104,6 +105,7 @@ export class Tabla {
     }
     createPiesaFromData(data: any):Piesa
     {
+        console.log(data);
         const { tip, color, row, col} = data;
 
         let piesa: Piesa;
@@ -139,7 +141,7 @@ export class Tabla {
             piesa.y = piesa.getY(piesa.row);
         }
 
-        const colorStr = (color === 1) ? "white" : "black";
+        const colorStr = (color === culoriPiesa.ALB) ? "white" : "black";
         const imgKey = `${colorStr}-${tip.toLowerCase()}`;
         const imgAny = piesa.img as any;
 
