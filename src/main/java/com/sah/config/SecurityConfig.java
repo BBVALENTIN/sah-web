@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @Profile("prod")
@@ -24,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http.
-                    csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/play/**"))
+                    csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/play/**", "logout"))
                     .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/register", "/css/**","/success", "/js/**").permitAll()
                             .anyRequest().authenticated()
                     )
@@ -32,7 +33,7 @@ public class SecurityConfig {
                             .defaultSuccessUrl("/", true)
                             .permitAll()
                     )
-                    .logout(logout -> logout.permitAll());
+                    .logout((logout) -> logout.logoutSuccessUrl("/logout").permitAll());
             return http.build();
         }
 }
