@@ -28,8 +28,6 @@ public class ChessLobbies {
     private String playerBlack;
     @Column(nullable = false)
     private LobbyType lobbyType;
-    @Column(nullable = true) // TO CHANGE
-    private String gameId;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "chat_id", nullable = false)
     private ChessLobbyChats chat;
