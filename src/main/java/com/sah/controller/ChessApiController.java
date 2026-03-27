@@ -147,6 +147,12 @@ public class ChessApiController {
         Map<String, String> errorBody = new HashMap<>();
         errorBody.put("error", message);
 
-        messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);    }
+        messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);
+    }
+
+    @PostMapping("/saveGame")
+    public GameDTO saveGame(@RequestBody GameDTO gameDTO) {
+
+    }
 }
 

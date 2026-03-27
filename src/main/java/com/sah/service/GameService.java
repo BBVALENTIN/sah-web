@@ -1,8 +1,11 @@
 package com.sah.service;
 
+import com.sah.dto.GameDTO;
+import com.sah.entity.ChessGamesClassic;
 import com.sah.entity.ChessLobbies;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
+import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +16,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameService {
     private final Map<String, ChessBoard> activeLobbies = new ConcurrentHashMap<>();
     private final LobbyRepository lobbyRepository;
+    private final GameRepository gameRepository;
 
-    public GameService(LobbyRepository lobbyRepository) {
+    public GameService(LobbyRepository lobbyRepository, GameRepository gameRepository) {
         this.lobbyRepository = lobbyRepository;
+        this.gameRepository = gameRepository;
     }
 
     public ChessBoard getOrCreateBoard(String lobbyId){
@@ -35,6 +40,17 @@ public class GameService {
         else {
             return username.equals(lobby.getPlayerBlack());
         }
+    }
+
+    public void saveClassicGame(GameDTO dto) {
+        ChessGamesClassic game =  new ChessGamesClassic();
+        dto.setLobbyId(dto.getLobbyId());
+        dto.setResult(dto.getResult());
+        dto.setUserWhiteId(dto.getUserWhiteId());
+        dto.setUserBlackId(dto.getUserBlackId());
+        dto.setNumberOfMoves(dto.getNumberOfMoves());
+
+        gameRepository.save(game);
     }
 
     // To implement further logic here
