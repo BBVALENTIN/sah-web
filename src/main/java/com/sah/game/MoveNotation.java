@@ -8,6 +8,7 @@ import com.sah.game.piese.Piese;
 
 public class MoveNotation {
     public String allFormattedMoves, currentFormattedMove;
+    public int numberOfMoves;
 
     public MoveNotation(){
         this.allFormattedMoves = "";
@@ -103,6 +104,7 @@ public class MoveNotation {
     {
             currentFormattedMove = notation;
             allFormattedMoves += notation + " ";
+            numberOfMoves++;
     }
 
     public String getAllFormattedMoves() {

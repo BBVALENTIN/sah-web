@@ -12,11 +12,6 @@ public class ChessGamesClassic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ClassicGameId;
-
-    @Column(nullable = false)
-    private int userWhiteId;
-    @Column(nullable = false)
-    private int userBlackId;
     @Column(nullable = false)
     private String result;
     @Column(nullable = false)
@@ -25,5 +20,7 @@ public class ChessGamesClassic {
     private String PGN;
     @Column(nullable = false)
     private String lobbyId;
+    @Column(nullable = false)
+    private boolean resignation;
 
 }

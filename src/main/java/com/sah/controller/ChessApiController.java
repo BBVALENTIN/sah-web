@@ -103,6 +103,9 @@ public class ChessApiController {
 
         if(result.getErrorCodes() == null) {
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
+            if(result.isCheckmate() == true) {
+                gameService.saveClassicGame(lobbyBoard, request.getLobbyId());
+            }
         }
         else {
             messagingTemplate.convertAndSendToUser(request.getPlayer(), "/queue/errors", result.getErrorCodes());
@@ -112,7 +115,7 @@ public class ChessApiController {
     @GetMapping("/onlineState/{lobbyId}")
     public minimalStateDTO getOnlineState(@PathVariable String lobbyId) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
-        minimalStateDTO minimalStateDTO = new minimalStateDTO(lobbyBoard.getAllPiecesDTO(), lobbyBoard.culoareCurenta, lobbyBoard.getPGN());
+        minimalStateDTO minimalStateDTO = new minimalStateDTO(lobbyBoard.getAllPiecesDTO(), lobbyBoard.culoareCurenta, lobbyBoard.getAllPGN());
         return minimalStateDTO;
     }
 
@@ -148,11 +151,6 @@ public class ChessApiController {
         errorBody.put("error", message);
 
         messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);
-    }
-
-    @PostMapping("/saveGame")
-    public GameDTO saveGame(@RequestBody GameDTO gameDTO) {
-
     }
 }
 

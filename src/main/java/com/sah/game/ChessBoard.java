@@ -4,6 +4,7 @@ import com.sah.dto.MoveDataNotationDTO;
 import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.dto.LastMove;
+import com.sah.enums.Sides;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
 import com.sah.game.GameEnums.NotatieRocada;
@@ -27,6 +28,7 @@ public class ChessBoard {
     public ErrorCodes error;
     public LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
+    public Sides winner;
 
     public ColorType culoareCurenta = ColorType.ALB;
 
@@ -122,9 +124,11 @@ public class ChessBoard {
         String currentFormattedMove = moveNotation.formatMove(dto);
 
         promoted = false;
-        if(isCheckMate == true)
+        if(isCheckMate == true) {
+            winner = (culoareCurenta == ColorType.ALB) ? Sides.BLACK : Sides.WHITE;
             return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove);
-        // sah, sah-mat
+        }
+
         return new MoveResultDTO(
                 getAllPiecesDTO(),
                 isCheck,
@@ -377,7 +381,15 @@ public class ChessBoard {
         }
     }
 
-    public String getPGN() {
+    public String getAllPGN() {
         return moveNotation.allFormattedMoves;
+    }
+
+    public int getNumberOfMOves() {
+        return moveNotation.numberOfMoves;
+    }
+
+    public String convertToResult() {
+        return (winner == Sides.WHITE) ? "1-0" : "0-1";
     }
 }

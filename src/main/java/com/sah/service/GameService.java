@@ -1,6 +1,5 @@
 package com.sah.service;
 
-import com.sah.dto.GameDTO;
 import com.sah.entity.ChessGamesClassic;
 import com.sah.entity.ChessLobbies;
 import com.sah.game.ChessBoard;
@@ -42,13 +41,14 @@ public class GameService {
         }
     }
 
-    public void saveClassicGame(GameDTO dto) {
+    public void saveClassicGame(ChessBoard board, String lobbyId) {
         ChessGamesClassic game =  new ChessGamesClassic();
-        dto.setLobbyId(dto.getLobbyId());
-        dto.setResult(dto.getResult());
-        dto.setUserWhiteId(dto.getUserWhiteId());
-        dto.setUserBlackId(dto.getUserBlackId());
-        dto.setNumberOfMoves(dto.getNumberOfMoves());
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
+        game.setLobbyId(lobbyId);
+        game.setResult(board.convertToResult());
+        game.setPGN(board.getAllPGN());
+        game.setNumber_of_moves(board.getNumberOfMOves());
+        game.setResignation(false);
 
         gameRepository.save(game);
     }
