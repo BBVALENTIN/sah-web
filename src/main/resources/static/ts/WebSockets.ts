@@ -10,6 +10,7 @@ let loggedUsername: string = "";
 let userId: number = 0;
 let currentLobbyId: string = "";
 export let culoareCurenta: culoriPiesa = culoriPiesa.ALB;
+let resignBtn = document.getElementById('resign-button') as HTMLButtonElement;
 
 export const state = {
     stompClient: null as any,
@@ -50,6 +51,11 @@ export function connect(username: string, lobbyId: string):void{
 
             state.stompClient.send(`/app/chat.addUser/${lobbyId}`, {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
             );
+
+            if(moveList.getMoveCount() < 2)
+                resignBtn.innerText = 'Abort';
+            else
+                resignBtn.innerText = 'Resign';
         },
         function(error: any) {
             state.connected = false;
@@ -115,6 +121,10 @@ function onMoveReceived(payload: any) {
     tabla.setPiecesFromServer(result.updatedPieces);
     culoareCurenta = result.culoareCurenta;
     moveList.addMove(result.pgn);
+    if(moveList.getMoveCount() < 2)
+        resignBtn.innerText = 'Abort';
+    else
+        resignBtn.innerText = 'Resign';
     tabla.redesenare();
 
     if (result.checkmate) {

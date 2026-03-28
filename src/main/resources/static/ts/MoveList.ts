@@ -77,4 +77,8 @@ export class MoveList {
         }
         else { this.addMove(blackResigned); }
     }
+
+    public getMoveCount() {
+        return this.moveCount;
+    }
 }

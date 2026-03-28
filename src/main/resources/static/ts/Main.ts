@@ -1,9 +1,10 @@
-import { Tabla } from './Tabla.js';
-import { Mouse} from "./Mouse.js";
+import {Tabla} from './Tabla.js';
+import {Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
-import {connect, sendMessage, culoareCurenta, setCuloareCurenta} from "./WebSockets.js"
+import {connect, culoareCurenta, sendMessage, setCuloareCurenta, state} from "./WebSockets.js"
 import {getInfoLobby} from "./APIs.js";
 import {minimalState} from "./Types";
+import {culoriPiesa} from "./Enums.js";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
@@ -73,7 +74,7 @@ export const tabla: Tabla = new Tabla(ctx);
 export const moveList:MoveList = new MoveList("move-list");
 
 export const mouse: Mouse = new Mouse(canvas, tabla);
-const resignBtn = document.getElementById("resign-button")!;
+const resignBtn = document.getElementById("resign-button") as HTMLButtonElement;
 
 async function loadBoard(lobbyId: string):Promise<void>
 {
@@ -95,6 +96,41 @@ async function loadBoard(lobbyId: string):Promise<void>
 initializeApp();
 
 
-resignBtn.addEventListener("click", () => {
-    moveList.resign(culoareCurenta!);
+resignBtn.addEventListener("click", async () => {
+    resignBtn.disabled = true;
+    const action = resignBtn.innerText === 'Resign' ? 'resign' : 'abort'
+    try {
+        console.log(lobbyInfo?.lobbyId);
+        let resignColor:culoriPiesa;
+        if(lobbyInfo?.playerBlack == loggedUsername)
+            resignColor = culoriPiesa.NEGRU;
+        else
+            resignColor = culoriPiesa.ALB;
+
+        const responseResign: Response = await fetch(`api/chess/${action}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lobbyId: lobbyInfo?.lobbyId, username: loggedUsername, color: resignColor })
+        });
+
+        if(responseResign.ok) {
+            moveList.resign(culoareCurenta!);
+            if(state.stompClient && state.connected) {
+                state.stompClient.disconnect(() => {
+                    console.log("Disconnected from server due to resignation/abort");
+                    state.connected = false
+                });
+            }
+            if(action === 'abort')
+                window.location.href = '/lobbies';
+        }
+        else {
+            resignBtn.disabled = false;
+        }
+    }catch (e) {
+        resignBtn.disabled = false;
+        console.error("Eroare - contacteaza un dev!")
+    }
 });
