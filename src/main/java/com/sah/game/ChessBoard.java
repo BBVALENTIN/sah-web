@@ -24,7 +24,7 @@ public class ChessBoard {
     public List<Piese> oldList = new ArrayList<>();
     public short numberOfMoves;
     public short oldSize;
-    public boolean promoted, isCheckMate;
+    public boolean promoted, isCheckMate, resignation;
     public ErrorCodes error;
     public LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
@@ -389,7 +389,23 @@ public class ChessBoard {
         return moveNotation.numberOfMoves;
     }
 
+    public Sides getWinner() {
+        return this.winner;
+    }
+
+    public void setWinner(Sides winner) {
+        this.winner = winner;
+    }
+
     public String convertToResult() {
         return (winner == Sides.WHITE) ? "1-0" : "0-1";
+    }
+
+    public boolean getResignation() {
+        return resignation;
+    }
+
+    public void setResignation(boolean resignation) {
+        this.resignation = resignation;
     }
 }

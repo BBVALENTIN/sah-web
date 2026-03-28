@@ -1,12 +1,18 @@
 package com.sah.controller;
 
 import com.sah.dto.*;
+import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
+import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
+import com.sah.enums.Sides;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.piese.Piese;
+import com.sah.repository.GameRepository;
+import com.sah.repository.LobbyRepository;
 import com.sah.service.ChessLobbyChatService;
+import com.sah.service.ChessLobbyService;
 import com.sah.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +21,14 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.awt.*;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chess")
@@ -31,14 +36,20 @@ public class ChessApiController {
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChessBoard chessBoard;
+    private final ChessLobbyService  chessLobbyService;
     private final ChessLobbyChatService chessLobbyChatService;
+    private final GameRepository gameRepository;
+    private final LobbyRepository lobbyRepository;
 
     @Autowired
-    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard, ChessLobbyChatService chessLobbyChatService) {
+    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard, ChessLobbyChatService chessLobbyChatService, GameRepository gameRepository, ChessLobbyService chessLobbyService, LobbyRepository lobbyRepository) {
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
         this.chessBoard = chessBoard;
         this.chessLobbyChatService = chessLobbyChatService;
+        this.gameRepository = gameRepository;
+        this.chessLobbyService = chessLobbyService;
+        this.lobbyRepository = lobbyRepository;
     }
 
 
@@ -104,7 +115,7 @@ public class ChessApiController {
         if(result.getErrorCodes() == null) {
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
             if(result.isCheckmate() == true) {
-                gameService.saveClassicGame(lobbyBoard, request.getLobbyId());
+                gameService.saveClassicGame(request.getLobbyId());
             }
         }
         else {
@@ -151,6 +162,39 @@ public class ChessApiController {
         errorBody.put("error", message);
 
         messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);
+    }
+
+    @PostMapping("/resign")
+    public void Resignation(@RequestBody ResignRequestDTO dto) {
+        lobbyValidation(dto);
+
+        ChessBoard board = gameService.getBoard(dto.lobbyId);
+        board.setResignation(true);
+        if(Objects.equals(dto.color, "ALB"))
+            board.setWinner(Sides.WHITE);
+        else
+            board.setWinner(Sides.BLACK);
+        gameService.saveClassicGame(dto.lobbyId);
+    }
+
+    @PostMapping("/abort")
+    public void Abort(@RequestBody ResignRequestDTO dto) {
+        lobbyValidation(dto);
+        chessLobbyService.abortGame(dto.lobbyId);
+    }
+
+    private void lobbyValidation(@RequestBody ResignRequestDTO dto) {
+        if(dto.lobbyId == null)
+        {
+            throw new RuntimeException("Lobby id null!");
+        }
+        if(gameService.getBoard(dto.lobbyId) == null) {
+            throw new RuntimeException("Can't find the lobby!");
+        }
+        if(gameRepository.findByLobbyId(dto.lobbyId) != null)
+        {
+            throw new RuntimeException("Lobby already exists! I don't know how you got here game's over my boy.");
+        }
     }
 }
 

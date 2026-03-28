@@ -2,6 +2,7 @@ package com.sah.service;
 
 import com.sah.entity.ChessGamesClassic;
 import com.sah.entity.ChessLobbies;
+import com.sah.enums.LobbyType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.repository.GameRepository;
@@ -30,6 +31,10 @@ public class GameService {
         });
     }
 
+    public ChessBoard getBoard(String lobbyId) {
+        return activeLobbies.get(lobbyId);
+    }
+
     public boolean isValidMoveForPlayer(String lobbyId, String username, ColorType culoarePiesa) {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
 
@@ -41,14 +46,16 @@ public class GameService {
         }
     }
 
-    public void saveClassicGame(ChessBoard board, String lobbyId) {
+    public void saveClassicGame(String lobbyId) {
         ChessGamesClassic game =  new ChessGamesClassic();
+        ChessBoard board = getBoard(lobbyId);
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
+        lobby.setLobbyType(LobbyType.FINISHED);
         game.setLobbyId(lobbyId);
         game.setResult(board.convertToResult());
         game.setPGN(board.getAllPGN());
         game.setNumber_of_moves(board.getNumberOfMOves());
-        game.setResignation(false);
+        game.setResignation(board.getResignation());
 
         gameRepository.save(game);
     }

@@ -141,6 +141,12 @@ public class ChessLobbyService {
         }
     }
 
+    public void abortGame(String lobbyId) {
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
+        lobby.setLobbyType(LobbyType.ABORTED);
+        lobbyRepository.save(lobby);
+    }
+
     private boolean isAlreadyAssigned(ChessLobbies lobby, String username) {
         return Objects.equals(lobby.getPlayerBlack(), username) || Objects.equals(lobby.getPlayerWhite(), username);
     }
