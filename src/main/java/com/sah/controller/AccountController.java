@@ -21,9 +21,15 @@ public class AccountController {
     public String showRegisterForm() { return "registration/register"; }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterRequestDTO request) {
-        userService.register(request);
-        return "redirect:/success";
+    public String register(@ModelAttribute RegisterRequestDTO request, Model model) {
+        try {
+            userService.register(request);
+            return "redirect:/success";
+        }
+        catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "registration/register";
+        }
     }
 
     @GetMapping("/success")

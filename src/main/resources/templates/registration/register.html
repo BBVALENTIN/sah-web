@@ -18,6 +18,7 @@
             <label>Parola</label>
             <input type = "password" name = "password" placeholder="Introdu parola" required>
 
+            <p th:if="${error}" th:text="${error}" style="color:red;"></p>
             <button type="submit">Register</button>
             <a th:href="@{/login}">Dacă ai cont, logheaza-te aici</a>
         </form>
