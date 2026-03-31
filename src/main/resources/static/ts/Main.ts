@@ -81,7 +81,6 @@ async function loadBoard(lobbyId: string):Promise<void>
     try {
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
         const minimalState: minimalState = await response.json();
-        console.log(minimalState);
         const piecesData = minimalState.Piese;
         setCuloareCurenta(minimalState.culoareCurenta);
         if(minimalState.currentPGN != null )
@@ -100,7 +99,6 @@ resignBtn.addEventListener("click", async () => {
     resignBtn.disabled = true;
     const action = resignBtn.innerText === 'Resign' ? 'resign' : 'abort'
     try {
-        console.log(lobbyInfo?.lobbyId);
         let resignColor:culoriPiesa;
         if(lobbyInfo?.playerBlack == loggedUsername)
             resignColor = culoriPiesa.NEGRU;
