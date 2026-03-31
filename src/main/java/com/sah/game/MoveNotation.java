@@ -30,14 +30,7 @@ public class MoveNotation {
         }
 
         char pieceChar;
-        switch(dto.piesa.tip){
-            case KNIGHT -> pieceChar = 'N';
-            case BISHOP -> pieceChar = 'B';
-            case KING ->  pieceChar = 'K';
-            case QUEEN -> pieceChar = 'Q';
-            case ROOK ->  pieceChar = 'R';
-            default -> pieceChar = '?';
-        }
+        pieceChar = Character.toUpperCase(getCharFromTip(dto.piesa.tip));
 
         char colChar = (char)('a'+dto.targetCol);
         int boardRow = 8 - dto.targetRow;
@@ -105,6 +98,50 @@ public class MoveNotation {
             currentFormattedMove = notation;
             allFormattedMoves += notation + " ";
             numberOfMoves++;
+    }
+
+    public String generateFEN(Piese[][] board, ColorType culoareCurenta, short halfMove) {
+        StringBuilder fen = new StringBuilder();
+
+        for (int r = 0; r < 8; r++) {
+            int emptySquares = 0;
+            for (int c = 0; c < 8; c++) {
+                Piese piese = board[r][c];
+                if (piese == null) {
+                    emptySquares++;
+                } else {
+                    if (emptySquares > 0) {
+                        fen.append(emptySquares);
+                        emptySquares = 0;
+                    }
+                    char type = getCharFromTip(piese.tip);
+                    fen.append(piese.color == ColorType.ALB ? Character.toUpperCase(type) : Character.toLowerCase(type));
+                }
+            }
+            if (emptySquares > 0) fen.append(emptySquares);
+            if (r < 7) fen.append("/");
+        }
+
+        String turn = culoareCurenta == ColorType.ALB ? "w" : "b";
+        String enPassant = "-";
+        String castling = "KQkq";
+
+        int fullMove = (numberOfMoves / 2) + 1;
+
+        return String.format("%s %s %s %s %d %d",
+                fen.toString(), turn, castling, enPassant, halfMove, fullMove);
+    }
+
+    private char getCharFromTip(Tip tip) {
+        return switch (tip) {
+            case PAWN -> 'p';
+            case KNIGHT -> 'n';
+            case BISHOP -> 'b';
+            case ROOK -> 'r';
+            case QUEEN -> 'q';
+            case KING -> 'k';
+            default -> ' ';
+        };
     }
 
     public String getAllFormattedMoves() {

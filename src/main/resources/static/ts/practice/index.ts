@@ -33,7 +33,6 @@ async function loadBoard() {
         if(response.ok) {
             const minimalState: minimalState = await response.json();
             const piecesData = minimalState.Piese;
-            console.log(piecesData);
             if(minimalState.currentPGN != null )
                 moveList.addWholePGN(minimalState.currentPGN);
             tabla.setPiecesFromServer(piecesData);

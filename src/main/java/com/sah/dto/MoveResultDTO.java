@@ -5,7 +5,11 @@ import java.util.List;
 
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class MoveResultDTO {
     private List<PiesaDTO> updatedPieces;
     private boolean isCheck, isCheckmate;
@@ -14,8 +18,9 @@ public class MoveResultDTO {
     private String pgn;
     private boolean captures;
     private LastMove lastMove;
+    private String FEN;
 
-    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, ColorType culoareCurenta, String pgn, boolean captures, LastMove lastMove) {
+    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, ColorType culoareCurenta, String pgn, boolean captures, LastMove lastMove, String FEN) {
         this.updatedPieces = updatedPieces;
         this.isCheck = isCheck;
         this.isCheckmate = isCheckmate;
@@ -23,66 +28,10 @@ public class MoveResultDTO {
         this.pgn = pgn;
         this.captures = captures;
         this.lastMove = lastMove;
+        this.FEN = FEN;
     }
 
     public MoveResultDTO(ErrorCodes errorCodes){
         this.errorCodes = errorCodes;
-    }
-
-    // Getters și Setters
-
-    public ErrorCodes getErrorCodes() {
-        return errorCodes;
-    }
-
-    public void setErrorCodes(ErrorCodes errorCodes) {
-        this.errorCodes = errorCodes;
-    }
-
-    public List<PiesaDTO> getUpdatedPieces() {
-        return updatedPieces;
-    }
-
-    public void setUpdatedPieces(List<PiesaDTO> updatedPieces) {
-        this.updatedPieces = updatedPieces;
-    }
-
-    public boolean isCheck() {
-        return isCheck;
-    }
-
-    public void setCheck(boolean check) {
-        isCheck = check;
-    }
-
-    public boolean isCheckmate() {
-        return isCheckmate;
-    }
-
-    public void setCheckmate(boolean checkmate) {
-        isCheckmate = checkmate;
-    }
-
-    public ColorType getCuloareCurenta() {
-        return culoareCurenta;
-    }
-
-    public void setCuloareCurenta(ColorType culoareCurenta) {
-        this.culoareCurenta = culoareCurenta;
-    }
-
-    public String getPgn() { return pgn; }
-
-    public void setPgn(String pgn) { this.pgn = pgn; }
-
-    public boolean isCaptures() { return captures;}
-    public void setCaptures(boolean captures) { this.captures = captures; }
-
-    public LastMove getLastMove() {
-        return lastMove;
-    }
-
-    public void setLastMove(LastMove lastMove) {
-        this.lastMove = lastMove;
     }
 }

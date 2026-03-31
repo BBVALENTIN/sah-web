@@ -22,7 +22,7 @@ public class ChessBoard {
     public Piese sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public List<Piese> oldList = new ArrayList<>();
-    public short numberOfMoves;
+    public short numberOfMoves, halfMove;
     public short oldSize;
     public boolean promoted, isCheckMate, resignation;
     public ErrorCodes error;
@@ -64,9 +64,13 @@ public class ChessBoard {
         board[7][3] = new Regina(ColorType.ALB, 7, 3, this);
         board[7][4] = new Rege(ColorType.ALB, 7, 4, this);
 
-        pieseList = getAllPieces();
-        culoareCurenta = ColorType.ALB;
-        numberOfMoves = 1;
+        this.pieseList = getAllPieces();
+        this.culoareCurenta = ColorType.ALB;
+        this.isCheckMate = false;
+        this.promoted = false;
+        this.winner = null;
+        this.numberOfMoves = 1;
+        this.moveNotation = new MoveNotation();
     }
 
     public synchronized MoveResultDTO faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
@@ -119,14 +123,15 @@ public class ChessBoard {
         if (isCheck) {
             isCheckMate = esteSahMat(regeAdvers);
         }
-
+        increaseHalfMove(piesaSelectata, isCapture);
         MoveDataNotationDTO dto = new MoveDataNotationDTO(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, culoareCurenta, rocadaNotatie, oldList);
         String currentFormattedMove = moveNotation.formatMove(dto);
+        String currentFEN = moveNotation.generateFEN(board, culoareCurenta, halfMove);
 
         promoted = false;
         if(isCheckMate == true) {
             winner = (culoareCurenta == ColorType.ALB) ? Sides.BLACK : Sides.WHITE;
-            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove);
+            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove, currentFEN);
         }
 
         return new MoveResultDTO(
@@ -136,7 +141,8 @@ public class ChessBoard {
                 culoareCurenta,
                 currentFormattedMove,
                 isCapture,
-                lastMove
+                lastMove,
+                currentFEN
         );
     }
 
@@ -170,6 +176,15 @@ public class ChessBoard {
             return NotatieRocada.MARE;
         else
             return NotatieRocada.MICA;
+    }
+
+    private void increaseHalfMove(Piese piesaSelectata, boolean isCapture) {
+        if(piesaSelectata.tip == Tip.PAWN || isCapture) {
+            halfMove = 0;
+        }
+        else {
+            halfMove++;
+        }
     }
 
     public List<Piese> mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Piese piesaSelectata)

@@ -5,6 +5,7 @@ import {culoriPiesa} from "../Enums.js";
 import {Mutare_Reusita} from "../Types.js";
 import {moveList} from "./index.js";
 
+const FENdiv = document.getElementById('FEN') as HTMLDivElement;
 export class MousePractice {
     canvas: HTMLCanvasElement;
     tabla: Tabla;
@@ -101,6 +102,7 @@ export class MousePractice {
 
         try {
             const result:Mutare_Reusita = await this.handleMutareAPI(e);
+            console.log(result);
             if(result.checkmate){
                 this.soundManager.play("checkmate");
                 this.soundManager.play("end")
@@ -112,6 +114,7 @@ export class MousePractice {
             moveList.addMove(result.pgn);
             this.tabla.setPiecesFromServer(result.updatedPieces);
             this.culoareCurenta = result.culoareCurenta;
+            FENdiv.innerText = result.fen;
         } catch(err){
             console.log("eroare cine stie de ce");
         } finally {

@@ -137,7 +137,6 @@ export class Tabla {
     }
     createPiesaFromData(data: any):Piesa
     {
-        console.log(data);
         const { tip, color, row, col } = data;
         let piesa: Piesa;
 
