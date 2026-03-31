@@ -1,6 +1,7 @@
 import {minimalState} from "../Types.js";
 import {Tabla} from "../Tabla.js";
 import {MoveList} from "../MoveList.js";
+import {MousePractice} from "./MousePractice.js";
 
 let loggedUsername: string;
 const canvas = document.getElementById('chessCanvas') as HTMLCanvasElement;
@@ -8,6 +9,7 @@ const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
 export const tabla = new Tabla(ctx);
 await tabla.loadImages();
 export const moveList:MoveList = new MoveList("move-list");
+const mousePractice = new MousePractice(canvas, tabla);
 
 const size: number = Tabla.squareSize * 8;
 canvas.width = size;

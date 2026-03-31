@@ -75,7 +75,6 @@ export const moveList:MoveList = new MoveList("move-list");
 
 export const mouse: Mouse = new Mouse(canvas, tabla);
 const resignBtn = document.getElementById("resign-button") as HTMLButtonElement;
-
 async function loadBoard(lobbyId: string):Promise<void>
 {
     try {
