@@ -1,7 +1,7 @@
     import { Tabla } from "./Tabla.js";
     import { SoundManager } from "./audio/soundManager.js";
     import { Piesa } from "./piese/Piesa.js";
-    import {lobbyInfo, Mutare, Mutare_Reusita} from "./Types.js";
+    import {lobbyInfo} from "./Types.js";
     import {state, culoareCurenta} from "./WebSockets.js";
     import {loggedUsername, getInfoLobby} from "./APIs.js";
 

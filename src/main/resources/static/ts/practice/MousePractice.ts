@@ -39,9 +39,9 @@ export class MousePractice {
         const respMutare: Response = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
         if(!respMutare.ok) {
             const errorText = await respMutare.text();
+            this.reset();
             throw new Error(errorText);
         }
-
         mutare = await respMutare.json();
         return mutare;
     }
@@ -101,8 +101,9 @@ export class MousePractice {
         this.tabla.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
 
         try {
-            const result:Mutare_Reusita = await this.handleMutareAPI(e);
-            console.log(result);
+            const result:Mutare_Reusita | undefined = await this.handleMutareAPI(e);
+            if(result === undefined)
+                return;
             if(result.checkmate){
                 this.soundManager.play("checkmate");
                 this.soundManager.play("end")
@@ -118,14 +119,20 @@ export class MousePractice {
         } catch(err){
             console.log("eroare cine stie de ce");
         } finally {
-            if(this.piesaSelectata) {
-                this.tabla.redesenare(this.tabla.piese);
-                this.piesaSelectata.isDragging = false;
-                this.piesaSelectata.dragX = undefined;
-                this.piesaSelectata.dragY = undefined;
-                this.piesaSelectata = undefined;
-                this.canvas.style.cursor = "default";
-            }
+            this.reset();
         }
+    }
+
+    reset() {
+        if(this.piesaSelectata) {
+            this.piesaSelectata.isDragging = false;
+            this.piesaSelectata.dragX = undefined;
+            this.piesaSelectata.dragY = undefined;
+        }
+
+        this.piesaSelectata = undefined;
+
+        this.canvas.style.cursor = "default";
+        this.tabla.redesenare(this.tabla.piese);
     }
 }
