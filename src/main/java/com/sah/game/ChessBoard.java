@@ -77,14 +77,14 @@ public class ChessBoard {
         piesaSelectata = board[fromRow][fromCol];
         lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol);
         if (piesaSelectata == null) { // piesa inexistenta
-            return new MoveResultDTO(error.PIESA_NEDETECTATA);
+            return new MoveResultDTO(ErrorCodes.PIESA_NEDETECTATA);
         }
 
         if (piesaSelectata.color != culoareCurenta) { // NU MUTA PIESA DE CULOAREA ASTA!
-            return new MoveResultDTO(error.RAND_GRESIT);
+            return new MoveResultDTO(ErrorCodes.RAND_GRESIT);
         }
         if (!piesaSelectata.miscare(targetRow, targetCol)) { // mutare ilegala
-            return new MoveResultDTO(error.MUTARE_ILEGALA);
+            return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
         }
 
         NotatieRocada rocadaNotatie = null;
@@ -187,17 +187,15 @@ public class ChessBoard {
         }
     }
 
-    public List<Piese> mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Piese piesaSelectata)
+    private void mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Piese piesaSelectata)
     {
         board[fromRow][fromCol] = null;
         board[targetRow][targetCol] = piesaSelectata;
 
         piesaSelectata.setPosition(targetRow, targetCol);
-
-        return pieseList;
     }
 
-    public void rollBack(int targetRow, int targetCol, int fromRow, int fromCol, Piese piesaSelectata) {
+    private void rollBack(int targetRow, int targetCol, int fromRow, int fromCol, Piese piesaSelectata) {
         board[fromRow][fromCol] = piesaSelectata;
         if(piesaCapturata == null) {
             board[targetRow][targetCol] = null;
@@ -213,7 +211,7 @@ public class ChessBoard {
         return board[targetRow][targetCol];
     }
 
-    public void switchTurn() {
+    private void switchTurn() {
         if(culoareCurenta == ColorType.ALB)
             culoareCurenta = ColorType.NEGRU;
         else
@@ -244,12 +242,6 @@ public class ChessBoard {
         return rege != null && esteRegeInSah(rege);
     }
 
-    private boolean esteRegeleAdversInSah() {
-        Piese rege = getRege(true);
-        return rege != null && esteRegeInSah(rege);
-    }
-
-
     public boolean esteRegeInSah(Piese rege) {
         for (Piese piesa : pieseList) {
             if (piesa.color != rege.color) {
@@ -276,7 +268,7 @@ public class ChessBoard {
         return board;
     }
 
-    public synchronized List<PiesaDTO> getAllPiecesDTO() {
+    public List<PiesaDTO> getAllPiecesDTO() {
         List<PiesaDTO> dto = new ArrayList<>();
         for(int r = 0; r < 8; r++) {
             for(int c = 0; c < 8; c++) {
@@ -343,7 +335,7 @@ public class ChessBoard {
         return !inSah;
     }
 
-    public boolean canSaveRege(Piese rege)
+    private boolean canSaveRege(Piese rege)
     {
         for(Piese piesa : pieseList) {
             if (piesa.color != rege.color)
@@ -383,7 +375,7 @@ public class ChessBoard {
         return false;
     }
 
-    public void checkPromotion(Piese piesa, int row, int col)
+    private void checkPromotion(Piese piesa, int row, int col)
     {
         promoted = false;
         if(row == 7 && piesa.color == ColorType.NEGRU && piesa.tip == Tip.PAWN) {

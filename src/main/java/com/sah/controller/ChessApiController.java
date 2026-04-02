@@ -64,11 +64,6 @@ public class ChessApiController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/state")
-    public List<PiesaDTO> getState() {
-        return chessBoard.getAllPiecesDTO();
-    }
-
     @GetMapping("/turn")
     public ColorType getCuloareCurenta()
     {
