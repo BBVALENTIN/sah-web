@@ -59,7 +59,7 @@ export class Tabla {
                 if (this.imageCache[imgKey]) return;
 
                 const img = new Image();
-                img.src = `./images/${imgKey}.png`;
+                img.src = `./images/pieces-default/${imgKey}.png`;
 
                 const p = new Promise<void>((resolve) => {
                     img.onload = () => {
