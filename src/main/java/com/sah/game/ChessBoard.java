@@ -21,14 +21,12 @@ public class ChessBoard {
     public Piese rocada;
     public Piese sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
-    public List<Piese> oldList = new ArrayList<>();
     public short numberOfMoves, halfMove;
-    public short oldSize;
     public boolean promoted, isCheckMate, resignation;
-    public ErrorCodes error;
-    public LastMove lastMove;
+    private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
-    public Sides winner;
+    private Sides winner;
+    private List<Piese> pieseCapturate = new ArrayList<>();
 
     public ColorType culoareCurenta = ColorType.ALB;
 
@@ -95,9 +93,13 @@ public class ChessBoard {
         }
 
         piesaCapturata = getPiesaCapturata(targetRow, targetCol);
-        boolean isCapture = piesaCapturata != null;
+        boolean isCapture = false;
+        if(piesaCapturata != null) {
+            isCapture = true;
+            pieseCapturate.add(piesaCapturata);
+        }
 
-        oldList = new ArrayList<>(pieseList);
+        List<Piese> oldList = new ArrayList<>(pieseList);
 
 
         mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
@@ -129,9 +131,9 @@ public class ChessBoard {
         String currentFEN = moveNotation.generateFEN(board, culoareCurenta, halfMove);
 
         promoted = false;
-        if(isCheckMate == true) {
+        if(isCheckMate) {
             winner = (culoareCurenta == ColorType.ALB) ? Sides.BLACK : Sides.WHITE;
-            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove, currentFEN);
+            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove, currentFEN, convertToPiecesDTO(pieseCapturate));
         }
 
         return new MoveResultDTO(
@@ -142,12 +144,12 @@ public class ChessBoard {
                 currentFormattedMove,
                 isCapture,
                 lastMove,
-                currentFEN
+                currentFEN,
+                convertToPiecesDTO(pieseCapturate)
         );
     }
 
     public synchronized List<Piese> getAllPieces() {
-        oldSize = (short) pieseList.size();
         pieseList.clear();
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -281,7 +283,18 @@ public class ChessBoard {
         return dto;
     }
 
-    public boolean esteSahMat(Piese rege)
+    private List<PiesaDTO> convertToPiecesDTO(List<Piese> list) {
+        List<PiesaDTO> dto = new ArrayList<>();
+        if(list == null) {
+            return dto;
+        }
+        for(Piese p : list) {
+            dto.add(toDTO(p, p.row, p.col));
+        }
+        return dto;
+    }
+
+    private boolean esteSahMat(Piese rege)
     {
         if(!esteRegeInSah(rege))
             return false;

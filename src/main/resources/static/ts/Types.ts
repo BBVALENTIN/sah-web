@@ -17,6 +17,7 @@ export interface Mutare_Reusita {
     captures: boolean;
     lastMove: LastMove;
     fen: string; // FUCK JACKSON
+    pieseCapturate: PiesaDTO[];
 }
 
 interface LastMove {

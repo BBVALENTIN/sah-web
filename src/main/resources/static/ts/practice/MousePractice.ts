@@ -102,6 +102,7 @@ export class MousePractice {
 
         try {
             const result:Mutare_Reusita | undefined = await this.handleMutareAPI(e);
+            console.log(result);
             if(result === undefined)
                 return;
             if(result.checkmate){

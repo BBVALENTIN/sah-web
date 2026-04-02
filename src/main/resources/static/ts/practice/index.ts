@@ -18,7 +18,7 @@ canvas.height = size;
 
 async function getUserInfo() {
     try {
-        const response = await fetch('/info/user');
+        const response = await fetch('/info/user'); // will need this
         if (response.ok) {
             const data = await response.json();
             loggedUsername = data.username;

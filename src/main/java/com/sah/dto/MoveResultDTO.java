@@ -19,8 +19,9 @@ public class MoveResultDTO {
     private boolean captures;
     private LastMove lastMove;
     private String FEN;
+    private List<PiesaDTO> pieseCapturate;
 
-    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, ColorType culoareCurenta, String pgn, boolean captures, LastMove lastMove, String FEN) {
+    public MoveResultDTO(List<PiesaDTO> updatedPieces, boolean isCheck, boolean isCheckmate, ColorType culoareCurenta, String pgn, boolean captures, LastMove lastMove, String FEN, List<PiesaDTO> pieseCapturate) {
         this.updatedPieces = updatedPieces;
         this.isCheck = isCheck;
         this.isCheckmate = isCheckmate;
@@ -29,6 +30,7 @@ public class MoveResultDTO {
         this.captures = captures;
         this.lastMove = lastMove;
         this.FEN = FEN;
+        this.pieseCapturate = pieseCapturate;
     }
 
     public MoveResultDTO(ErrorCodes errorCodes){
