@@ -1,30 +1,55 @@
-<nav class="navbar" th:fragment="navbar">
-  <ul class="nav-links">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">News (Not set)</a>
-      </li>
+<nav class="navbar" th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <div class="navbar-content">
+        <div class="nav-links-left">
+            <ul class="nav-links">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link">News (Not Set)</a>
+                </li>
 
-      <li>
-        <a class="nav-link" href="#">Streamers (Not set)</a>
-      </li>
+                <li class="nav-item active">
+                    <a class="nav-link">Streamers (Not Set)</a>
+                </li>
 
-      <li>
-        <a class="nav-link" href="/lobbies">See Lobbies</a>
-      </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/lobbies">Lobbies</a>
+                </li>
 
-      <li>
-        <a id="quickPlayNav" class="nav-link">Quick-play</a>
-      </li>
 
-      <li>
-        <a id="chessPosts" class="nav-link" href="#">Chess Posts (To be added)</a>
-      </li>
+                <li class="nav-item active">
+                    <a id="quickPlayNav" class="nav-link">Quick-Play</a>
+                </li>
 
-      <li class="dropdown">
-          <a class="dropbtn" href="#">Practice</a>
-          <ul class="dropdown-content">
-              <li><a href="/selfpractice">Self Practice</a></li>
-          </ul>
-      </li>
-  </ul>
+
+                <li class="nav-item active">
+                    <a class="nav-link">Chess Posts (Not Set)</a>
+                </li>
+
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle">Practice</a>
+                    <div class="dropdown-content">
+                        <div>
+                            <a href="/selfpractice">Self-Practice</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-links-right">
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a class="dropdown-toggle">Your profile</a>
+                    <div class="dropdown-content">
+                        <form class="logoutForm" method="post" th:action="@{/logout}">
+                            <button class="logoutButton" type="submit">Logout</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
