@@ -7,13 +7,13 @@
 </head>
 <body>
     <div id="loginContent">
-        <form th:action="@{/login}" method="post">
+        <form class="loginForm" th:action="@{/login}" method="post">
             <h2>Loghează-te pentru a putea juca</h2>
 
-            <label>Username</label>
-            <input type="text" name="username" placeholder="Introdu numele" required>
-            <label>Parola</label>
-            <input type="password" name="password" placeholder="Introdu parola" required>
+            <label class="form-label">Username</label>
+            <input class="form-input" type="text" name="username" placeholder="Introdu numele" required>
+            <label class="form-label">Parola</label>
+            <input class="form-input" type="password" name="password" placeholder="Introdu parola" required>
             <button type="submit">Log in</button>
             <p th:if="${loginError}" th:text="${loginError}" style="color: red;"></p>
             <a th:href="@{/register}">Dacă nu ai un cont, îți poți creea unul aici</a>

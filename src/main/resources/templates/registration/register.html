@@ -7,16 +7,16 @@
 </head>
 <body>
     <div id="registerContent">
-        <form th:action ="@{/register}" method="post">
+        <form class="registerForm" th:action ="@{/register}" method="post">
             <h2>Creeaza-ti un cont</h2>
 
 
-            <label>Email</label>
-            <input type="email" name="email" placeholder="Introdu emailul" required>
-            <label>Username</label>
-            <input type="text" name="username" placeholder="Introdu numele" required>
-            <label>Parola</label>
-            <input type = "password" name = "password" placeholder="Introdu parola" required>
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" name="email" placeholder="Introdu emailul" required>
+            <label class="form-label">Username</label>
+            <input class="form-input" type="text" name="username" placeholder="Introdu numele" required>
+            <label class="form-label">Parola</label>
+            <input class="form-input" type = "password" name = "password" placeholder="Introdu parola" required>
 
             <p th:if="${error}" th:text="${error}" style="color:red;"></p>
             <button type="submit">Register</button>
