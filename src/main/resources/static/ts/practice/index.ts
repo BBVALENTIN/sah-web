@@ -3,6 +3,7 @@ import {Tabla} from "../Tabla.js";
 import {MoveList} from "../MoveList.js";
 import {MousePractice} from "./MousePractice.js";
 
+
 let loggedUsername: string;
 const canvas = document.getElementById('chessCanvas') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
@@ -45,3 +46,11 @@ async function loadBoard() {
 }
 
 loadBoard();
+
+const flipboard = document.getElementById('flipBoard') as HTMLButtonElement;
+
+flipboard.addEventListener('click', () => {
+    console.log("clicked");
+    tabla.getOrientare() ? tabla.setOrientare(false) : tabla.setOrientare(true);
+    tabla.redesenare(tabla.piese);
+});

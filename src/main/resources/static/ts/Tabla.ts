@@ -43,6 +43,10 @@ export class Tabla {
         this.isBlack = isBlack;
     }
 
+    getOrientare() {
+        return this.isBlack;
+    }
+
     async loadImages(): Promise<void> {
         const tipuri = Object.values(TipPiesa);
         const culori = [ "white", "black"];
