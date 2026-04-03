@@ -4,6 +4,7 @@ import com.sah.dto.MoveDataNotationDTO;
 import com.sah.dto.MoveResultDTO;
 import com.sah.dto.PiesaDTO;
 import com.sah.dto.LastMove;
+import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
@@ -21,7 +22,7 @@ public class ChessBoard {
     public Piese rocada;
     public Piese sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
-    public short numberOfMoves, halfMove;
+    public short movesPlayed, halfMove;
     public boolean promoted, isCheckMate, resignation;
     private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
@@ -67,7 +68,7 @@ public class ChessBoard {
         this.isCheckMate = false;
         this.promoted = false;
         this.winner = null;
-        this.numberOfMoves = 1;
+        this.movesPlayed = 1;
         this.moveNotation = new MoveNotation();
     }
 
@@ -218,7 +219,7 @@ public class ChessBoard {
             culoareCurenta = ColorType.NEGRU;
         else
             culoareCurenta = ColorType.ALB;
-        numberOfMoves++;
+        movesPlayed++;
     }
 
     public ColorType getCuloareCurenta() {
@@ -405,8 +406,8 @@ public class ChessBoard {
         return moveNotation.allFormattedMoves;
     }
 
-    public int getNumberOfMOves() {
-        return moveNotation.numberOfMoves;
+    public int getMovesPlayed() {
+        return moveNotation.movesPlayed;
     }
 
     public Sides getWinner() {
@@ -417,8 +418,8 @@ public class ChessBoard {
         this.winner = winner;
     }
 
-    public String convertToResult() {
-        return (winner == Sides.WHITE) ? "1-0" : "0-1";
+    public ResultType convertToResult() {
+        return (winner == Sides.WHITE) ? ResultType.WHITE_WIN : ResultType.BLACK_WIN; // for now
     }
 
     public boolean getResignation() {

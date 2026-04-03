@@ -1,5 +1,6 @@
 package com.sah.entity;
 
+import com.sah.enums.ResultType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,9 +14,9 @@ public class ChessGamesClassic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ClassicGameId;
     @Column(nullable = false)
-    private String result;
+    private ResultType result;
     @Column(nullable = false)
-    private int number_of_moves = 0;
+    private int numberOfMoves;
     @Column(nullable = false, length = 2000)
     private String PGN;
     @Column(nullable = false)

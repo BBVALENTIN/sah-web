@@ -20,6 +20,8 @@ public class Users {
     private String email;
     @Column(name="confirmed_account")
     private boolean confirmed_account = false;
+    @Column(nullable = true)
+    private String description;
     @Column(nullable = false, name="number_of_games")
     private int number_of_games;
     @Column(nullable = true)

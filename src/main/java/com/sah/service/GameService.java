@@ -54,7 +54,7 @@ public class GameService {
         game.setLobbyId(lobbyId);
         game.setResult(board.convertToResult());
         game.setPGN(board.getAllPGN());
-        game.setNumber_of_moves(board.getNumberOfMOves());
+        game.setNumberOfMoves(board.getMovesPlayed());
         game.setResignation(board.getResignation());
 
         gameRepository.save(game);

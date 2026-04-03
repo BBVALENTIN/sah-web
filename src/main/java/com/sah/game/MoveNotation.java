@@ -8,14 +8,14 @@ import com.sah.game.piese.Piese;
 
 public class MoveNotation {
     public String allFormattedMoves, currentFormattedMove;
-    public int numberOfMoves;
+    public int movesPlayed;
 
     public MoveNotation(){
         this.allFormattedMoves = "";
         this.currentFormattedMove = "";
     }
 
-    public MoveNotation(int numberOfMoves, String currentFormattedMove, String allFormattedMoves){
+    public MoveNotation(int movesPlayed, String currentFormattedMove, String allFormattedMoves){
         this.currentFormattedMove = currentFormattedMove;
         this.allFormattedMoves = allFormattedMoves;
     }
@@ -97,7 +97,7 @@ public class MoveNotation {
     {
             currentFormattedMove = notation;
             allFormattedMoves += notation + " ";
-            numberOfMoves++;
+            movesPlayed++;
     }
 
     public String generateFEN(Piese[][] board, ColorType culoareCurenta, short halfMove) {
@@ -126,7 +126,7 @@ public class MoveNotation {
         String enPassant = "-";
         String castling = "KQkq";
 
-        int fullMove = (numberOfMoves / 2) + 1;
+        int fullMove = (movesPlayed / 2) + 1;
 
         return String.format("%s %s %s %s %d %d",
                 fen.toString(), turn, castling, enPassant, halfMove, fullMove);
