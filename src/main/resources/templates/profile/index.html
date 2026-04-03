@@ -15,7 +15,18 @@
 
     <div id="last-games-container">
         <div id="last-games-header"></div>
-        <div id="last-games-list"></div>
+        <div id="last-games-list">
+            <ul>
+                <li th:each="game : ${matchHistory}">
+                    Opponent: <span th:text="${game.opponent}"></span>,
+                    Format: <span th:text="${game.format}"></span>,
+                    Moves: <span th:text="${game.numberOfMoves}"></span>
+
+                    <span th:if="${game.outcome}" class="win">WIN</span>
+                    <span th:unless="${game.outcome}" class="lose">LOSE</span>
+                </li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>

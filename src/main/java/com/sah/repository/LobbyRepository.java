@@ -11,4 +11,6 @@ import java.util.List;
 public interface LobbyRepository extends JpaRepository<ChessLobbies, String> {
     ChessLobbies findByLobbyId(String lobbyId);
     List<ChessLobbies> findByLobbyType(LobbyType lobbyType);
+    List<ChessLobbies> findByPlayerBlack(String username);
+    List<ChessLobbies> findByPlayerWhite(String username);
 }
