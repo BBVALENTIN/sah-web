@@ -117,7 +117,6 @@ function onMoveReceived(payload: any) {
     if(result.lastMove.fromRow !== undefined && result.lastMove.toRow !== undefined) {
         tabla.setLastMove(result.lastMove.fromRow, result.lastMove.fromCol, result.lastMove.toRow, result.lastMove.toCol);
     }
-    console.log("MUTARE REUSITA? ", result);
     tabla.setPiecesFromServer(result.updatedPieces);
     culoareCurenta = result.culoareCurenta;
     moveList.addMove(result.pgn);

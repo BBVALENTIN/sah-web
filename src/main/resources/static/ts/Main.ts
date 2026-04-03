@@ -11,7 +11,6 @@ const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
 const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
 let loggedUsername = "";
-console.log(lobbyId);
 if(!lobbyId) {
     console.log("nu avem lobbyId");
 }
@@ -43,7 +42,6 @@ async function initializeApp() {
             }
             const lobbyId: string = lobbyInfo.lobbyId;
             const isBlack = (lobbyInfo.playerBlack === loggedUsername);
-            console.log("Player is black? ", isBlack);
             await tabla.loadImages();
             tabla.setOrientare(isBlack);
             tabla.redesenare();
