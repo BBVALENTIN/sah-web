@@ -44,6 +44,12 @@ html, body {
     gap:20px;
 }
 
+#resign-button {
+    border: none !important;
+    background: none !important;
+    padding: 0;
+}
+
 #chat-wrapper {
     width: var(--cWidth);
     height: 650px;
