@@ -51,7 +51,7 @@ public class GameService {
         ChessBoard board = getBoard(lobbyId);
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
         lobby.setLobbyType(LobbyType.FINISHED);
-        game.setLobbyId(lobbyId);
+        game.setLobby(lobby);
         game.setResult(board.convertToResult());
         game.setPGN(board.getAllPGN());
         game.setNumberOfMoves(board.getMovesPlayed());

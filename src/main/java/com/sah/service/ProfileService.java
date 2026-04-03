@@ -41,7 +41,7 @@ public class ProfileService {
            return null;
         List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>();
         for(ChessLobbies lobby : allLobbies){
-            ChessGamesClassic game = gameRepo.findByLobbyId(lobby.getLobbyId());
+            ChessGamesClassic game = gameRepo.findByLobby(lobby);
             matchHistoryDTOList.add(new MatchHistoryDTO(getOpponent(lobby, username), lobby.getFormat(), game.getNumberOfMoves(), getOutcome(lobby, username)));
         }
 
@@ -60,7 +60,7 @@ public class ProfileService {
     }
 
     private boolean getOutcome(ChessLobbies lobby, String username) { // MODIFY FOR DRAWS
-        ChessGamesClassic game = gameRepo.findByLobbyId(lobby.getLobbyId());
+        ChessGamesClassic game = gameRepo.findByLobby(lobby);
         if(Objects.equals(lobby.getPlayerBlack(), username) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) {
             return true;
         }

@@ -20,8 +20,10 @@ public class ChessGamesClassic {
     @Column(nullable = false, length = 2000)
     private String PGN;
     @Column(nullable = false)
-    private String lobbyId;
-    @Column(nullable = false)
     private boolean resignation;
+
+    @OneToOne
+    @JoinColumn(name = "lobby_id", nullable = false)
+    private ChessLobbies lobby;
 
 }

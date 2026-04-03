@@ -1,6 +1,7 @@
 package com.sah.controller;
 
 import com.sah.dto.*;
+import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.enums.MessageType;
 import com.sah.enums.Sides;
@@ -174,6 +175,7 @@ public class ChessApiController {
     }
 
     private void lobbyValidation(@RequestBody ResignRequestDTO dto) {
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(dto.lobbyId);
         if(dto.lobbyId == null)
         {
             throw new RuntimeException("Lobby id null!");
@@ -181,7 +183,7 @@ public class ChessApiController {
         if(gameService.getBoard(dto.lobbyId) == null) {
             throw new RuntimeException("Can't find the lobby!");
         }
-        if(gameRepository.findByLobbyId(dto.lobbyId) != null)
+        if(gameRepository.findByLobby(lobby) != null)
         {
             throw new RuntimeException("Lobby already exists! I don't know how you got here game's over my boy.");
         }

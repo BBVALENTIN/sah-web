@@ -18,10 +18,16 @@ import java.util.List;
 @NoArgsConstructor
 public class ChessLobbyChats {
     @Id
-    private String chatId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long chatId;
+
 
     @OneToMany(mappedBy = "chat",  cascade = CascadeType.ALL)
     private List<ChessLobbyChatMessages> messages = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "lobby_id", nullable = false)
+    private ChessLobbies lobby;
 
     @Column(nullable = false)
     private boolean reported;

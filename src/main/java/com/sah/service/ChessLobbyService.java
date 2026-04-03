@@ -8,7 +8,6 @@ import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
 import com.sah.enums.FormatType;
 import com.sah.enums.MessageType;
-import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
 import com.sah.repository.UserRepository;
@@ -30,18 +29,16 @@ public class ChessLobbyService {
     private final Map<String, String> sessionLobbyMap = new ConcurrentHashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChessLobbyChatService chessLobbyChatService;
-    private final ChessLobbyChatRepository lobbyChatRepository;
     private final UserRepository userRepository;
 
     public static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     public static final SecureRandom random = new SecureRandom();
     public static final int length = 5;
 
-    public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatService chessLobbyChatService, ChessLobbyChatRepository lobbyChatRepository, UserRepository userRepository) {
+    public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatService chessLobbyChatService, UserRepository userRepository) {
         this.lobbyRepository = lobbyRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.chessLobbyChatService = chessLobbyChatService;
-        this.lobbyChatRepository = lobbyChatRepository;
         this.userRepository = userRepository;
     }
 
@@ -86,8 +83,7 @@ public class ChessLobbyService {
         assignLobbyPlayer(lobby, username);
 
         ChessLobbyChats chat = new ChessLobbyChats();
-        chat.setChatId(chessLobbyChatService.assignLobbyChatId());
-        lobby.setChat(chat);
+        chat.setLobby(lobby);
 
         lobbyRepository.save(lobby);
 

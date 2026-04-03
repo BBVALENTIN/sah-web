@@ -6,7 +6,6 @@ import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
 import com.sah.enums.MessageType;
-import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyChatMessagesService;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
@@ -20,12 +19,6 @@ import java.time.LocalDateTime;
 
 @Service
 public class ChessLobbyChatService {
-    private String chatIdPossibleChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ";
-    private final short maxSize = 5;
-    private static final SecureRandom random = new SecureRandom();
-
-    @Autowired
-    private ChessLobbyChatRepository chessLobbyChatRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -38,32 +31,9 @@ public class ChessLobbyChatService {
     private LobbyChatMessagesService lobbyChatMessagesService;
 
 
-    private String generateChatId() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CH");
-        for(int i = 0; i < maxSize; i++) {
-            int index = random.nextInt(chatIdPossibleChars.length());
-            sb.append(chatIdPossibleChars.charAt(index));
-        }
-        return sb.toString();
-    }
-
-    public String assignLobbyChatId() {
-        String lobbyChatId;
-        do {
-            lobbyChatId = generateChatId();
-        } while (chessLobbyChatRepository.findByChatId(lobbyChatId) != null);
-        return lobbyChatId;
-    }
-
     public ChessLobbyChatMessages sendMessage(String lobbyId,
                                               String sender,
                                               String content) {
-
-        ChessLobbies lobby = lobbyRepository.findById(lobbyId)
-                .orElseThrow();
-
-        ChessLobbyChats chat = lobby.getChat();
 
         Users user = userRepository.findByUsername(sender);
 
@@ -73,7 +43,6 @@ public class ChessLobbyChatService {
         message.setSenderName(sender);
         message.setContent(content);
         message.setSendDate(LocalDateTime.now());
-        message.setChat(chat);
 
         return lobbyChatMessagesService.save(message);
     }
@@ -83,13 +52,11 @@ public class ChessLobbyChatService {
         ChessLobbies lobby = lobbyRepository.findById(lobbyId)
                 .orElseThrow();
         Users user = userRepository.findByUsername(sender);
-        ChessLobbyChats chat = lobby.getChat();
 
         message.setSenderId(user.getId());
         message.setSenderName(sender);
         message.setContent(MessageType.JOIN.toString());
         message.setSendDate(LocalDateTime.now());
-        message.setChat(chat);
 
         lobbyChatMessagesService.save(message);
         return new ChatMessageDTO(sender, "", MessageType.JOIN);

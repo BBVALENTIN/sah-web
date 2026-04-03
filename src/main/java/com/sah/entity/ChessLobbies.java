@@ -28,9 +28,12 @@ public class ChessLobbies {
     private String playerBlack;
     @Column(nullable = false)
     private LobbyType lobbyType;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "chat_id", nullable = false)
-    private ChessLobbyChats chat;
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @OneToOne(mappedBy = "lobby", cascade = CascadeType.ALL)
+    private ChessLobbyChats chat;
+
+    @OneToOne(mappedBy = "lobby", cascade = CascadeType.REMOVE)
+    private ChessGamesClassic 
 }
