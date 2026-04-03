@@ -1,6 +1,5 @@
 addEventListener('DOMContentLoaded', async () => {
     const quickPlayNav = document.getElementById('quickPlayNav');
-    const yourProfile = document.getElementById('yourProfile');
     let loggedUser = null;
 
     async function fetchUserInfo() {
@@ -31,5 +30,17 @@ addEventListener('DOMContentLoaded', async () => {
         }
         let lobby = await responsePlay.json();
         window.location.href =`play=${lobby.lobbyId}`;
+    });
+
+    const yourProfile = document.getElementById('user-profile');
+    yourProfile.addEventListener('click', async () => {
+        try {
+            const response = await fetch(`/user/${loggedUser}`);
+            if(response.ok) {
+                window.location.href = `/user/${loggedUser}`;
+            }
+        } catch (e) {
+           console.log(e);
+        }
     });
 });
