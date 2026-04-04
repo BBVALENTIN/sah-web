@@ -25,6 +25,10 @@ public class ProfileController {
     @GetMapping("/{username}")
     public String getProfile(@PathVariable String username, Model model) {
         List<MatchHistoryDTO> matchHistory = profileService.loadProfileGames(username);
+        if(matchHistory == null || matchHistory.isEmpty()) {
+            return "profile/index";
+        }
+
         model.addAttribute("matchHistory", matchHistory);
 
         return "profile/index";

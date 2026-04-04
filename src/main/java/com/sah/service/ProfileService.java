@@ -36,11 +36,16 @@ public class ProfileService {
         List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findByPlayerBlack(username));
         allLobbies.addAll(lobbyRepo.findByPlayerWhite(username));
 
-        if(allLobbies == null || allLobbies.isEmpty())
+        if(allLobbies.isEmpty())
            return null;
         List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>();
         for(ChessLobbies lobby : allLobbies){
             ChessGames game = gameRepo.findByLobby(lobby);
+            
+            if(game == null) {
+                return null;
+            }
+
             matchHistoryDTOList.add(new MatchHistoryDTO(getOpponent(lobby, username), lobby.getFormat(), game.getNumberOfMoves(), getOutcome(lobby, username)));
         }
 

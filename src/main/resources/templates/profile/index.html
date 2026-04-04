@@ -16,7 +16,7 @@
     <div id="last-games-container">
         <div id="last-games-header"></div>
         <div id="last-games-list">
-            <ul>
+            <ul th:if="${matchHistory != null}">
                 <li th:each="game : ${matchHistory}">
                     Opponent: <span th:text="${game.opponent}"></span>,
                     Format: <span th:text="${game.format}"></span>,
@@ -26,6 +26,7 @@
                     <span th:unless="${game.outcome}" class="lose">LOSE</span>
                 </li>
             </ul>
+            <div th:unless="${matchHistory} != null">User currently has no games</div>
         </div>
     </div>
 </body>
