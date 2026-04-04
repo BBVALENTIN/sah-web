@@ -1,8 +1,10 @@
 package com.sah.service;
 
 import com.sah.dto.MatchHistoryDTO;
+import com.sah.dto.ProfileInfoDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
+import com.sah.entity.Users;
 import com.sah.enums.ResultType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
@@ -28,22 +30,34 @@ public class ProfileService {
         this.lobbyRepo = lobbyRepo;
     }
 
-    public String loadProfileInfo() {
-        return "toAdd";
+    public ProfileInfoDTO loadProfileInfo(String username) {
+       ProfileInfoDTO profileInfoDTO = new ProfileInfoDTO();
+       List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>(loadProfileGames(username));
+
+       Users user = userRepo.findByUsername(username);
+
+       if(user != null) {
+           profileInfoDTO.setUsername(username);
+           profileInfoDTO.setDescription(user.getDescription());
+           profileInfoDTO.setCountry(user.getCountry());
+           profileInfoDTO.setMatchHistoryDTOList(matchHistoryDTOList);
+           profileInfoDTO.setGamesPlayed(matchHistoryDTOList.size());
+       }
+       return profileInfoDTO;
     }
 
-    public List<MatchHistoryDTO> loadProfileGames(String username) {
+    private List<MatchHistoryDTO> loadProfileGames(String username) {
         List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findByPlayerBlack(username));
         allLobbies.addAll(lobbyRepo.findByPlayerWhite(username));
 
         if(allLobbies.isEmpty())
-           return null;
+           return new ArrayList<>();
         List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>();
         for(ChessLobbies lobby : allLobbies){
             ChessGames game = gameRepo.findByLobby(lobby);
-            
+
             if(game == null) {
-                return null;
+                continue;
             }
 
             matchHistoryDTOList.add(new MatchHistoryDTO(getOpponent(lobby, username), lobby.getFormat(), game.getNumberOfMoves(), getOutcome(lobby, username)));

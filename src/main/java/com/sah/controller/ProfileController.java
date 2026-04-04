@@ -1,6 +1,7 @@
 package com.sah.controller;
 
 import com.sah.dto.MatchHistoryDTO;
+import com.sah.dto.ProfileInfoDTO;
 import com.sah.service.ProfileService;
 import jakarta.persistence.Column;
 import org.springframework.stereotype.Controller;
@@ -24,12 +25,12 @@ public class ProfileController {
 
     @GetMapping("/{username}")
     public String getProfile(@PathVariable String username, Model model) {
-        List<MatchHistoryDTO> matchHistory = profileService.loadProfileGames(username);
-        if(matchHistory == null || matchHistory.isEmpty()) {
+        ProfileInfoDTO profileInfoDTO = profileService.loadProfileInfo(username);
+        if(profileInfoDTO.getMatchHistoryDTOList() == null || profileInfoDTO.getMatchHistoryDTOList().isEmpty()) {
             return "profile/index";
         }
 
-        model.addAttribute("matchHistory", matchHistory);
+        model.addAttribute("matchHistory", profileInfoDTO.getMatchHistoryDTOList());
 
         return "profile/index";
     }

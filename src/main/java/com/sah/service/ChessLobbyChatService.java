@@ -39,7 +39,7 @@ public class ChessLobbyChatService {
 
         ChessLobbyChatMessages message = new ChessLobbyChatMessages();
 
-        message.setSenderId(user.getId());
+        message.setSenderId(user.getUserId());
         message.setSenderName(sender);
         message.setContent(content);
         message.setSendDate(LocalDateTime.now());
@@ -53,7 +53,7 @@ public class ChessLobbyChatService {
                 .orElseThrow();
         Users user = userRepository.findByUsername(sender);
 
-        message.setSenderId(user.getId());
+        message.setSenderId(user.getUserId());
         message.setSenderName(sender);
         message.setContent(MessageType.JOIN.toString());
         message.setSendDate(LocalDateTime.now());
