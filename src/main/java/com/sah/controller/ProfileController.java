@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/profile")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -26,8 +26,8 @@ public class ProfileController {
     @GetMapping("/{username}")
     public String getProfile(@PathVariable String username, Model model) {
         ProfileInfoDTO profileInfoDTO = profileService.loadProfileInfo(username);
-        if(profileInfoDTO.getMatchHistoryDTOList() == null || profileInfoDTO.getMatchHistoryDTOList().isEmpty()) {
-            return "profile/index";
+        if(profileInfoDTO.getUsername() == null) {
+            return "profile/notfound";
         }
 
         model.addAttribute("matchHistory", profileInfoDTO.getMatchHistoryDTOList());

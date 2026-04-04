@@ -35,9 +35,9 @@ addEventListener('DOMContentLoaded', async () => {
     const yourProfile = document.getElementById('user-profile');
     yourProfile.addEventListener('click', async () => {
         try {
-            const response = await fetch(`/user/${loggedUser}`);
+            const response = await fetch(`/profile/${loggedUser}`);
             if(response.ok) {
-                window.location.href = `/user/${loggedUser}`;
+                window.location.href = `/profile/${loggedUser}`;
             }
         } catch (e) {
            console.log(e);
