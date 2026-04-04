@@ -26,7 +26,7 @@ public class ChessLobbyChats {
     private List<ChessLobbyChatMessages> messages = new ArrayList<>();
 
     @OneToOne
-    @JoinColumn(name = "lobby_id", nullable = false)
+    @JoinColumn(name = "lobby_id", nullable = false, unique = true)
     private ChessLobbies lobby;
 
     @Column(nullable = false)

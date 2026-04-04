@@ -2,17 +2,16 @@ package com.sah.entity;
 
 import com.sah.enums.ResultType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-public class ChessGamesClassic {
+public class ChessGames {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ClassicGameId;
+    private Long gameId;
     @Column(nullable = false)
     private ResultType result;
     @Column(nullable = false)
@@ -23,7 +22,7 @@ public class ChessGamesClassic {
     private boolean resignation;
 
     @OneToOne
-    @JoinColumn(name = "lobby_id", nullable = false)
+    @JoinColumn(name = "lobby_id", nullable = false, unique = true)
     private ChessLobbies lobby;
 
 }

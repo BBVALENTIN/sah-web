@@ -35,5 +35,5 @@ public class ChessLobbies {
     private ChessLobbyChats chat;
 
     @OneToOne(mappedBy = "lobby", cascade = CascadeType.REMOVE)
-    private ChessGamesClassic 
+    private ChessGames chessGames;
 }

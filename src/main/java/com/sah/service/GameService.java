@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.entity.ChessGamesClassic;
+import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
 import com.sah.game.ChessBoard;
@@ -47,7 +47,7 @@ public class GameService {
     }
 
     public void saveClassicGame(String lobbyId) {
-        ChessGamesClassic game =  new ChessGamesClassic();
+        ChessGames game =  new ChessGames();
         ChessBoard board = getBoard(lobbyId);
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
         lobby.setLobbyType(LobbyType.FINISHED);

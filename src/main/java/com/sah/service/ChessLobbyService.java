@@ -2,12 +2,10 @@ package com.sah.service;
 
 import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.LobbyDTO;
-import com.sah.entity.ChessGamesClassic;
+import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChats;
-import com.sah.entity.Users;
 import com.sah.enums.FormatType;
-import com.sah.enums.MessageType;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
 import com.sah.repository.UserRepository;
@@ -73,7 +71,7 @@ public class ChessLobbyService {
     }
 
     // IMPORTANT LOBBY STUFF
-    public ChessLobbies createLobby(String username) {
+    public LobbyDTO createLobby(String username) {
         ChessLobbies lobby = new ChessLobbies();
         String randomLobbyId = assignLobbyId();
         lobby.setLobbyId(randomLobbyId);
@@ -83,11 +81,12 @@ public class ChessLobbyService {
         assignLobbyPlayer(lobby, username);
 
         ChessLobbyChats chat = new ChessLobbyChats();
+        lobby.setChat(chat);
         chat.setLobby(lobby);
 
         lobbyRepository.save(lobby);
 
-        return lobby;
+        return convertLobbyDTO(lobby);
     }
 
     public void joinLobby(JoinLobbyRequest request) {
@@ -106,8 +105,8 @@ public class ChessLobbyService {
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, updatedLobbyDTO);
     }
 
-    public ChessGamesClassic createClassicalGame() {
-        ChessGamesClassic newClassicGame = new ChessGamesClassic(); // to put the on
+    public ChessGames createClassicalGame() {
+        ChessGames newClassicGame = new ChessGames(); // to put the on
         return newClassicGame;
     }
 
@@ -115,6 +114,7 @@ public class ChessLobbyService {
         LobbyDTO lobbyDTO = new LobbyDTO(lobby.getLobbyId(), lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
         return lobbyDTO;
     }
+
     public void assignLobbyPlayer(ChessLobbies lobby, String username) {
         // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
         if(isLobbyFull(lobby)) {
