@@ -29,7 +29,7 @@ public class ProfileController {
         if(profileInfoDTO.getUsername() == null) {
             return "profile/notfound";
         }
-
+        model.addAttribute("username", profileInfoDTO.getUsername());
         model.addAttribute("matchHistory", profileInfoDTO.getMatchHistoryDTOList());
 
         return "profile/index";

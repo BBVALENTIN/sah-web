@@ -346,3 +346,107 @@ html, body {
 .dropdown:hover .dropdown-content{
     display: block;
 }
+
+
+/* ===================== START PROFILE CSS ===================== */
+
+#ProfileBox {
+    width: 350px;
+    margin: 40px auto 20px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 12px;
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+/* poza profil */
+#profile-picture {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background-color: #2c2c2c;
+    border: 2px solid #555;
+}
+
+/* flag (optional) */
+#profile-flag {
+    width: 30px;
+    height: 20px;
+    margin: 0 auto 10px auto;
+    background-color: #444;
+    border-radius: 3px;
+}
+
+/* username */
+#profile-username {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* descriere */
+#profile-description {
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* ===================== LAST GAMES ===================== */
+
+#last-games-container {
+    width: 500px;
+    margin: 20px auto;
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.4);
+}
+
+#last-games-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+/* lista jocuri */
+#last-games-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#last-games-list li {
+    background-color: #2c2c2c;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    font-size: 14px;
+}
+
+/* WIN / LOSE */
+.win {
+    color: #4caf50;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.lose {
+    color: #f44336;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* mesaj fara jocuri */
+#last-games-list > div {
+    text-align: center;
+    color: #888;
+    padding: 10px;
+}
+
+/* ===================== END PROFILE CSS ===================== */
