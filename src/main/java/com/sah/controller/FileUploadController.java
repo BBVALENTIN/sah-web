@@ -2,6 +2,8 @@ package com.sah.controller;
 
 import com.sah.FileUpload.StorageFileNotFoundException;
 import com.sah.FileUpload.StorageService;
+import com.sah.entity.Users;
+import com.sah.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -20,10 +22,12 @@ import java.util.stream.Collectors;
 public class FileUploadController {
 
     private final StorageService storageService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public FileUploadController(StorageService storageService) {
+    public FileUploadController(StorageService storageService,  UserRepository userRepository) {
         this.storageService = storageService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/allUploads")
@@ -53,7 +57,11 @@ public class FileUploadController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes, Principal principal) {
 
-        storageService.store(file);
+        String filename = storageService.store(file);
+
+        Users user = userRepository.findByUsername(principal.getName());
+        user.setAvatar(filename);
+        userRepository.save(user);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 

@@ -12,7 +12,7 @@ public class ProfileInfoDTO {
     private String username;
     private String description;
     private String country;
-
+    private String avatar;
     // matches
     private int gamesPlayed;
     private List<MatchHistoryDTO> matchHistoryDTOList;

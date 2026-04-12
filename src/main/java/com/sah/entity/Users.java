@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +31,10 @@ public class Users {
     private int number_of_games;
     @Column(nullable = true)
     private String country; // Temporariliy - maybe will change to CountryId and make a country table
+    @Column(nullable = false)
+    private String avatar = "default.jpg";
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Roles> roles = new HashSet<>();

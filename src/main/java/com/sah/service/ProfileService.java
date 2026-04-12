@@ -38,6 +38,7 @@ public class ProfileService {
 
        if(user != null) {
            profileInfoDTO.setUsername(username);
+           profileInfoDTO.setAvatar(user.getAvatar());
            profileInfoDTO.setDescription(user.getDescription());
            profileInfoDTO.setCountry(user.getCountry());
            profileInfoDTO.setMatchHistoryDTOList(matchHistoryDTOList);

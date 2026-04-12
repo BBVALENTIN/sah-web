@@ -6,9 +6,10 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+    <div th:replace="fragments/navbar :: navbar"></div>
     <div id="ProfileBox">
         <div id="profile-flag"></div>
-        <div id="profile-picture"></div>
+        <img id="profile-picture" alt="profile picture" th:src="@{'/uploads/' + ${profileAvatar}}" />
         <div id="profile-username" th:text="${profileusername}">Guest</div>
         <div id="profile-description"></div>
     </div>
