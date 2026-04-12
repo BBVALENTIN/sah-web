@@ -38,3 +38,6 @@ build/
 ### NODE MODULES ###
 node_modules
 src/main/resources/static/ts-transpiled
+
+# uploads
+uploads
