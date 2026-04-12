@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -24,12 +25,13 @@ public class ProfileController {
     }
 
     @GetMapping("/{username}")
-    public String getProfile(@PathVariable String username, Model model) {
+    public String getProfile(@PathVariable String username, Model model, Principal principal) {
         ProfileInfoDTO profileInfoDTO = profileService.loadProfileInfo(username);
         if(profileInfoDTO.getUsername() == null) {
             return "profile/notfound";
         }
-        model.addAttribute("username", profileInfoDTO.getUsername());
+        model.addAttribute("currentUser", principal.getName());
+        model.addAttribute("profileusername", profileInfoDTO.getUsername());
         model.addAttribute("matchHistory", profileInfoDTO.getMatchHistoryDTOList());
 
         return "profile/index";

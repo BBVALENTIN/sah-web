@@ -9,8 +9,16 @@
     <div id="ProfileBox">
         <div id="profile-flag"></div>
         <div id="profile-picture"></div>
-        <div id="profile-username" th:text="${username}">Guest</div>
+        <div id="profile-username" th:text="${profileusername}">Guest</div>
         <div id="profile-description"></div>
+    </div>
+
+    <div th:if="${profileusername == currentUser}">
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit">Change profile picture</button>
+        </form>
     </div>
 
     <div id="last-games-container">
