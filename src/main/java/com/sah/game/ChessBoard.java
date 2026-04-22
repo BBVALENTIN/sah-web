@@ -74,7 +74,6 @@ public class ChessBoard {
 
     public synchronized MoveResultDTO faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
         piesaSelectata = board[fromRow][fromCol];
-        lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol);
         if (piesaSelectata == null) { // piesa inexistenta
             return new MoveResultDTO(ErrorCodes.PIESA_NEDETECTATA);
         }
@@ -82,10 +81,17 @@ public class ChessBoard {
         if (piesaSelectata.color != culoareCurenta) { // NU MUTA PIESA DE CULOAREA ASTA!
             return new MoveResultDTO(ErrorCodes.RAND_GRESIT);
         }
-        if (!piesaSelectata.miscare(targetRow, targetCol)) { // mutare ilegala
+        boolean enPassant = false;
+        if(piesaSelectata.tip == Tip.PAWN && this.lastMove != null) {
+
+            if(isEnPassant(piesaSelectata, fromRow, fromCol, targetRow, targetCol) && canEnPassant(this.lastMove, piesaSelectata, targetRow, targetCol)) {
+                applyEnPassant(piesaSelectata, targetRow, targetCol);
+                enPassant = true;
+            }
+        }
+        if (!piesaSelectata.miscare(targetRow, targetCol) && enPassant == false) { // mutare ilegala
             return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
         }
-
         NotatieRocada rocadaNotatie = null;
 
         if (rocada != null) {
@@ -103,7 +109,7 @@ public class ChessBoard {
         List<Piese> oldList = new ArrayList<>(pieseList);
 
 
-        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata);
+        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata); // de testat cazul in car esteRegeleMeuInSah true
 
         if(piesaSelectata.tip == Tip.PAWN)
         {
@@ -116,7 +122,7 @@ public class ChessBoard {
             rollBack(targetRow, targetCol, fromRow, fromCol, piesaSelectata);
             return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
         }
-
+        lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol, toDTO(piesaSelectata, targetRow, targetCol));
         switchTurn();
 
         Piese regeAdvers = getRege(false);
@@ -160,6 +166,33 @@ public class ChessBoard {
             }
         }
         return pieseList;
+    }
+
+    private boolean isEnPassant(Piese pawn, int fromRow, int fromCol, int targetRow, int targetCol) {
+        if(pawn.tip != Tip.PAWN) return false;
+
+        int dir = (pawn.color == ColorType.ALB) ? -1 : 1;
+
+        return Math.abs(fromCol-targetCol) == 1 && targetRow == fromRow + dir;
+    }
+
+    private boolean canEnPassant(LastMove lastMove, Piese pawn, int targetRow, int targetCol) {
+        if(lastMove == null || lastMove.getLastPiece().getTip() != Tip.PAWN) return false;
+
+        boolean movedTwoSquares = Math.abs(lastMove.getFromRow() - lastMove.getToRow()) == 2;
+
+        return movedTwoSquares && lastMove.getToRow() == pawn.row && lastMove.getToCol() == targetCol;
+    }
+
+    private void applyEnPassant(Piese pawn, int targetRow, int targetCol) {
+        int dir = (pawn.color == ColorType.ALB) ? 1 : -1;
+
+        Piese capturedPawn = board[targetRow + dir][targetCol];
+
+        if(capturedPawn != null && capturedPawn.tip == Tip.PAWN) {
+            board[targetRow+dir][targetCol] = null;
+            pieseCapturate.add(capturedPawn);
+        }
     }
 
     private void makeRocada(Piese rocada) {
@@ -260,7 +293,7 @@ public class ChessBoard {
 
     public static PiesaDTO toDTO(Piese p, int r, int c) {
         return new PiesaDTO(
-                p.tip.name(),
+                p.tip,
                 p.color,
                 r,
                 c
@@ -428,5 +461,9 @@ public class ChessBoard {
 
     public void setResignation(boolean resignation) {
         this.resignation = resignation;
+    }
+
+    public LastMove getLastMove() {
+        return lastMove;
     }
 }

@@ -1,5 +1,6 @@
 package com.sah.game.piese;
 
+import com.sah.dto.LastMove;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
@@ -14,6 +15,7 @@ public class Pion extends Piese {
     public boolean miscare(int targetRow, int targetCol)
     {
         int directie;
+        LastMove lastMove = game.getLastMove();
         if(color == ColorType.ALB)
             directie = -1;
         else
