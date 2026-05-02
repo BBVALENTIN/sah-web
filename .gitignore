@@ -39,5 +39,6 @@ build/
 node_modules
 src/main/resources/static/ts-transpiled
 
-# uploads
-uploads
+### uploads
+uploads/*
+!uploads/default.jpg
