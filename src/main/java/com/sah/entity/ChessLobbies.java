@@ -29,7 +29,7 @@ public class ChessLobbies {
     @Column(nullable = false)
     private LobbyType lobbyType;
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToOne(mappedBy = "lobby", cascade = CascadeType.ALL)
     private ChessLobbyChats chat;

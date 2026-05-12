@@ -18,6 +18,7 @@ public class UsersService {
     private final UserRepository userRepo;
     private final RoleRepository rolesRepo;
     private final PasswordEncoder passwordEncoder;
+    private final String usernameRegex = "^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$";
 
     public UsersService(UserRepository userRepo, RoleRepository rolesRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
@@ -31,6 +32,10 @@ public class UsersService {
             throw new RuntimeException("Username is taken");
         } else if (userRepo.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already in use");
+        }
+
+        if(!request.getUsername().matches(usernameRegex)) {
+            throw new RuntimeException("Username is invalid, it should contain at least one letter and consist of at least 3 characters.");
         }
 
         Roles userRole = rolesRepo.findByName(RoleType.ROLE_USER).orElseThrow(() -> new RuntimeException("ROLE_user nu exista"));

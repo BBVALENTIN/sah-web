@@ -77,7 +77,6 @@ public class ChessLobbyService {
         lobby.setLobbyId(randomLobbyId);
         lobby.setLobbyType(LobbyType.AVAILABLE);
         lobby.setFormat(FormatType.CLASSICAL);
-        lobby.setCreatedAt(LocalDateTime.now().withNano(0));
         assignLobbyPlayer(lobby, username);
 
         ChessLobbyChats chat = new ChessLobbyChats();
