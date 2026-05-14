@@ -18,7 +18,7 @@ public class UsersService {
     private final UserRepository userRepo;
     private final RoleRepository rolesRepo;
     private final PasswordEncoder passwordEncoder;
-    private final String usernameRegex = "^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$";
+    private final String usernameRegex = "^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$"; // will maybe replace with a function
 
     public UsersService(UserRepository userRepo, RoleRepository rolesRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
