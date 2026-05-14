@@ -7,6 +7,9 @@
     --cWidth: 300px;
     --cHeight: 600px;
     --bodyGray: rgba(36, 36, 36);
+    --twitch-purple: #9147ff;
+    --text-main: #efeff1;
+    --text-muted: #adadb8
 }
 
 html, body {
@@ -450,3 +453,93 @@ html, body {
 }
 
 /* ===================== END PROFILE CSS ===================== */
+
+/* ===================== START STREAMS CSS ===================== */
+
+.streams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 30px;
+}
+
+.stream-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--twitch-purple);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Container pentru imagine ca să putem pune badge-ul de LIVE */
+.thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.stream-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s;
+}
+
+.live-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #eb0400;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.stream-info {
+    padding: 15px;
+}
+
+.stream-user {
+    color: var(--twitch-purple);
+    font-size: 1.1rem;
+    margin: 0 0 5px 0;
+}
+
+.stream-title {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    margin: 5px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Taie textul la 2 rânduri */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.viewer-count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.viewer-count::before {
+    content: "●";
+    color: #adadb8;
+    margin-right: 5px;
+}
+
+/* ===================== END STREAMS CSS ===================== */
