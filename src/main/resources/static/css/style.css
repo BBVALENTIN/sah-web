@@ -48,9 +48,23 @@ html, body {
 }
 
 #resign-button {
-    border: none !important;
-    background: none !important;
+    border: none;
+    background: transparent;
     padding: 0;
+
+    color: inherit;
+    font: inherit;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#resign-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 #chat-wrapper {
