@@ -13,5 +13,7 @@ public enum RoleType {
     ROLE_WCM,
     ROLE_WFM,
     ROLE_WIM,
-    ROLE_WGM
+    ROLE_WGM,
+    // journalism
+    ROLE_JOURNALIST,
 }
