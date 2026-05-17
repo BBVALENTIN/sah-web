@@ -3,8 +3,15 @@ import {Tabla} from "../Tabla.js";
 import {MoveList} from "../MoveList.js";
 import {MousePractice, FEN} from "./MousePractice.js";
 
+type stockfishLine = {
+    rank: string;
+    evaluation: string;
+    moves: string[];
+}
 
 let loggedUsername: string;
+const stockfishTrigger = document.getElementById('stockfish-trigger') as HTMLInputElement;
+export let engineOn: boolean = false;
 const canvas = document.getElementById('chessCanvas') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
 export const tabla = new Tabla(ctx);
@@ -17,7 +24,16 @@ canvas.width = size;
 canvas.height = size;
 
 const stockfish = new Worker('/libs/stockfish/stockfish.js');
-
+stockfishTrigger.addEventListener('change', () => {
+    if(stockfishTrigger.checked) {
+        engineOn = true;
+        cereMutareDeLaStockfish(FEN);
+    }
+    else {
+        engineOn = false;
+        stockfish.postMessage('stop');
+    }
+});
 stockfish.onmessage = function(event) {
     const line = event.data;
 
@@ -28,13 +44,13 @@ stockfish.onmessage = function(event) {
         const scoreIndex = parts.indexOf("score");
         const pvIndex = parts.indexOf("pv");
 
-        const rank = parts[multipvIndex + 1];
+        const output: stockfishLine = {
+             rank: parts[multipvIndex + 1],
+             evaluation: formatEvaluation(parts[scoreIndex + 1], parts[scoreIndex + 2]),
+             moves: parts.slice(pvIndex + 1)
+        };
 
-        const scoreType = parts[scoreIndex + 1];
-        const scoreValue = parts[scoreIndex + 2];
-
-        const moves = parts.slice(pvIndex + 1);
-        console.log(rank, scoreType, scoreValue, moves);
+        renderStockfishLines(output);
     }
 };
 
@@ -44,6 +60,7 @@ export function cereMutareDeLaStockfish(fenCurent: string) {
     stockfish.postMessage('go depth 18');
 }
 
+// to implement
 function aplicaMutareBot(mutare: string) {
 
     const fromCol = mutare.charCodeAt(0) - 97;          // 'e' devine 4
@@ -97,3 +114,33 @@ flipboard.addEventListener('click', () => {
     tabla.getOrientare() ? tabla.setOrientare(false) : tabla.setOrientare(true);
     tabla.redesenare(tabla.piese);
 });
+function formatEvaluation(type: string, value: string): string {
+    if(type === 'cp')
+    {
+        const score = (parseInt(value)/100).toFixed(2);
+
+        return parseFloat(score) > 0 ? `+${score}` : `${score}`;
+    }
+
+    if(type === 'mate') {
+        return `M${value}`;
+    }
+
+    return '0.00';
+}
+
+function renderStockfishLines(line: stockfishLine) {
+    const container = document.getElementById('stockfish-lines');
+
+    if(!container) return;
+
+    container.innerHTML = "";
+    const lineElement = document.createElement("div");
+    lineElement.className = "engine-line";
+
+    lineElement.innerHTML = `
+         <span class="evaluation">${line.evaluation}</span>
+          <span class="moves">${line.moves.join(" ")}</span>
+     `;
+    container.appendChild(lineElement);
+}

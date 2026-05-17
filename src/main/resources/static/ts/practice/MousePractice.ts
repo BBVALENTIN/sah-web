@@ -3,7 +3,7 @@ import {Piesa} from "../piese/Piesa.js";
 import {SoundManager} from "../audio/soundManager.js";
 import {culoriPiesa} from "../Enums.js";
 import {Mutare_Reusita} from "../Types.js";
-import {moveList, cereMutareDeLaStockfish} from "./index.js";
+import {moveList, cereMutareDeLaStockfish, engineOn} from "./index.js";
 
 const FENdiv = document.getElementById('FEN') as HTMLDivElement;
 export let FEN: string;
@@ -118,7 +118,8 @@ export class MousePractice {
             this.tabla.setPiecesFromServer(result.updatedPieces);
             this.culoareCurenta = result.culoareCurenta;
             FEN = result.fen;
-            cereMutareDeLaStockfish(FEN);
+            if(engineOn)
+                cereMutareDeLaStockfish(FEN);
             FENdiv.innerText = FEN;
         } catch(err){
             console.log("eroare cine stie de ce");
