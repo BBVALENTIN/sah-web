@@ -19,27 +19,29 @@ canvas.height = size;
 const stockfish = new Worker('/libs/stockfish/stockfish.js');
 
 stockfish.onmessage = function(event) {
-    const linie = event.data;
-    console.log("Stockfish zice:", linie);
+    const line = event.data;
 
-    if (linie.startsWith('bestmove')) {
-        const parti = linie.split(' ');
-        const bestMove = parti[1]; // Aceasta este mutarea, ex: "e7e5"
+    if (line.includes('multipv')) {
+        const parts = line.split(" ");
 
-        console.log("-> CEA MAI BUNĂ MUTARE ESTE:", bestMove);
+        const multipvIndex = parts.indexOf("multipv");
+        const scoreIndex = parts.indexOf("score");
+        const pvIndex = parts.indexOf("pv");
 
-        // Dacă mutarea este validă, o trimitem către logica jocului
-        if (bestMove && bestMove !== '(none)') {
-            aplicaMutareBot(bestMove);
-        }
+        const rank = parts[multipvIndex + 1];
+
+        const scoreType = parts[scoreIndex + 1];
+        const scoreValue = parts[scoreIndex + 2];
+
+        const moves = parts.slice(pvIndex + 1);
+        console.log(rank, scoreType, scoreValue, moves);
     }
 };
 
 export function cereMutareDeLaStockfish(fenCurent: string) {
-    console.log("Îi trimitem poziția lui Stockfish...");
-
     stockfish.postMessage(`position fen ${fenCurent}`);
-    stockfish.postMessage('go movetime 1000');
+    stockfish.postMessage("setoption name MultiPV value 3");
+    stockfish.postMessage('go depth 18');
 }
 
 function aplicaMutareBot(mutare: string) {
@@ -52,7 +54,6 @@ function aplicaMutareBot(mutare: string) {
 
     console.log(`Tradus pentru Java: faMiscare(${fromRow}, ${fromCol}, ${targetRow}, ${targetCol})`);
 
-    // putem pune un aplica pentru mutari vs bot
 }
 
 stockfish.postMessage('uci');
