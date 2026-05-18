@@ -1,14 +1,15 @@
 import {minimalState} from "../Types.js";
 import {Tabla} from "../Tabla.js";
 import {MoveList} from "../MoveList.js";
-import {MousePractice, FEN} from "./MousePractice.js";
+import {FEN, MousePractice} from "./MousePractice.js";
 
 type stockfishLine = {
-    rank: string;
+    rank: number;
     evaluation: string;
     moves: string[];
 }
 
+let stockfishOutputs: stockfishLine[] = [];
 let loggedUsername: string;
 const stockfishTrigger = document.getElementById('stockfish-trigger') as HTMLInputElement;
 export let engineOn: boolean = false;
@@ -34,6 +35,7 @@ stockfishTrigger.addEventListener('change', () => {
         stockfish.postMessage('stop');
     }
 });
+
 stockfish.onmessage = function(event) {
     const line = event.data;
 
@@ -44,13 +46,14 @@ stockfish.onmessage = function(event) {
         const scoreIndex = parts.indexOf("score");
         const pvIndex = parts.indexOf("pv");
 
-        const output: stockfishLine = {
-             rank: parts[multipvIndex + 1],
-             evaluation: formatEvaluation(parts[scoreIndex + 1], parts[scoreIndex + 2]),
-             moves: parts.slice(pvIndex + 1)
+        const rank = parseInt(parts[multipvIndex + 1]);
+        stockfishOutputs[rank - 1] = {
+            rank: rank,
+            evaluation: formatEvaluation(parts[scoreIndex + 1], parts[scoreIndex + 2]),
+            moves: parts.slice(pvIndex + 1)
         };
 
-        renderStockfishLines(output);
+        renderStockfishLines(stockfishOutputs.filter(Boolean)); // cleaning empty arrays
     }
 };
 
@@ -129,18 +132,21 @@ function formatEvaluation(type: string, value: string): string {
     return '0.00';
 }
 
-function renderStockfishLines(line: stockfishLine) {
+function renderStockfishLines(lines: stockfishLine[]) {
     const container = document.getElementById('stockfish-lines');
 
     if(!container) return;
-
     container.innerHTML = "";
-    const lineElement = document.createElement("div");
-    lineElement.className = "engine-line";
 
-    lineElement.innerHTML = `
+    lines.forEach(line => {
+
+        const lineElement = document.createElement("div");
+        lineElement.className = "engine-line";
+
+        lineElement.innerHTML = `
          <span class="evaluation">${line.evaluation}</span>
-          <span class="moves">${line.moves.join(" ")}</span>
+         <span class="moves">${line.moves.join(" ")}</span>
      `;
-    container.appendChild(lineElement);
+        container.appendChild(lineElement);
+    });
 }
