@@ -72,20 +72,20 @@ public class ChessApiController {
     }
 
 
-//    @GetMapping("/reset")
-//    public List<PiesaDTO> ResetBoard()
-//    {
-//        chessBoard.pieseList.clear();
-//        for(int i = 0; i < 8; i++)
-//            for(int j = 0; j < 8; j++)
-//                chessBoard.board[i][j] = null;
-//        chessBoard.allFormattedMoves = "";
-//        chessBoard.initializeBoard();
-//        List<PiesaDTO> dto = new ArrayList<>();
-//        for(Piese p : chessBoard.getAllPieces())
-//            dto.add(ChessBoard.toDTO(p));
-//        return dto;
-//    }
+    @GetMapping("/reset")
+    public List<PiesaDTO> ResetBoard()
+    {
+        chessBoard.pieseList.clear();
+        for(int i = 0; i < 8; i++)
+            for(int j = 0; j < 8; j++)
+                chessBoard.board[i][j] = null;
+        chessBoard.resetMoveNotations();
+        chessBoard.initializeBoard();
+        List<PiesaDTO> dto = new ArrayList<>();
+        for(Piese p : chessBoard.getAllPieces())
+            dto.add(ChessBoard.toDTO(p, p.row, p.col));
+        return dto;
+    }
 
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request) {
