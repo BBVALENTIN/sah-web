@@ -129,6 +129,7 @@ function onMoveReceived(payload: any) {
     if (result.checkmate) {
         mouse.soundManager.play("checkmate");
         mouse.soundManager.play("end");
+        resignBtn.disabled = true;
     } else if (result.check) {
         mouse.soundManager.play("check");
     } else if (result.captures) {

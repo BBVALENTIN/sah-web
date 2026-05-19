@@ -1,4 +1,5 @@
  INSERT INTO dbo.roles(name) VALUES ('ROLE_USER');
+ INSERT INTO dbo.roles(name) VALUES ('ROLE_JOURNALIST')
  INSERT INTO dbo.roles(name) VALUES ('ROLE_ADMIN');
  INSERT INTO dbo.roles(name) VALUES ('ROLE_CM');
  INSERT INTO dbo.roles(name) VALUES ('ROLE_FM');

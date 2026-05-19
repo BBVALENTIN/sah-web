@@ -7,6 +7,9 @@
     --cWidth: 300px;
     --cHeight: 600px;
     --bodyGray: rgba(36, 36, 36);
+    --twitch-purple: #9147ff;
+    --text-main: #efeff1;
+    --text-muted: #adadb8
 }
 
 html, body {
@@ -45,9 +48,23 @@ html, body {
 }
 
 #resign-button {
-    border: none !important;
-    background: none !important;
+    border: none;
+    background: transparent;
     padding: 0;
+
+    color: inherit;
+    font: inherit;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#resign-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 #chat-wrapper {
@@ -68,7 +85,7 @@ html, body {
     grid-template-columns: 40px 1fr 1fr;
     row-gap: 4px;
     padding: 6px;
-    width: 100%;
+    width: 90%;
     max-height: 400px;
     overflow-y: auto;
     border-radius: 6px;
@@ -87,6 +104,101 @@ html, body {
     display: flex;
     gap: 10px;
     margin-top: 10px;
+}
+/* PENTRU SWITCH ENABLE STOCKFISH*/
+.stockfish-enable {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    gap: 10px;
+    width: 30px;
+    height: 17px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(13px);
+    -ms-transform: translateX(13px);
+    transform: translateX(13px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 17px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+#engine-lines {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.engine-line {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    gap: 12px;
+}
+
+.evaluation {
+    min-width: 60px;
+    font-weight: bold;
+}
+
+.moves {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #important-buttons div, #buttons div, .chess-info-item.header button {
@@ -450,3 +562,93 @@ html, body {
 }
 
 /* ===================== END PROFILE CSS ===================== */
+
+/* ===================== START STREAMS CSS ===================== */
+
+.streams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 30px;
+}
+
+.stream-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--twitch-purple);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Container pentru imagine ca să putem pune badge-ul de LIVE */
+.thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.stream-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s;
+}
+
+.live-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #eb0400;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.stream-info {
+    padding: 15px;
+}
+
+.stream-user {
+    color: var(--twitch-purple);
+    font-size: 1.1rem;
+    margin: 0 0 5px 0;
+}
+
+.stream-title {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    margin: 5px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Taie textul la 2 rânduri */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.viewer-count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.viewer-count::before {
+    content: "●";
+    color: #adadb8;
+    margin-right: 5px;
+}
+
+/* ===================== END STREAMS CSS ===================== */
