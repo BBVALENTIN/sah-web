@@ -1,8 +1,7 @@
-import {minimalState} from "../Types.js";
+import {minimalState, PiesaDTO} from "../Types.js";
 import {Tabla} from "../Tabla.js";
 import {MoveList} from "../MoveList.js";
-import {culoareCurenta, FEN, MousePractice} from "./MousePractice.js";
-import {culoriPiesa} from "../Enums";
+import {FEN, MousePractice} from "./MousePractice.js";
 
 type stockfishLine = {
     rank: number;
@@ -123,8 +122,9 @@ resetBoard.addEventListener('click', async () => {
     const reset = await fetch('/api/chess/reset');
     if(reset.ok) {
         console.log("Board reseted successfully");
-        const pieseNoi = await reset.json();
-        tabla.setPiecesFromServer(pieseNoi);
+        const pieseleLivrateNoi: PiesaDTO[] = await reset.json(); // Delete this after finishing the page
+        console.log(pieseleLivrateNoi);
+        tabla.setPiecesFromServer(pieseleLivrateNoi);
         tabla.redesenare();
         mousePractice.resetByButton(); // might overhaul this, looks weird to be here
     }

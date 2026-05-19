@@ -53,7 +53,7 @@ export interface Message {
 }
 
 export interface minimalState {
-    Piese: any;
+    Piese: PiesaDTO[];
     culoareCurenta: culoriPiesa;
     currentPGN: string;
 }
