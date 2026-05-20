@@ -2,7 +2,6 @@ package com.sah.controller;
 
 import com.sah.dto.JoinLobbyRequest;
 import com.sah.dto.LobbyDTO;
-import com.sah.dto.ResignRequestDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
 import com.sah.repository.LobbyRepository;

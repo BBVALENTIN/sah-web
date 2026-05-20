@@ -94,7 +94,6 @@ initializeApp();
 
 resignBtn.addEventListener("click", async () => {
     resignBtn.disabled = true;
-    const action = resignBtn.innerText === 'Resign' ? 'resign' : 'abort'
     try {
         let resignColor:culoriPiesa;
         if(lobbyInfo?.playerBlack == loggedUsername)
@@ -102,12 +101,8 @@ resignBtn.addEventListener("click", async () => {
         else
             resignColor = culoriPiesa.ALB;
 
-        const responseResign: Response = await fetch(`api/chess/${action}`, {
+        const responseResign: Response = await fetch(`/api/chess/EndGameEarly/${lobbyInfo?.lobbyId}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ lobbyId: lobbyInfo?.lobbyId, username: loggedUsername, color: resignColor })
         });
 
         if(responseResign.ok) {
@@ -118,8 +113,6 @@ resignBtn.addEventListener("click", async () => {
                     state.connected = false
                 });
             }
-            if(action === 'abort')
-                window.location.href = '/lobbies';
         }
         else {
             resignBtn.disabled = false;

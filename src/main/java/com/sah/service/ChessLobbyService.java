@@ -6,12 +6,14 @@ import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.enums.FormatType;
+import com.sah.game.ChessBoard;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
 import com.sah.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -134,12 +136,6 @@ public class ChessLobbyService {
                 lobby.setPlayerWhite(username);
             }
         }
-    }
-
-    public void abortGame(String lobbyId) {
-        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
-        lobby.setLobbyType(LobbyType.ABORTED);
-        lobbyRepository.save(lobby);
     }
 
     private boolean isAlreadyAssigned(ChessLobbies lobby, String username) {

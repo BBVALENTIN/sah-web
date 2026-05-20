@@ -155,32 +155,37 @@ public class ChessApiController {
         messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);
     }
 
-    @PostMapping("/resign")
-    public void Resignation(@RequestBody ResignRequestDTO dto) {
-        lobbyValidation(dto);
+//    @PostMapping("/resign")
+//    public void Resignation(@PathVariable String lobbyId, Principal principal) {
+//        lobbyValidation(lobbyId);
+//        String requestingUser = principal.getName();
+//        ChessBoard board = gameService.getBoard(lobbyId);
+//        ChessLobbies currentLobby = lobbyRepository.findByLobbyId(lobbyId);
+//        board.setResignation(true);
+//        if(!currentLobby.getPlayerWhite().equals(requestingUser) || !currentLobby.getPlayerBlack().equals(requestingUser))
+//            throw new RuntimeException("Player is not currently in that lobby");
+//
+//        if(currentLobby.getPlayerBlack().equals(requestingUser))
+//            board.setWinner(Sides.WHITE);
+//        else
+//            board.setWinner(Sides.BLACK);
+//        gameService.saveClassicGame(lobbyId);
+//    }
 
-        ChessBoard board = gameService.getBoard(dto.lobbyId);
-        board.setResignation(true);
-        if(Objects.equals(dto.color, "ALB"))
-            board.setWinner(Sides.WHITE);
-        else
-            board.setWinner(Sides.BLACK);
-        gameService.saveClassicGame(dto.lobbyId);
+    @PostMapping("/EndGameEarly/{lobbyId}")
+    public void ResignOrAbort(@PathVariable String lobbyId, Principal principal)
+    {
+        GameEndRequest request = new GameEndRequest(lobbyId, principal);
+        gameService.endGameEarly(request);
     }
 
-    @PostMapping("/abort")
-    public void Abort(@RequestBody ResignRequestDTO dto) {
-        lobbyValidation(dto);
-        chessLobbyService.abortGame(dto.lobbyId);
-    }
-
-    private void lobbyValidation(@RequestBody ResignRequestDTO dto) {
-        ChessLobbies lobby = lobbyRepository.findByLobbyId(dto.lobbyId);
-        if(dto.lobbyId == null)
+    private void lobbyValidation(String lobbyId) {
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
+        if(lobbyId == null)
         {
             throw new RuntimeException("Lobby id null!");
         }
-        if(gameService.getBoard(dto.lobbyId) == null) {
+        if(gameService.getBoard(lobbyId) == null) {
             throw new RuntimeException("Can't find the lobby!");
         }
         if(gameRepository.findByLobby(lobby) != null)

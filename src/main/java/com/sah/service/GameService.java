@@ -1,14 +1,18 @@
 package com.sah.service;
 
+import com.sah.dto.GameEndRequest;
+import com.sah.dto.GameEndRequest;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
+import com.sah.enums.Sides;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,6 +62,43 @@ public class GameService {
         game.setResignation(board.getResignation());
 
         gameRepository.save(game);
+    }
+    
+    public void endGameEarly(GameEndRequest request)
+    {
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(request.lobbyId);
+        if(lobby == null)
+            throw new RuntimeException("Lobby doesn't exist");
+        ChessBoard game = getBoard(request.lobbyId);
+        if(!isUserInLobby(request))
+            throw new RuntimeException("User is not in lobby");
+
+        if(game.movesPlayed < 2)
+            abortGame(lobby);
+        else
+            resignGame(lobby, game, request.principal);
+
+        lobbyRepository.save(lobby);
+    }
+
+    private void abortGame(ChessLobbies lobby) {
+        lobby.setLobbyType(LobbyType.ABORTED);
+    }
+
+    public void resignGame(ChessLobbies lobby, ChessBoard board, Principal principal) {
+        board.setResignation(true);
+        if(lobby.getPlayerWhite().equals(principal.getName()))
+            board.setWinner(Sides.BLACK);
+        else
+            board.setWinner(Sides.WHITE);
+        saveClassicGame(lobby.getLobbyId());
+    }
+
+    private boolean isUserInLobby(GameEndRequest request) {
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(request.lobbyId);
+        if(lobby == null)
+            return false;
+        return lobby.getPlayerBlack().equals(request.principal.getName()) || lobby.getPlayerWhite().equals(request.principal.getName());
     }
 
     // To implement further logic here
