@@ -1,4 +1,4 @@
-import {minimalState} from "../Types.js";
+import {minimalState, PiesaDTO} from "../Types.js";
 import {Tabla} from "../Tabla.js";
 import {MoveList} from "../MoveList.js";
 import {FEN, MousePractice} from "./MousePractice.js";
@@ -111,12 +111,27 @@ async function loadBoard() {
 loadBoard();
 
 const flipboard = document.getElementById('flipBoard') as HTMLButtonElement;
-
+const resetBoard = document.getElementById('resetBoard') as HTMLButtonElement;
 flipboard.addEventListener('click', () => {
     console.log("clicked");
     tabla.getOrientare() ? tabla.setOrientare(false) : tabla.setOrientare(true);
     tabla.redesenare(tabla.piese);
 });
+
+resetBoard.addEventListener('click', async () => {
+    const reset = await fetch('/api/chess/reset');
+    if(reset.ok) {
+        console.log("Board reseted successfully");
+        const pieseleLivrateNoi: PiesaDTO[] = await reset.json(); // Delete this after finishing the page
+        console.log(pieseleLivrateNoi);
+        tabla.setPiecesFromServer(pieseleLivrateNoi);
+        tabla.redesenare();
+        mousePractice.resetByButton(); // might overhaul this, looks weird to be here
+    }
+    else
+        console.log("Fail");
+});
+
 function formatEvaluation(type: string, value: string): string {
     if(type === 'cp')
     {

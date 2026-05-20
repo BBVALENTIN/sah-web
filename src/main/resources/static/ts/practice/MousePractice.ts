@@ -3,7 +3,7 @@ import {Piesa} from "../piese/Piesa.js";
 import {SoundManager} from "../audio/soundManager.js";
 import {culoriPiesa} from "../Enums.js";
 import {Mutare_Reusita} from "../Types.js";
-import {moveList, cereMutareDeLaStockfish, engineOn} from "./index.js";
+import {cereMutareDeLaStockfish, engineOn, moveList} from "./index.js";
 
 const FENdiv = document.getElementById('FEN') as HTMLDivElement;
 export let FEN: string;
@@ -139,5 +139,11 @@ export class MousePractice {
 
         this.canvas.style.cursor = "default";
         this.tabla.redesenare(this.tabla.piese);
+    }
+
+    resetByButton(): void {
+        this.culoareCurenta = culoriPiesa.ALB;
+        FEN = "";
+        FENdiv.innerText = FEN;
     }
 }

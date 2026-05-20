@@ -6,6 +6,7 @@ import {Tura} from "./piese/Tura.js";
 import {Rege} from "./piese/Rege.js";
 import {Regina} from "./piese/Regina.js";
 import {culoriPiesa, TipPiesa} from "./Enums.js";
+import {PiesaDTO} from "./Types.js";
 
 export class Tabla {
     static squareSize: number = 75;
@@ -164,7 +165,7 @@ export class Tabla {
         return piesa;
     }
 
-    setPiecesFromServer(piecesData: any): void {
+    setPiecesFromServer(piecesData: PiesaDTO[]): void {
         this.piese = piecesData.map((p:any) => this.createPiesaFromData(p));
     }
 

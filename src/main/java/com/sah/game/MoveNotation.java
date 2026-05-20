@@ -6,18 +6,23 @@ import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.GameEnums.Tip;
 import com.sah.game.piese.Piese;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MoveNotation {
     public String allFormattedMoves, currentFormattedMove;
     public int movesPlayed;
+    public List<String> FENList = new ArrayList<>();
 
     public MoveNotation(){
         this.allFormattedMoves = "";
         this.currentFormattedMove = "";
     }
 
-    public MoveNotation(int movesPlayed, String currentFormattedMove, String allFormattedMoves){
+    public MoveNotation(int movesPlayed, String currentFormattedMove, String allFormattedMoves, List<String> FENList){
         this.currentFormattedMove = currentFormattedMove;
         this.allFormattedMoves = allFormattedMoves;
+        this.FENList = FENList;
     }
 
     public String formatMove(MoveDataNotationDTO dto){
@@ -142,6 +147,12 @@ public class MoveNotation {
             case KING -> 'k';
             default -> ' ';
         };
+    }
+
+    public void resetNotations() {
+        allFormattedMoves = "";
+        currentFormattedMove = "";
+        this.FENList.clear();
     }
 
     public String getAllFormattedMoves() {

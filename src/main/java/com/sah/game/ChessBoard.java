@@ -435,6 +435,10 @@ public class ChessBoard {
         }
     }
 
+    public void resetMoveNotations() {
+        moveNotation.resetNotations();
+    }
+
     public String getAllPGN() {
         return moveNotation.allFormattedMoves;
     }
