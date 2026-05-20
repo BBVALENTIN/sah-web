@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Community</title>
+    <style rel="stylesheet" th:href="@{/css/style.css}"></style>
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="post-layout">
+<!--        change the src when done-->
+        <img id="profile-picture" alt="profile-picture" th:src="@{/uploads/default.jpg}"></img>
+        <div id="post-content">
+            <div id="placeholder-area" aria-label="Write a message. . .">Write a message. . .</div>
+            <div id="contenteditable-root" contenteditable="true" style="display: none;"></div>
+        </div>
+    </div>
+    <script type="module" th:src="@{/js/scripts.js}"></script>
+</body>
+</html>
