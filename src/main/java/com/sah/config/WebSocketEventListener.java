@@ -1,15 +1,27 @@
 package com.sah.config;
 
 import com.sah.dto.ChatMessageDTO;
+import com.sah.dto.LobbyDTO;
+import com.sah.entity.ChessGames;
+import com.sah.entity.ChessLobbies;
+import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
+import com.sah.enums.Sides;
+import com.sah.game.ChessBoard;
+import com.sah.repository.LobbyRepository;
 import com.sah.service.ChessLobbyService;
+import com.sah.service.GameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.Map;
+import java.util.concurrent.*;
 
 @Component
 @RequiredArgsConstructor
@@ -18,17 +30,96 @@ public class WebSocketEventListener {
 
     private final SimpMessageSendingOperations messageTemplate;
     private final ChessLobbyService lobbyService;
+    private final GameService gameService;
+    private final LobbyRepository lobbyRepository;
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private static Map<String, String> pendingReconnections = new ConcurrentHashMap<>();
+
+    public static void userReturned(String username) {
+        if (username != null) {
+            log.info("Utilizatorul {} s-a întors fizic pe pagină. Anulăm penalizarea.", username);
+            pendingReconnections.remove(username);
+        }
+    }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        System.out.println("EVENIMENT DECONECTARE DECLANȘAT! Sesiune: " + headerAccessor.getSessionId());
+        System.out.println("Atribute sesiune: " + headerAccessor.getSessionAttributes());
         String sessionId = headerAccessor.getSessionId();
         String username = (String) headerAccessor.getSessionAttributes().get("username");
+        String lobbyId = (String) headerAccessor.getSessionAttributes().get("lobbyId");
 
-        if(username != null) {
+
+        if(lobbyId != null && username != null)
+        {
             log.info("User disconnected: {}", username);
+            pendingReconnections.put(username, lobbyId);
             var chatMessage = ChatMessageDTO.builder().type(MessageType.LEAVE).sender(username).build();
             messageTemplate.convertAndSend("/topic/public", chatMessage);
+
+            scheduler.schedule(() -> {
+                verifyReconnect(lobbyId, username, sessionId);
+            }, 10, TimeUnit.SECONDS);
+        }
+        else {
+            lobbyService.handlePlayerDisconnect(sessionId);
+        }
+    }
+
+    private void verifyReconnect(String lobbyId, String username, String sessionId) {
+        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
+        if(lobby == null) return;
+
+        if(username != null && !pendingReconnections.containsKey(username)) {
+            log.info("Jucătorul {} s-a reconectat cu succes după refresh în lobby-ul {}.", username, lobby.getLobbyId());
+            return;
+        }
+
+        if (username != null) {
+            pendingReconnections.remove(username);
+        }
+
+        ChessBoard board = gameService.getBoard(lobby.getLobbyId());
+
+        if(board != null && board.movesPlayed > 2) {
+            if (username != null && username.equals(lobby.getPlayerWhite())) {
+                board.setWinner(Sides.BLACK);
+            } else {
+                board.setWinner(Sides.WHITE);
+            }
+
+            lobby.setLobbyType(LobbyType.FINISHED);
+            lobbyRepository.save(lobby);
+            gameService.saveClassicGame(lobbyId);
+            LobbyDTO finishedLobby = lobbyService.convertLobbyDTO(lobby);
+            messageTemplate.convertAndSend("/topic/lobby/" + lobby.getLobbyId(), finishedLobby);
+            messageTemplate.convertAndSend("/topic/global-lobbies", finishedLobby);
+
+            lobbyService.handlePlayerDisconnect(sessionId);
+            return;
+        }
+
+        if (username != null && username.equals(lobby.getPlayerWhite())) {
+            lobby.setPlayerWhite(null);
+        } else if (username != null && username.equals(lobby.getPlayerBlack())) {
+            lobby.setPlayerBlack(null);
+        }
+
+        if(lobby.getPlayerBlack() == null && lobby.getPlayerWhite() == null){
+            lobbyRepository.delete(lobby);
+
+            LobbyDTO removedLobby = lobbyService.convertLobbyDTO(lobby);
+            removedLobby.setLobbyType(LobbyType.ABORTED);
+            messageTemplate.convertAndSend("/topic/global-lobbies", removedLobby);
+        } else {
+            lobby.setLobbyType(LobbyType.AVAILABLE);
+            lobbyRepository.save(lobby);
+
+            LobbyDTO updatedLobby = lobbyService.convertLobbyDTO(lobby);
+            messageTemplate.convertAndSend("/topic/lobby/" + lobby.getLobbyId(), updatedLobby);
+            messageTemplate.convertAndSend("/topic/global-lobbies", updatedLobby);
         }
 
         lobbyService.handlePlayerDisconnect(sessionId);

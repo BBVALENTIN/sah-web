@@ -61,10 +61,15 @@ public class ChessLobbyService {
     }
 
     public List<LobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
-        return lobbyRepository.findByLobbyType(typeOfLobby).stream().map(lobby -> new LobbyDTO(
-                lobby.getLobbyId(),
-                lobby.getLobbyType()
-        )).toList();
+        if(typeOfLobby == LobbyType.AVAILABLE) {
+            return lobbyRepository.findByLobbyType(typeOfLobby).stream().map(lobby -> new LobbyDTO(
+                    lobby.getLobbyId(),
+                    lobby.getLobbyType(),
+                    lobby.getPlayerWhite(),
+                    lobby.getPlayerBlack()
+            )).toList();
+        }
+        return null;
     }
 
     public LobbyDTO getLobbyDTO(String lobbyId) {
@@ -86,18 +91,22 @@ public class ChessLobbyService {
         chat.setLobby(lobby);
 
         lobbyRepository.save(lobby);
-
-        return convertLobbyDTO(lobby);
+        LobbyDTO lobbyDTO = convertLobbyDTO(lobby);
+        simpMessagingTemplate.convertAndSend("/topic/global-lobbies", lobbyDTO);
+        return lobbyDTO;
     }
 
-    public void joinLobby(JoinLobbyRequest request) {
-        ChessLobbies lobby = getLobbyFromId(request.getLobbyId());
-        if(isAlreadyAssigned(lobby, request.getUsername()) == false) {
-            assignLobbyPlayer(lobby, request.getUsername());
-            if(isLobbyFull(lobby))
+    public void joinLobby(String lobbyId, String username) {
+        ChessLobbies lobby = getLobbyFromId(lobbyId);
+        if(isAlreadyAssigned(lobby, username) == false) {
+            assignLobbyPlayer(lobby, username);
+            if(isLobbyFull(lobby)) {
                 lobby.setLobbyType(LobbyType.ONGOING);
+                LobbyDTO lobbyDTO = convertLobbyDTO(lobby);
+                simpMessagingTemplate.convertAndSend("/topic/global-lobbies", lobbyDTO);
+            }
             lobbyRepository.save(lobby);
-            updatedLobbyNotify(request.getLobbyId());
+            updatedLobbyNotify(lobbyId);
         }
     }
 
