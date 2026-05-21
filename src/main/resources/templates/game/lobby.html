@@ -8,11 +8,18 @@
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="content">
-        <div id="lobbyPage-header">
-            <button id="createLobbyButton">Create Lobby</button>
-            <button id="showAvailableLobbiesButton">Show Available</button>
-            <p>There are currently x . . . lobbies - REPLACE TEXT</p>
-            <p>Sort by lobby state probably here</p>
+        <div class="lobby-header">
+            <div class="toolbar-above">
+                <div class="page-info">Click on a lobby below to play, or create your own</div>
+                <div class="lobby-buttons">
+                    <button id="createLobbyButton">Create Lobby</button>
+                    <button id="showAvailableLobbiesButton">Show Available</button>
+                </div>
+            </div>
+            <div class="lobbies-info">
+                <p>There are currently x . . . lobbies - REPLACE TEXT</p>
+                <p>Sort by lobby state probably here</p>
+            </div>
         </div>
         <div id="lobbiesContainer"></div>
     </div>
