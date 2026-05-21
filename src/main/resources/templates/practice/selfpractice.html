@@ -9,33 +9,51 @@
     <div th:replace="fragments/navbar :: navbar"></div>
     <div id="chess-stuff">
 
-        <div id="chess-playground">
-            <canvas id="chessCanvas"></canvas>
+        <div class="chess-main">
+
+            <div id="chess-playground">
+                <canvas id="chessCanvas"></canvas>
+            </div>
+
+            <div id="chess-info-wrapper" class="chess-info-wrapper">
+                <div id="chess-info-item">Play with yourself</div>
+                <div>
+                    <div class="stockfish-enable">
+                        <label class="switch">
+                            <input id="stockfish-trigger" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                        <span>Enable stockfish</span>
+                    </div>
+                    <div id="stockfish-lines">
+                    </div>
+                </div>
+                <div id="move-list-container">
+                    <div id="move-list"></div>
+                </div>
+            </div>
         </div>
 
-        <div id="chess-info-wrapper" class="chess-info-wrapper">
-            <div id="chess-info-item">Play with yourself</div>
-            <div>
-                <div class="stockfish-enable">
-                    <label class="switch">
-                        <input id="stockfish-trigger" type="checkbox">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Enable stockfish</span>
-                </div>
-                <div id="stockfish-lines">
-                </div>
+        <div class = "copyables">
+
+            <div class="pair">
+                <label class="name">FEN</label>
+                <input id="FEN" class="copyable" spellcheck="false" enterkeyhint="done">
             </div>
-            <div id="move-list-container">
-                <div id="move-list"></div>
+
+            <div class="pair">
+                <label class="name">PGN</label>
+                <textarea id="PGN" class="copyable" spellcheck="false"></textarea>
             </div>
         </div>
+
     </div>
 
     <button id="flipBoard">Flip board</button>
     <button id="resetBoard">Reset board</button>
-    <div id="FEN"></div>
+
 
     <script type="module" th:src="@{/ts-transpiled/practice/index.js}"></script>
+    <script type="module" th:src="@{/js/script.js}"></script>
 </body>
 </html>

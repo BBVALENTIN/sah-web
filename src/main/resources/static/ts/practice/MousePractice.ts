@@ -5,7 +5,8 @@ import {culoriPiesa} from "../Enums.js";
 import {Mutare_Reusita} from "../Types.js";
 import {cereMutareDeLaStockfish, engineOn, moveList} from "./index.js";
 
-const FENdiv = document.getElementById('FEN') as HTMLDivElement;
+const fenOutput = document.getElementById('FEN') as HTMLInputElement;
+const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;
 export let FEN: string;
 export class MousePractice {
     canvas: HTMLCanvasElement;
@@ -14,14 +15,18 @@ export class MousePractice {
     soundManager: SoundManager = new SoundManager();
     offsetX: number;
     offsetY: number;
+    moveNumber: number;
     culoareCurenta: culoriPiesa;
+    currentMove: string;
     constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
         this.canvas = canvas;
         this.tabla = tabla;
         this.piesaSelectata = undefined;
         this.offsetX = 0;
         this.offsetY = 0;
+        this.moveNumber = 1;
         this.culoareCurenta = culoriPiesa.ALB;
+        this.currentMove = "";
         this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
         this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
         this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
@@ -120,7 +125,8 @@ export class MousePractice {
             FEN = result.fen;
             if(engineOn)
                 cereMutareDeLaStockfish(FEN);
-            FENdiv.innerText = FEN;
+            fenOutput.value = FEN;
+            this.addMoveToCopyable(result.pgn);
         } catch(err){
             console.log("eroare cine stie de ce");
         } finally {
@@ -144,6 +150,16 @@ export class MousePractice {
     resetByButton(): void {
         this.culoareCurenta = culoriPiesa.ALB;
         FEN = "";
-        FENdiv.innerText = FEN;
+        fenOutput.value = FEN;
+    }
+
+    addMoveToCopyable(currentPGN: string) {
+        this.moveNumber += 1;
+        if(this.moveNumber % 2 == 0)
+            this.currentMove = (this.moveNumber / 2).toString() + ". " + currentPGN;
+        else
+            this.currentMove = " " + currentPGN + " ";
+
+        pgnOutput.value += this.currentMove;
     }
 }
