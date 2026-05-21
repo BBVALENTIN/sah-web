@@ -155,43 +155,12 @@ public class ChessApiController {
         messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);
     }
 
-//    @PostMapping("/resign")
-//    public void Resignation(@PathVariable String lobbyId, Principal principal) {
-//        lobbyValidation(lobbyId);
-//        String requestingUser = principal.getName();
-//        ChessBoard board = gameService.getBoard(lobbyId);
-//        ChessLobbies currentLobby = lobbyRepository.findByLobbyId(lobbyId);
-//        board.setResignation(true);
-//        if(!currentLobby.getPlayerWhite().equals(requestingUser) || !currentLobby.getPlayerBlack().equals(requestingUser))
-//            throw new RuntimeException("Player is not currently in that lobby");
-//
-//        if(currentLobby.getPlayerBlack().equals(requestingUser))
-//            board.setWinner(Sides.WHITE);
-//        else
-//            board.setWinner(Sides.BLACK);
-//        gameService.saveClassicGame(lobbyId);
-//    }
 
     @PostMapping("/EndGameEarly/{lobbyId}")
     public void ResignOrAbort(@PathVariable String lobbyId, Principal principal)
     {
         GameEndRequest request = new GameEndRequest(lobbyId, principal);
         gameService.endGameEarly(request);
-    }
-
-    private void lobbyValidation(String lobbyId) {
-        ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
-        if(lobbyId == null)
-        {
-            throw new RuntimeException("Lobby id null!");
-        }
-        if(gameService.getBoard(lobbyId) == null) {
-            throw new RuntimeException("Can't find the lobby!");
-        }
-        if(gameRepository.findByLobby(lobby) != null)
-        {
-            throw new RuntimeException("Lobby already exists! I don't know how you got here game's over my boy.");
-        }
     }
 }
 

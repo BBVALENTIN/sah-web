@@ -7,9 +7,10 @@
 <body>
     <div th:insert="fragments/navbar :: navbar"></div>
 
-    <div id="content-play">
+    <div class="content-play">
+
         <div id="chat-wrapper">
-            <div id="chat-header">
+            <div class="chat-header">
                 <h2> Chat box</h2>
             </div>
             <div id="messageArea"></div>
@@ -19,12 +20,13 @@
             </form>
         </div>
 
-        <div id="chess-stuff">
+        <div class="chess-main">
             <div id="chess-playground">
                 <div id="otherPlayer">Waiting . . .</div>
                 <canvas id="chessCanvas"></canvas>
                 <div id="currentPlayer">Waiting . . .</div>
             </div>
+
             <div id="chess-info-wrapper" class="chess-info-wrapper">
                 <div id="chess-info-item">Play</div>
                 <div id="move-list-container">
