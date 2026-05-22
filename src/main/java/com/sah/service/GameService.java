@@ -50,7 +50,7 @@ public class GameService {
         }
     }
 
-    public void saveClassicGame(String lobbyId) {
+    public void saveClassicGame(String lobbyId, WinType winReason) {
         ChessGames game =  new ChessGames();
         ChessBoard board = getBoard(lobbyId);
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
@@ -59,13 +59,14 @@ public class GameService {
         game.setResult(board.convertToResult());
         game.setPGN(board.getAllPGN());
         game.setNumberOfMoves(board.getMovesPlayed());
-        game.setResignation(board.getResignation());
+        game.setWinReason(winReason);
 
         gameRepository.save(game);
     }
     
     public void endGameEarly(GameEndRequest request)
     {
+        Sides winner = Sides.NONE;
         ChessLobbies lobby = lobbyRepository.findByLobbyId(request.lobbyId);
         if(lobby == null)
             throw new RuntimeException("Lobby doesn't exist");

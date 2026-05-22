@@ -30,3 +30,15 @@ export enum Formats {
     BLITZ = 'BLITZ',
     CLASSICAL = 'CLASSICAL'
 }
+
+export enum WinReason {
+    CHECKMATE = 'CHECKMATE',
+    RESIGNATION = 'RESIGNATION',
+    ABANDONMENT = 'ABANDONMNET'
+}
+
+export enum Sides {
+    WHITE,
+    BLACK,
+    NONE
+}

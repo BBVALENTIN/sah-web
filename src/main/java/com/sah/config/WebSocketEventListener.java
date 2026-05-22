@@ -7,6 +7,7 @@ import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
 import com.sah.enums.Sides;
+import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.repository.LobbyRepository;
 import com.sah.service.ChessLobbyService;
@@ -92,7 +93,7 @@ public class WebSocketEventListener {
 
             lobby.setLobbyType(LobbyType.FINISHED);
             lobbyRepository.save(lobby);
-            gameService.saveClassicGame(lobbyId);
+            gameService.saveClassicGame(lobbyId, WinType.ABANDONMENT);
             LobbyDTO finishedLobby = lobbyService.convertLobbyDTO(lobby);
             messageTemplate.convertAndSend("/topic/lobby/" + lobby.getLobbyId(), finishedLobby);
             messageTemplate.convertAndSend("/topic/global-lobbies", finishedLobby);

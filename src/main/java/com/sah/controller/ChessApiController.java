@@ -6,6 +6,7 @@ import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.enums.MessageType;
 import com.sah.enums.Sides;
+import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.piese.Piese;
@@ -108,7 +109,7 @@ public class ChessApiController {
         if(result.getErrorCodes() == null) {
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
             if(result.isCheckmate() == true) {
-                gameService.saveClassicGame(request.getLobbyId());
+                gameService.saveClassicGame(request.getLobbyId(), WinType.CHECKMATE);
             }
         }
         else {

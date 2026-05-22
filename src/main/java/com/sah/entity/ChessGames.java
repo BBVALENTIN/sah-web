@@ -1,6 +1,7 @@
 package com.sah.entity;
 
 import com.sah.enums.ResultType;
+import com.sah.enums.WinType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class ChessGames {
     @Column(nullable = false, length = 2000)
     private String PGN;
     @Column(nullable = false)
-    private boolean resignation;
+    private WinType WinReason;
 
     @OneToOne
     @JoinColumn(name = "lobby_id", nullable = false, unique = true)
