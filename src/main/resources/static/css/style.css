@@ -720,3 +720,11 @@ input:checked + .slider:before {
 }
 
 /* ===================== END STREAMS CSS ===================== */
+
+
+.toolbar-buttons {
+    font: inherit;
+    background: #949494;
+    color: white;
+    border-radius: 8px;
+}

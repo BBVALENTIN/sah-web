@@ -10,7 +10,8 @@ const state = {
     stompClient: null as any,
     connected: false
 };
-
+let lobbyCount = 0;
+const lobbyInfo = document.getElementById('lobbiesCount') as HTMLDivElement;
 document.addEventListener("DOMContentLoaded", () => {
     loadLobbies();
     conectareWebSocket();
@@ -36,10 +37,21 @@ function conectareWebSocket() {
             const lobbyDto: lobbyInfo = JSON.parse(payload.body);
 
             if (lobbyDto.lobbyType === LobbyType.AVAILABLE) {
+                lobbyCount++;
                 adaugaLobbyInTabel(lobbyDto);
             }
             else {
                 stergeLobbyDinTabel(lobbyDto.lobbyId);
+            }
+            console.log(lobbyCount + " gadfgadfigheghriuagbraelgbarlgrbaelire");
+            if(lobbyCount === 0) {
+                lobbyInfo.innerText = "There are currently no lobbies open";
+            }
+            else if(lobbyCount === 1){
+                lobbyInfo.innerText = "There is one lobby open";
+            }
+            else {
+                lobbyInfo.innerText = `There are currently ${lobbyCount} lobbies opened`;
             }
         });
     }, function(error: any) {
@@ -49,7 +61,6 @@ function conectareWebSocket() {
 
 function adaugaLobbyInTabel(lobby: lobbyInfo) {
     let tableBody = document.getElementById("lobby-table-body") as HTMLTableSectionElement;
-
     if (!tableBody) {
         const container = document.getElementById("lobbiesContainer");
         if (container) {
@@ -94,6 +105,7 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
             <td style="padding: 10px; border-bottom: 1px solid #080710;">Open</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;"><button class="join-btn" data-id="${lobby.lobbyId}">Join</button></td>
         `;
+        lobbyCount++;
         tableBody.appendChild(tr);
     }
 
@@ -103,6 +115,7 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
 function stergeLobbyDinTabel(lobbyId: string) {
     const row = document.getElementById(`lobby-${lobbyId}`);
     if (row) {
+        lobbyCount--;
         row.remove();
     }
 }
