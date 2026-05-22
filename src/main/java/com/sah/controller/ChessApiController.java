@@ -1,5 +1,6 @@
 package com.sah.controller;
 
+import com.sah.config.WebSocketEventListener;
 import com.sah.dto.*;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
@@ -19,6 +20,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -144,7 +146,12 @@ public class ChessApiController {
 
     @MessageMapping("/chat.addUser/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
-    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId) {
+    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId, SimpMessageHeaderAccessor headerAccessor) {
+        if(headerAccessor.getSessionAttributes() != null) {
+            headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
+            headerAccessor.getSessionAttributes().put("lobbyId", lobbyId);
+        }
+        WebSocketEventListener.userReturned(chatMessageDTO.getSender());
         return chessLobbyChatService.addUser(chatMessageDTO.getSender(), lobbyId);
     }
 
