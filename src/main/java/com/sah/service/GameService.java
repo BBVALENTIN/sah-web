@@ -5,11 +5,15 @@ import com.sah.dto.GameEndRequest;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
+import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
+import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -21,10 +25,13 @@ public class GameService {
     private final Map<String, ChessBoard> activeLobbies = new ConcurrentHashMap<>();
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
+    private final SimpMessageSendingOperations messageTemplate;
 
-    public GameService(LobbyRepository lobbyRepository, GameRepository gameRepository) {
+
+    public GameService(LobbyRepository lobbyRepository, GameRepository gameRepository, SimpMessageSendingOperations messageTemplate) {
         this.lobbyRepository = lobbyRepository;
         this.gameRepository = gameRepository;
+        this.messageTemplate = messageTemplate;
     }
 
     public ChessBoard getOrCreateBoard(String lobbyId){
@@ -77,22 +84,24 @@ public class GameService {
         if(game.movesPlayed < 2)
             abortGame(lobby);
         else
-            resignGame(lobby, game, request.principal);
-
+            winner = resignGame(lobby, game, request.principal);
+        messageTemplate.convertAndSend("/topic/resign-lobby/" +lobby.getLobbyId(), winner);
         lobbyRepository.save(lobby);
     }
 
-    private void abortGame(ChessLobbies lobby) {
+    private Sides abortGame(ChessLobbies lobby) {
         lobby.setLobbyType(LobbyType.ABORTED);
+        return Sides.NONE;
     }
 
-    public void resignGame(ChessLobbies lobby, ChessBoard board, Principal principal) {
+    public Sides resignGame(ChessLobbies lobby, ChessBoard board, Principal principal) {
         board.setResignation(true);
         if(lobby.getPlayerWhite().equals(principal.getName()))
             board.setWinner(Sides.BLACK);
         else
             board.setWinner(Sides.WHITE);
-        saveClassicGame(lobby.getLobbyId());
+        saveClassicGame(lobby.getLobbyId(), WinType.RESIGNATION);
+        return board.getWinner();
     }
 
     private boolean isUserInLobby(GameEndRequest request) {

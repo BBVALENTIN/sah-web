@@ -1,5 +1,5 @@
 import {lobbyInfo, Message, Mutare_Reusita} from "./Types.js";
-import {culoriPiesa, MessageType} from "./Enums.js";
+import {culoriPiesa, MessageType, Sides} from "./Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
 
 declare var SockJS: any;
@@ -43,6 +43,18 @@ export function connect(username: string, lobbyId: string):void{
 
             state.stompClient.subscribe(`/topic/chat/${lobbyId}`, onMessageReceived);
             state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
+            state.stompClient.subscribe(`/topic/resign-lobby/${lobbyId}`, function (payload: any) {
+                const winnerSide = JSON.parse(payload.body)
+                const resignButton = document.getElementById('resign-button') as HTMLButtonElement;
+                resignButton.disabled = true;
+                console.log(winnerSide)
+                if(winnerSide === "BLACK") {
+                    moveList.addMove("0-1");
+                } else if(winnerSide === "WHITE") {
+                   moveList.addMove("1-0");
+                }
+                mouse.soundManager.play("end");
+            });
             state.stompClient.subscribe(`/topic/lobby/${lobbyId}`, function (payload: any) {
                 const updatedLobby: lobbyInfo = JSON.parse(payload.body);
                 updatePlayerNamesUI(updatedLobby);

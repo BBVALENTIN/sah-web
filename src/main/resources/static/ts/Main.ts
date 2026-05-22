@@ -95,18 +95,12 @@ initializeApp();
 resignBtn.addEventListener("click", async () => {
     resignBtn.disabled = true;
     try {
-        let resignColor:culoriPiesa;
-        if(lobbyInfo?.playerBlack == loggedUsername)
-            resignColor = culoriPiesa.NEGRU;
-        else
-            resignColor = culoriPiesa.ALB;
 
         const responseResign: Response = await fetch(`/api/chess/EndGameEarly/${lobbyInfo?.lobbyId}`, {
             method: 'POST',
         });
 
         if(responseResign.ok) {
-            moveList.resign(culoareCurenta!);
             if(state.stompClient && state.connected) {
                 state.stompClient.disconnect(() => {
                     console.log("Disconnected from server due to resignation/abort");

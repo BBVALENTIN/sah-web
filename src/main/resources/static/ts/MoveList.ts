@@ -67,17 +67,6 @@ export class MoveList {
         this.container.innerHTML = "";
     }
 
-    resign(culoareaCurenta: culoriPiesa) {
-        const whiteResigned: string = "0-1";
-        const blackResigned: string = "1-0";
-
-        if(culoareaCurenta === culoriPiesa.ALB)
-        {
-            this.addMove(whiteResigned);
-        }
-        else { this.addMove(blackResigned); }
-    }
-
     public getMoveCount() {
         return this.moveCount;
     }
