@@ -56,10 +56,11 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
             container.innerHTML = `
                 <table class="lobby-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                     <thead>
-                        <tr style="background-color: #f4f4f4; text-align: left;">
-                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Creator</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Status</th>
-                            <th style="padding: 10px; border-bottom: 1px solid #ddd;">Action</th>
+                        <tr style="background-color: #080710; text-align: left;">
+                            <th style="padding: 10px; border-bottom: 1px solid #080710;">Creator</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #080710">Lobby Id</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #080710;">Status</th>
+                            <th style="padding: 10px; border-bottom: 1px solid #080710;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="lobby-table-body"></tbody>
@@ -80,6 +81,7 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
     if (randExistent) {
         randExistent.innerHTML = `
             <td style="padding: 10px; border-bottom: 1px solid #080710;">${creator}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #080710;">${lobby.lobbyId}</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;">Waiting for opponent...</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;"><button class="join-btn" data-id="${lobby.lobbyId}">Join</button></td>
         `;
@@ -88,6 +90,7 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
         tr.id = `lobby-${lobby.lobbyId}`;
         tr.innerHTML = `
             <td style="padding: 10px; border-bottom: 1px solid #080710;">${creator}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #080710;">${lobby.lobbyId}</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;">Open</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;"><button class="join-btn" data-id="${lobby.lobbyId}">Join</button></td>
         `;
@@ -98,9 +101,9 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
 }
 
 function stergeLobbyDinTabel(lobbyId: string) {
-    const rând = document.getElementById(`lobby-${lobbyId}`);
-    if (rând) {
-        rând.remove();
+    const row = document.getElementById(`lobby-${lobbyId}`);
+    if (row) {
+        row.remove();
     }
 }
 
