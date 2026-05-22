@@ -22,6 +22,7 @@ public class ChessLobbies {
     @Column(nullable = false)
     private FormatType format;
     // TO CHANGE FROM NULLABLE = TRUE TO NULLABLE = FALSE WHEN DONE
+    // TO CHANGE TO ID / MAKE THE RELATION IN DB
     @Column(nullable = true)
     private String playerWhite;
     @Column(nullable = true)

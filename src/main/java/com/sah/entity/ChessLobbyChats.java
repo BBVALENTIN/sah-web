@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.OnDelete;
 
 import java.text.DateFormat;
 import java.time.LocalDateTime;
@@ -25,7 +27,7 @@ public class ChessLobbyChats {
     @OneToMany(mappedBy = "chat",  cascade = CascadeType.ALL)
     private List<ChessLobbyChatMessages> messages = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "lobby_id", nullable = false, unique = true)
     private ChessLobbies lobby;
 
