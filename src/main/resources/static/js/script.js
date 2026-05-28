@@ -1,6 +1,7 @@
 addEventListener('DOMContentLoaded', async () => {
     const quickPlayNav = document.getElementById('quickPlayNav');
     let loggedUser = null;
+    let avatar = null;
 
     async function fetchUserInfo() {
         const responseUserInfo = await fetch('/info/user');
@@ -8,11 +9,12 @@ addEventListener('DOMContentLoaded', async () => {
         if(responseUserInfo.ok) {
             userInfoJSON = await responseUserInfo.json();
             loggedUser = userInfoJSON.username;
+            avatar = userInfoJSON.avatar;
         }
     }
 
     await fetchUserInfo();
-    console.log(loggedUser);
+    console.log(loggedUser, " ", avatar);
     quickPlayNav.addEventListener('click', async () => {
         // let availableLobbies = [];
         // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
@@ -33,6 +35,11 @@ addEventListener('DOMContentLoaded', async () => {
     });
 
     const yourProfile = document.getElementById('user-profile');
+    const yourProfileNav = document.getElementById('user-profile-nav');
+    const yourProfileAvatar = document.getElementById('user-avatar-mini');
+
+    yourProfileNav.innerText = loggedUser;
+    // yourProfileAvatar.src = `/uploads/${avatar}`;
     yourProfile.addEventListener('click', async () => {
         try {
             const response = await fetch(`/profile/${loggedUser}`);

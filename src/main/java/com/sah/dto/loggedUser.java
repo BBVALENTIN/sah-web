@@ -10,4 +10,5 @@ import lombok.*;
 public class loggedUser {
     public Long userId;
     public String username;
+    public String avatar;
 }

@@ -2,6 +2,11 @@
     <div class="navbar-content">
         <div class="nav-links-left">
             <ul class="nav-links">
+
+                <li class="nav-item-active">
+                    <img alt="chess-logo" th:src="@{/images/misc/logo_background-removebg-preview.png}" />
+                </li>
+
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home</a>
                 </li>
@@ -40,9 +45,13 @@
         </div>
 
         <div class="nav-links-right">
-            <ul class="nav-links">
+            <ul class="nav-links nav-links-right">
+                <li class="nav-item active">
+                    <img alt="logo" id="user-avatar-mini" style="width: 32px; height: 32px" th:src="@{'/uploads/' + ${avatar != null ? avatar : 'default.jpg'}}" />
+                </li>
+
                 <li class="dropdown">
-                    <a class="dropdown-toggle">Your profile</a>
+                    <a class="dropdown-toggle" id="user-profile-nav">Your profile</a>
                     <div class="dropdown-content">
                         <form class="logoutForm" method="post" th:action="@{/logout}">
                             <button class="logoutButton" type="submit">Logout</button>

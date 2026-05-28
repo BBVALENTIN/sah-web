@@ -456,12 +456,14 @@ input:checked + .slider:before {
     color: #b3b3b3;
     font-family: inherit;
     border-bottom: 1px solid #333;
+    gap: 5px;
 }
 
 .navbar-content {
     height: auto;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .nav-links {
@@ -471,7 +473,7 @@ input:checked + .slider:before {
 }
 
 .nav-links-right {
-    right: 0;
+    gap: 15px;
 }
 
 .nav-link {
