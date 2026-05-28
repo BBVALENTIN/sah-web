@@ -10,6 +10,24 @@
     <div class="content">
         <div th:insert="fragments/navbar :: navbar"></div>
         <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
+        <div class="streams-container">
+            <a class="stream-card" th:href="'https://www.twitch.tv/' + ${stream.userName}" target="_blank">
+
+                <div class="thumbnail-wrapper">
+                    <span class="live-badge">Live</span>
+                    <img class="stream-thumbnail" th:src="${stream.thumbnailUrl}" />
+                </div>
+
+                <div class="stream-info">
+                    <h3 class="stream-user" th:text="${stream.userName}"></h3>
+                    <p class="stream-title" th:text="${stream.title}"></p>
+                    <div class="viewer-count">
+                        <span th:text="${stream.viewerCount}"></span> Viewers
+                    </div>
+                </div>
+
+            </a>
+        </div>
     </div>
     <script src="/js/script.js"></script>
 </body>

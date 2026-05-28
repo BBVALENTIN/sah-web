@@ -1,5 +1,6 @@
 package com.sah.controller;
 
+import com.sah.service.TwitchService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,14 +11,16 @@ import java.security.Principal;
 @Controller
 public class IndexController {
 
-    @GetMapping("/")
-    @Profile("prod")
-    public String showIndex()
-    {
-        return "index/index";
+    private final TwitchService twitchService;
+
+    public IndexController(TwitchService twitchService) {
+        this.twitchService = twitchService;
     }
 
-//    @GetMapping("/")
-//    @Profile("dev")
-//    public String GameDebug() {return "game/play";}
+    @GetMapping("/")
+    public String showIndex(Model model)
+    {
+        model.addAttribute("stream", twitchService.getMostPopularChessStream());
+        return "index/index";
+    }
 }
