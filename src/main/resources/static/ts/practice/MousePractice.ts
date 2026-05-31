@@ -1,7 +1,7 @@
 import {Tabla} from "../Tabla.js";
 import {Piesa} from "../piese/Piesa.js";
 import {SoundManager} from "../audio/soundManager.js";
-import {culoriPiesa} from "../tools/Enums.js";
+import {culoriPiesa, moveSounds} from "../tools/Enums.js";
 import {Mutare_Reusita} from "../tools/Types.js";
 import {MoveList} from "../MoveList.js";
 
@@ -114,13 +114,7 @@ export class MousePractice {
             console.log(result);
             if(result === undefined)
                 return;
-            if(result.checkmate){
-                this.soundManager.play("checkmate");
-                this.soundManager.play("end")
-            }
-            else if(result.check) { this.soundManager.play("check");}
-            else if(result.captures) {this.soundManager.play("capture");}
-            else {this.soundManager.play("move"); }
+            this.playSound(result);
 
             this.moveList.addMove(result.pgn);
             this.tabla.setPiecesFromServer(result.updatedPieces);
@@ -164,6 +158,16 @@ export class MousePractice {
             this.currentMove = " " + currentPGN + " ";
 
         pgnOutput.value += this.currentMove;
+    }
+
+    playSound(result: Mutare_Reusita): void {
+        if(result.checkmate){
+            this.soundManager.play("checkmate");
+            this.soundManager.play("end")
+        }
+        else if(result.check) { this.soundManager.play("check");}
+        else if(result.captures) {this.soundManager.play("capture");}
+        else {this.soundManager.play("move"); }
     }
 
     protected afterMove(result: Mutare_Reusita): void {

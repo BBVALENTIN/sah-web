@@ -66,6 +66,8 @@ export class MouseBot extends MousePractice {
             this.tabla.setPiecesFromServer(result.updatedPieces);
             this.tabla.redesenare();
             this.moveList.addMove(result.pgn);
+            this.addMoveToCopyable(result.pgn)
+            this.playSound(result)
         }
     }
 }

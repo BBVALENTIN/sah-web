@@ -47,3 +47,11 @@ export enum SidesExplicit {
     WHITE = "WHITE",
     BLACK = "BLACK"
 }
+
+export enum moveSounds {
+    normalMove = "move",
+    check = "check",
+    checkmate = "checkmate",
+    capture = "capture",
+    end = "end"
+}
