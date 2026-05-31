@@ -10,19 +10,18 @@ type stockfishLine = {
 }
 
 let stockfishOutputs: stockfishLine[] = [];
-let loggedUsername: string;
 const stockfishTrigger = document.getElementById('stockfish-trigger') as HTMLInputElement;
 export let engineOn: boolean = false;
-const canvas = document.getElementById('chessCanvas') as HTMLCanvasElement;
-const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-export const tabla = new Tabla(ctx);
-await tabla.loadImages();
-export const moveList:MoveList = new MoveList("move-list");
-const mousePractice = new MousePractice(canvas, tabla);
 
-const size: number = Tabla.squareSize * 8;
-canvas.width = size;
-canvas.height = size;
+export const { tabla, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
+await initTabla(tabla);
+await loadBoard();
+const mousePractice = new MousePractice(canvas, tabla, moveList);
+mousePractice.onEngineRequest = (fen: string) => {
+    if(engineOn) cereMutareDeLaStockfish(fen);
+};
+onButtonClick('flipBoard', handleFlip);
+onButtonClick('resetBoard', handleReset);
 
 const stockfish = new Worker('/libs/stockfish/stockfish.js');
 stockfishTrigger.addEventListener('change', () => {
@@ -47,9 +46,11 @@ stockfish.onmessage = function(event) {
         const pvIndex = parts.indexOf("pv");
 
         const rank = parseInt(parts[multipvIndex + 1]);
+        const isBlackToMove = FEN.split(' ')[1] === 'b';
+
         stockfishOutputs[rank - 1] = {
             rank: rank,
-            evaluation: formatEvaluation(parts[scoreIndex + 1], parts[scoreIndex + 2]),
+            evaluation: formatEvaluation(parts[scoreIndex + 1], parts[scoreIndex + 2], isBlackToMove),
             moves: parts.slice(pvIndex + 1)
         };
 
@@ -60,36 +61,21 @@ stockfish.onmessage = function(event) {
 export function cereMutareDeLaStockfish(fenCurent: string) {
     stockfish.postMessage(`position fen ${fenCurent}`);
     stockfish.postMessage("setoption name MultiPV value 3");
-    stockfish.postMessage('go depth 18');
+    stockfish.postMessage('go movetime 8000'); // wait 8 seconds
 }
 
 // to implement
-function aplicaMutareBot(mutare: string) {
+function applyMove(mutare: string) {
 
-    const fromCol = mutare.charCodeAt(0) - 97;          // 'e' devine 4
-    const fromRow = 8 - parseInt(mutare.charAt(1));     // '7' devine 1
+    const fromCol = mutare.charCodeAt(0) - 97;
+    const fromRow = 8 - parseInt(mutare.charAt(1));
 
-    const targetCol = mutare.charCodeAt(2) - 97;        // 'e' devine 4
-    const targetRow = 8 - parseInt(mutare.charAt(3));   // '5' devine 3
-
-    console.log(`Tradus pentru Java: faMiscare(${fromRow}, ${fromCol}, ${targetRow}, ${targetCol})`);
-
+    const targetCol = mutare.charCodeAt(2) - 97;
+    const targetRow = 8 - parseInt(mutare.charAt(3));
 }
 
 stockfish.postMessage('uci');
 stockfish.postMessage('isready');
-
-async function getUserInfo() {
-    try {
-        const response = await fetch('/info/user'); // will need this
-        if (response.ok) {
-            const data = await response.json();
-            loggedUsername = data.username;
-        }
-    } catch (e) {
-        console.log(e);
-    }
-}
 
 async function loadBoard() {
     try {
@@ -110,15 +96,12 @@ async function loadBoard() {
 
 loadBoard();
 
-const flipboard = document.getElementById('flipBoard') as HTMLButtonElement;
-const resetBoard = document.getElementById('resetBoard') as HTMLButtonElement;
-flipboard.addEventListener('click', () => {
-    console.log("clicked");
+function handleFlip() {
     tabla.getOrientare() ? tabla.setOrientare(false) : tabla.setOrientare(true);
     tabla.redesenare(tabla.piese);
-});
+}
 
-resetBoard.addEventListener('click', async () => {
+async function handleReset() {
     const reset = await fetch('/api/chess/reset');
     if(reset.ok) {
         console.log("Board reseted successfully");
@@ -130,14 +113,16 @@ resetBoard.addEventListener('click', async () => {
     }
     else
         console.log("Fail");
-});
+}
 
-function formatEvaluation(type: string, value: string): string {
+function formatEvaluation(type: string, value: string, isBlackToMove: boolean): string {
     if(type === 'cp')
     {
-        const score = (parseInt(value)/100).toFixed(2);
+        let score = parseInt(value) / 100;
 
-        return parseFloat(score) > 0 ? `+${score}` : `${score}`;
+        if (isBlackToMove) score = -score;
+
+        return score > 0 ? `+${score.toFixed(2)}` : `${score.toFixed(2)}`;
     }
 
     if(type === 'mate') {

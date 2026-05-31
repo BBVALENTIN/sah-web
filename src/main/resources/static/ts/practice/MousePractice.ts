@@ -18,9 +18,12 @@ export class MousePractice {
     moveNumber: number;
     culoareCurenta: culoriPiesa;
     currentMove: string;
-    constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
+    moveList: MoveList;
+    onEngineRequest?: (fen: string) => void;
+    constructor(canvas: HTMLCanvasElement, tabla: Tabla, moveList: MoveList) {
         this.canvas = canvas;
         this.tabla = tabla;
+        this.moveList = moveList;
         this.piesaSelectata = undefined;
         this.offsetX = 0;
         this.offsetY = 0;
@@ -119,12 +122,12 @@ export class MousePractice {
             else if(result.captures) {this.soundManager.play("capture");}
             else {this.soundManager.play("move"); }
 
-            moveList.addMove(result.pgn);
+            this.moveList.addMove(result.pgn);
             this.tabla.setPiecesFromServer(result.updatedPieces);
-            this.culoareCurenta = result.culoareCurenta;
+            this.afterMove(result);
             FEN = result.fen;
-            if(engineOn)
-                cereMutareDeLaStockfish(FEN);
+            if(this.onEngineRequest)
+                this.onEngineRequest(FEN);
             fenOutput.value = FEN;
             this.addMoveToCopyable(result.pgn);
         } catch(err){
@@ -161,5 +164,9 @@ export class MousePractice {
             this.currentMove = " " + currentPGN + " ";
 
         pgnOutput.value += this.currentMove;
+    }
+
+    protected afterMove(result: Mutare_Reusita): void {
+        this.culoareCurenta = result.culoareCurenta;
     }
 }
