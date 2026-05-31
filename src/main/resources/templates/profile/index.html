@@ -14,7 +14,7 @@
         <div id="profile-description"></div>
     </div>
 
-    <div th:if="${profileusername == currentUser}">
+    <div th:if="${profileusername == currentUser}" class="upload-photo">
         <form method="POST" action="/upload" enctype="multipart/form-data">
             <input type="file" name="file" accept="image/*" />
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -38,5 +38,6 @@
             <div th:unless="${matchHistory} != null">User currently has no games</div>
         </div>
     </div>
+    <script type="module" th:src="@{/js/script.js}"></script>
 </body>
 </html>

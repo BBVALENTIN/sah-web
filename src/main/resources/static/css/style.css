@@ -27,7 +27,7 @@ html, body {
 
 
 /* PAGINA PLAY.HTML*/
-.content-play {
+.content-play-online {
     background-color: var(--bodyGray);
     flex: 1;
     display: flex;
@@ -93,7 +93,7 @@ button, input, optgroup, select, textarea {
     font: inherit;
     color: var(--c-font);
 }
-#chess-stuff{
+.content-play {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -542,6 +542,11 @@ input:checked + .slider:before {
     border-radius: 12px;
     box-shadow: 2px 2px 15px rgba(0,0,0,0.4);
     text-align: center;
+}
+
+.upload-photo {
+    display: flex;
+    justify-content: center;
 }
 
 /* poza profil */
