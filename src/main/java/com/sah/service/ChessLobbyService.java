@@ -6,6 +6,7 @@ import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.enums.FormatType;
+import com.sah.enums.Sides;
 import com.sah.game.ChessBoard;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
@@ -31,9 +32,9 @@ public class ChessLobbyService {
     private final ChessLobbyChatService chessLobbyChatService;
     private final UserRepository userRepository;
 
-    public static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
-    public static final SecureRandom random = new SecureRandom();
-    public static final int length = 5;
+    private static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
+    private static final SecureRandom random = new SecureRandom();
+    private static final int length = 5;
 
     public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatService chessLobbyChatService, UserRepository userRepository) {
         this.lobbyRepository = lobbyRepository;
