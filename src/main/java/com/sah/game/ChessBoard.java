@@ -95,8 +95,9 @@ public class ChessBoard {
         NotatieRocada rocadaNotatie = null;
 
         if (rocada != null) {
+            Piese rocadaCopy = rocada;
             makeRocada(rocada);
-            rocadaNotatie = getRocadaType(rocada);
+            rocadaNotatie = getRocadaType(rocadaCopy);
         }
 
         piesaCapturata = getPiesaCapturata(targetRow, targetCol);
@@ -198,13 +199,13 @@ public class ChessBoard {
     private void makeRocada(Piese rocada) {
         int rookOldRow = rocada.row;
         int rookOldCol = rocada.col;
-        int rookNewCol = (rocada.col == 7) ? rookOldCol - 2 : rookOldCol + 3;
+        int rookNewCol = (rocada.col == 7) ? 5 : 3;
 
         board[rookOldRow][rookNewCol] = rocada;
         board[rookOldRow][rookOldCol] = null;
         rocada.setPosition(rookOldRow, rookNewCol);
 
-        rocada = null;
+        this.rocada = null;
     }
 
     private NotatieRocada getRocadaType(Piese rocada) {
