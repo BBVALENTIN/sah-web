@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vs AI</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:insert="fragments/navbar :: navbar"></div>
+
+    <div class="content-play">
+
+        <div id="side-select-overlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:100;">
+            <div style="background:white; padding:2rem; border-radius:8px; text-align:center; display:flex; flex-direction:column; gap:1rem;">
+                <h2>Choose your side</h2>
+                <button id="playAsWhite">Play as White</button>
+                <button id="playAsBlack">Play as Black</button>
+            </div>
+        </div>
+
+        <div class="chess-main">
+            <div class="chess-playground">
+                <div id="otherPlayer">Waiting . . .</div>
+                <canvas id="chessCanvas"></canvas>
+                <div id="currentPlayer">Waiting . . .</div>
+            </div>
+
+            <div id="chess-info-wrapper" class="chess-info-wrapper">
+                <div id="chess-info-item">Play</div>
+                <div id="move-list-container">
+                    <div id="move-list"></div>
+                </div>
+                <div id="buttons" class="buttons">
+                    <button id="resign-button">Resign</button>
+                </div>
+            </div>
+        </div>
+
+        <div class = "copyables">
+
+            <div class="pair">
+                <label class="name">FEN</label>
+                <input id="FEN" class="copyable" spellcheck="false" enterkeyhint="done">
+            </div>
+
+            <div class="pair">
+                <label class="name">PGN</label>
+                <textarea id="PGN" class="copyable" spellcheck="false"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" th:src="@{/ts-transpiled/playEngine/Main.js}"></script>
+</body>
+</html>

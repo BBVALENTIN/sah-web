@@ -42,3 +42,8 @@ export enum Sides {
     BLACK,
     NONE
 }
+
+export enum SidesExplicit {
+    WHITE = "WHITE",
+    BLACK = "BLACK"
+}
