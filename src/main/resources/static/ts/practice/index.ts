@@ -1,7 +1,7 @@
-import {minimalState, PiesaDTO} from "../Types.js";
+import {minimalState, PiesaDTO} from "../tools/Types.js";
 import {Tabla} from "../Tabla.js";
-import {MoveList} from "../MoveList.js";
 import {FEN, MousePractice} from "./MousePractice.js";
+import {initCanvas, initTabla, onButtonClick} from "../tools/initApp.js";
 
 type stockfishLine = {
     rank: number;

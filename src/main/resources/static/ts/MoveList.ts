@@ -1,5 +1,4 @@
-import {MoveRow} from "./Types.js";
-import {culoriPiesa} from "./Enums.js";
+import {MoveRow} from "./tools/Types.js";
 
 export class MoveList {
     private container: HTMLElement;

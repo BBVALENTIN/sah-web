@@ -1,5 +1,5 @@
 import {Piesa} from "./Piesa.js";
-import {culoriPiesa, TipPiesa} from "../Enums.js";
+import {culoriPiesa, TipPiesa} from "../tools/Enums.js";
 
 export class Rege extends Piesa {
     readonly tip: TipPiesa = TipPiesa.KING;

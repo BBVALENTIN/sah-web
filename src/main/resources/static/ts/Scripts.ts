@@ -1,5 +1,5 @@
-import { LobbyType} from "./Enums.js";
-import {lobbyInfo} from "./Types";
+import { LobbyType} from "./tools/Enums.js";
+import {lobbyInfo} from "./tools/Types.js";
 
 interface lobbyDTO {
     lobbyId: string;

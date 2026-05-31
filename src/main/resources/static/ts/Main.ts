@@ -3,8 +3,8 @@ import {Mouse} from "./Mouse.js";
 import {MoveList} from "./MoveList.js";
 import {connect, culoareCurenta, sendMessage, setCuloareCurenta, state} from "./WebSockets.js"
 import {getInfoLobby} from "./APIs.js";
-import {minimalState} from "./Types";
-import {culoriPiesa} from "./Enums.js";
+import {minimalState} from "./tools/Types.js";
+import {culoriPiesa} from "./tools/Enums.js";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;

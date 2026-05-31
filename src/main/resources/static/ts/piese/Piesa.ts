@@ -1,5 +1,5 @@
 import {Tabla} from "../Tabla.js";
-import {culoriPiesa, TipPiesa} from "../Enums.js";
+import {culoriPiesa, TipPiesa} from "../tools/Enums.js";
 
 export class Piesa {
     readonly tip: TipPiesa | undefined;

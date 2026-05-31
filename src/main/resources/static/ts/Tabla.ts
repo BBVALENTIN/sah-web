@@ -5,8 +5,8 @@ import {Cal} from "./piese/Cal.js";
 import {Tura} from "./piese/Tura.js";
 import {Rege} from "./piese/Rege.js";
 import {Regina} from "./piese/Regina.js";
-import {culoriPiesa, TipPiesa} from "./Enums.js";
-import {PiesaDTO} from "./Types.js";
+import {culoriPiesa, TipPiesa} from "./tools/Enums.js";
+import {PiesaDTO} from "./tools/Types.js";
 
 export class Tabla {
     static squareSize: number = 75;

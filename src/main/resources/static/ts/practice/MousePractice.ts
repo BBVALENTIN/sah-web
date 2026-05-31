@@ -1,13 +1,13 @@
 import {Tabla} from "../Tabla.js";
 import {Piesa} from "../piese/Piesa.js";
 import {SoundManager} from "../audio/soundManager.js";
-import {culoriPiesa} from "../Enums.js";
-import {Mutare_Reusita} from "../Types.js";
-import {cereMutareDeLaStockfish, engineOn, moveList} from "./index.js";
+import {culoriPiesa} from "../tools/Enums.js";
+import {Mutare_Reusita} from "../tools/Types.js";
+import {MoveList} from "../MoveList.js";
 
 const fenOutput = document.getElementById('FEN') as HTMLInputElement;
 const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;
-export let FEN: string;
+export let FEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'; // starting FEN
 export class MousePractice {
     canvas: HTMLCanvasElement;
     tabla: Tabla;

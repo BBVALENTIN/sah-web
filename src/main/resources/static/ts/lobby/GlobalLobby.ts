@@ -1,5 +1,5 @@
-import {lobbyInfo} from "../Types.js";
-import {LobbyType} from "../Enums.js";
+import {lobbyInfo} from "../tools/Types.js";
+import {LobbyType} from "../tools/Enums.js";
 
 declare var SockJS: any;
 declare var Stomp: any;
