@@ -55,10 +55,10 @@ public class LobbyController {
         return chessLobbyService.getLobbyDTO(lobbyId);
     }
 
-    @PostMapping("/api/play/createQuick")
+    @GetMapping("/api/play/createQuick")
     @ResponseBody
-    public LobbyDTO createQuickLobby(@RequestBody String username) {
-        LobbyDTO newLobby = chessLobbyService.createLobby(username);
+    public LobbyDTO createQuickLobby(Principal principal) {
+        LobbyDTO newLobby = chessLobbyService.createLobby(principal.getName());
         return newLobby;
     }
 

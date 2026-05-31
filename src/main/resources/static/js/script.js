@@ -19,19 +19,13 @@ addEventListener('DOMContentLoaded', async () => {
         // let availableLobbies = [];
         // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
         console.log("user logat: ", loggedUser);
-        const responsePlay = await fetch('/api/play/createQuick', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: loggedUser
-        });
+        const responsePlay = await fetch('/api/play/createQuick');
         if(!responsePlay.ok) {
             console.error('API error');
             return;
         }
         let lobby = await responsePlay.json();
-        window.location.href =`play=${lobby.lobbyId}`;
+        window.location.href =`/play=${lobby.lobbyId}`;
     });
 
     const yourProfile = document.getElementById('user-profile');
