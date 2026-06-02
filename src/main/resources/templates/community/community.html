@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Community</title>
-    <style rel="stylesheet" th:href="@{/css/style.css}"></style>
+    <link rel="stylesheet" th:href="@{/css/style.css}"></link>
 </head>
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="post-layout">
 <!--        change the src when done-->
-        <img id="profile-picture" alt="profile-picture" th:src="@{/uploads/default.jpg}"></img>
+        <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${useravatar}}" />
         <div id="post-content">
             <div id="placeholder-area" aria-label="Write a message. . .">Write a message. . .</div>
             <div id="contenteditable-root" contenteditable="true" style="display: none;"></div>
