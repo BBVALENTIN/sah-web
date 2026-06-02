@@ -1,6 +1,6 @@
 package com.sah.game.piese;
 
-import com.sah.dto.LastMove;
+import com.sah.dto.chess.LastMove;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;

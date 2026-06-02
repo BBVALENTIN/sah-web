@@ -1,13 +1,11 @@
 package com.sah.controller;
 
-import com.sah.dto.BotMoveRequestDTO;
-import com.sah.dto.BotStartResponseDTO;
-import com.sah.dto.MoveRequestDTO;
-import com.sah.dto.MoveResultDTO;
+import com.sah.dto.requests.BotMoveRequestDTO;
+import com.sah.dto.responses.BotStartResponseDTO;
+import com.sah.dto.responses.MoveResultDTO;
 import com.sah.enums.Sides;
 import com.sah.game.ChessBoard;
 import com.sah.service.BotGameService;
-import com.sah.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

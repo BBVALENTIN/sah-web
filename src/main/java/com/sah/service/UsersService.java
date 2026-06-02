@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.dto.RegisterRequestDTO;
+import com.sah.dto.requests.RegisterRequestDTO;
 import com.sah.entity.Roles;
 import com.sah.entity.Users;
 import com.sah.enums.RoleType;

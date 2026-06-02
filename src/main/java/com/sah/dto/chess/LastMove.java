@@ -1,4 +1,4 @@
-package com.sah.dto;
+package com.sah.dto.chess;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StreamDTO {
-    private String thumbnailUrl;
-    private String userName;
-    private String title;
-    private int viewerCount;
+public class LastMove {
+    private int fromRow, fromCol, toRow, toCol;
+    private PiesaDTO lastPiece;
 }

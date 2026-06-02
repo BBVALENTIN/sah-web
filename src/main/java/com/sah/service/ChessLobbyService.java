@@ -1,22 +1,17 @@
 package com.sah.service;
 
-import com.sah.dto.JoinLobbyRequest;
-import com.sah.dto.LobbyDTO;
+import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.enums.FormatType;
-import com.sah.enums.Sides;
-import com.sah.game.ChessBoard;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
 import com.sah.repository.UserRepository;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

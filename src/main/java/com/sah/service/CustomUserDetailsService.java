@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.dto.loggedUser;
+import com.sah.dto.misc.loggedUser;
 import com.sah.entity.Users;
 import com.sah.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

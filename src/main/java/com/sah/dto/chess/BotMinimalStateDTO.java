@@ -1,4 +1,4 @@
-package com.sah.dto;
+package com.sah.dto.chess;
 
 import com.sah.enums.Sides;
 import com.sah.game.GameEnums.ColorType;

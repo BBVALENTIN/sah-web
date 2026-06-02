@@ -1,6 +1,6 @@
 package com.sah.game;
 
-import com.sah.dto.MoveDataNotationDTO;
+import com.sah.dto.chess.MoveDataNotationDTO;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.NotatieRocada;
 import com.sah.game.GameEnums.Tip;

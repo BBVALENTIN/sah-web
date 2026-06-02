@@ -1,6 +1,6 @@
-package com.sah.dto;
+package com.sah.dto.responses;
 
-import com.sah.game.piese.Piese;
+import com.sah.game.ChessBoard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LastMove {
-    private int fromRow, fromCol, toRow, toCol;
-    private PiesaDTO lastPiece;
+public class BotStartResponseDTO {
+    private String gameId;
+    private ChessBoard board;
 }

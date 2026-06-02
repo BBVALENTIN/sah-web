@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.dto.MinimalStateDTO;
+import com.sah.dto.chess.MinimalStateDTO;
 import com.sah.game.ChessBoard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

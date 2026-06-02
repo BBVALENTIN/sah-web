@@ -1,8 +1,7 @@
 package com.sah.config;
 
-import com.sah.dto.ChatMessageDTO;
-import com.sah.dto.LobbyDTO;
-import com.sah.entity.ChessGames;
+import com.sah.dto.misc.ChatMessageDTO;
+import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 

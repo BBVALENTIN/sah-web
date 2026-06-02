@@ -1,6 +1,9 @@
 package com.sah.service;
 
-import com.sah.dto.*;
+import com.sah.dto.chess.BotMinimalStateDTO;
+import com.sah.dto.requests.BotMoveRequestDTO;
+import com.sah.dto.responses.BotStartResponseDTO;
+import com.sah.dto.responses.MoveResultDTO;
 import com.sah.entity.BotGames;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
@@ -12,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.awt.*;
-import java.security.Principal;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Map;

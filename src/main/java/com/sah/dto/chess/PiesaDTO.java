@@ -1,10 +1,7 @@
-package com.sah.dto;
+package com.sah.dto.chess;
 
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.Tip;
-import com.sah.game.piese.Piese;
-
-import java.awt.*;
 
 public class PiesaDTO {
     private Tip tip;

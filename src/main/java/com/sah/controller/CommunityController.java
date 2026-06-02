@@ -1,6 +1,6 @@
 package com.sah.controller;
 
-import com.sah.dto.PostRequestDTO;
+import com.sah.dto.requests.PostRequestDTO;
 import com.sah.service.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

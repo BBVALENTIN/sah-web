@@ -1,7 +1,7 @@
 package com.sah.service;
 
-import com.sah.dto.MatchHistoryDTO;
-import com.sah.dto.ProfileInfoDTO;
+import com.sah.dto.misc.MatchHistoryDTO;
+import com.sah.dto.misc.ProfileInfoDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.Users;

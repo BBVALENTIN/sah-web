@@ -1,11 +1,8 @@
 package com.sah.controller;
 
-import com.sah.dto.loggedUser;
-import com.sah.entity.Users;
+import com.sah.dto.misc.loggedUser;
 import com.sah.service.CustomUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;

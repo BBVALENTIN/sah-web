@@ -1,8 +1,9 @@
-package com.sah.dto;
+package com.sah.dto.responses;
 
-import java.awt.*;
 import java.util.List;
 
+import com.sah.dto.chess.LastMove;
+import com.sah.dto.chess.PiesaDTO;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
 import lombok.Getter;

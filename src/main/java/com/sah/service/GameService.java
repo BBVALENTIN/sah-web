@@ -1,11 +1,9 @@
 package com.sah.service;
 
-import com.sah.dto.GameEndRequest;
-import com.sah.dto.GameEndRequest;
+import com.sah.dto.requests.GameEndRequest;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
-import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
@@ -13,7 +11,6 @@ import com.sah.game.GameEnums.ColorType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;

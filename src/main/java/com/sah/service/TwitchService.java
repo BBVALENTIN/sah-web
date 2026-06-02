@@ -1,7 +1,7 @@
 package com.sah.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sah.dto.StreamDTO;
+import com.sah.dto.misc.StreamDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

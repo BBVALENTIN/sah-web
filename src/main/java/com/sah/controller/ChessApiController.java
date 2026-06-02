@@ -1,11 +1,14 @@
 package com.sah.controller;
 
 import com.sah.config.WebSocketEventListener;
-import com.sah.dto.*;
-import com.sah.entity.ChessLobbies;
+import com.sah.dto.chess.MinimalStateDTO;
+import com.sah.dto.chess.PiesaDTO;
+import com.sah.dto.misc.ChatMessageDTO;
+import com.sah.dto.requests.GameEndRequest;
+import com.sah.dto.requests.MoveRequestDTO;
+import com.sah.dto.responses.MoveResultDTO;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.enums.MessageType;
-import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;

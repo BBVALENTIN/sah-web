@@ -1,6 +1,6 @@
 package com.sah.controller;
 
-import com.sah.dto.RegisterRequestDTO;
+import com.sah.dto.requests.RegisterRequestDTO;
 import com.sah.service.UsersService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;

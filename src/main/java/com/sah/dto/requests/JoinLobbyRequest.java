@@ -1,4 +1,4 @@
-package com.sah.dto;
+package com.sah.dto.requests;
 
 import lombok.Getter;
 import lombok.Setter;

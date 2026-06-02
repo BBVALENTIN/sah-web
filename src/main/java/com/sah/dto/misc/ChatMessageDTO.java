@@ -1,4 +1,4 @@
-package com.sah.dto;
+package com.sah.dto.misc;
 
 import com.sah.enums.MessageType;
 import lombok.*;

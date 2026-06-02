@@ -1,4 +1,4 @@
-package com.sah.dto;
+package com.sah.dto.requests;
 
 public class RegisterRequestDTO {
     private String username;

@@ -1,6 +1,6 @@
 package com.sah.service;
 
-import com.sah.dto.PostRequestDTO;
+import com.sah.dto.requests.PostRequestDTO;
 import com.sah.entity.Posts;
 import com.sah.entity.Users;
 import com.sah.repository.PostsRepository;

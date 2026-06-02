@@ -1,9 +1,9 @@
 package com.sah.game;
 
-import com.sah.dto.MoveDataNotationDTO;
-import com.sah.dto.MoveResultDTO;
-import com.sah.dto.PiesaDTO;
-import com.sah.dto.LastMove;
+import com.sah.dto.chess.MoveDataNotationDTO;
+import com.sah.dto.responses.MoveResultDTO;
+import com.sah.dto.chess.PiesaDTO;
+import com.sah.dto.chess.LastMove;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.game.GameEnums.ColorType;
