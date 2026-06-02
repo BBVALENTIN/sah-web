@@ -23,7 +23,7 @@ public class ChessBoard {
     public Piese sahP, piesaSelectata, piesaCapturata;
     public List<Piese> pieseList = new ArrayList<>();
     public short movesPlayed, halfMove;
-    public boolean promoted, isCheckMate, resignation;
+    public boolean promoted, isCheckMate, resignation, canCastle;
     private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
     private Sides winner;
@@ -94,10 +94,13 @@ public class ChessBoard {
         }
         NotatieRocada rocadaNotatie = null;
 
-        if (rocada != null) {
+        if (rocada != null && canCastle == true) {
             Piese rocadaCopy = rocada;
             makeRocada(rocada);
             rocadaNotatie = getRocadaType(rocadaCopy);
+        } else if(rocada != null && canCastle == false)
+        {
+            return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA); // nu poti face rocada in sah
         }
 
         piesaCapturata = getPiesaCapturata(targetRow, targetCol);
@@ -210,9 +213,9 @@ public class ChessBoard {
 
     private NotatieRocada getRocadaType(Piese rocada) {
         if(rocada.col == 7)
-            return NotatieRocada.MICA;
-        else
             return NotatieRocada.MARE;
+        else
+            return NotatieRocada.MICA;
     }
 
     private void increaseHalfMove(Piese piesaSelectata, boolean isCapture) {

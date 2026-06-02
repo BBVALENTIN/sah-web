@@ -19,6 +19,8 @@ public class Rege extends Piese {
         }
        if(miscata == false)
        {
+           if(!checkRocada(color, row, precol))
+               return false;
            // rocada mica
            if(targetCol == col + 2 && targetRow == row && piesaInFata(targetRow, targetCol) == false)
            {
@@ -47,19 +49,36 @@ public class Rege extends Piese {
 
     private boolean checkRocadaMica(ColorType culoareCurenta, int targetRow, int square1, int square2) {
         for(Piese p : game.pieseList) {
-            if(p.color == culoareCurenta)
-                continue;
-            if(p.miscare(targetRow, square1) || p.miscare(targetRow, square2))
+            if(p.color == culoareCurenta) continue;
+            if(p.tip == Tip.KING) continue; // eviti recursie
+            if(p.miscare(targetRow, square1) || p.miscare(targetRow, square2)) {
+                game.canCastle = true;
                 return false;
+            }
         }
         return true;
     }
+
     private boolean checkRocadaMare(ColorType culoareCurenta, int targetRow, int square1, int square2) {
         for(Piese p : game.pieseList) {
-            if(p.color == culoareCurenta)
-                continue;
-            if(p.miscare(targetRow, square1) || p.miscare(targetRow, square2))
+            if(p.color == culoareCurenta) continue;
+            if(p.tip == Tip.KING) continue; // eviti recursie
+            if(p.miscare(targetRow, square1) || p.miscare(targetRow, square2)) {
+                game.canCastle = true;
                 return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkRocada(ColorType culoareCurenta, int kingRow,int kingCol) {
+        for(Piese p : game.pieseList) {
+            if(p.color == culoareCurenta) continue;
+            if(p.tip == Tip.KING) continue;
+            if(p.miscare(kingRow, kingCol)) {
+                game.canCastle = false;
+                return false;
+            }
         }
         return true;
     }
