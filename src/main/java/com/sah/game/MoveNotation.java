@@ -13,16 +13,19 @@ public class MoveNotation {
     public String allFormattedMoves, currentFormattedMove;
     public int movesPlayed;
     public List<String> FENList = new ArrayList<>();
+    public String currentFEN;
 
     public MoveNotation(){
         this.allFormattedMoves = "";
         this.currentFormattedMove = "";
+        this.currentFEN = "";
     }
 
-    public MoveNotation(int movesPlayed, String currentFormattedMove, String allFormattedMoves, List<String> FENList){
+    public MoveNotation(int movesPlayed, String currentFormattedMove, String allFormattedMoves, List<String> FENList, String currentFEN){
         this.currentFormattedMove = currentFormattedMove;
         this.allFormattedMoves = allFormattedMoves;
         this.FENList = FENList;
+        this.currentFEN = currentFEN;
     }
 
     public String formatMove(MoveDataNotationDTO dto){
@@ -132,9 +135,10 @@ public class MoveNotation {
         String castling = "KQkq";
 
         int fullMove = (movesPlayed / 2) + 1;
-
-        return String.format("%s %s %s %s %d %d",
+        this.currentFEN = String.format("%s %s %s %s %d %d",
                 fen.toString(), turn, castling, enPassant, halfMove, fullMove);
+        FENList.add(currentFEN);
+        return currentFEN;
     }
 
     private char getCharFromTip(Tip tip) {
@@ -162,4 +166,6 @@ public class MoveNotation {
     public String getCurrentFormattedMove() {
         return currentFormattedMove;
     }
+    public String getCurrentFEN() { return currentFEN; }
+    public List<String> getFENList() { return FENList; }
 }

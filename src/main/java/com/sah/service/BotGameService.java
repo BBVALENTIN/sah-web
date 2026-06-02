@@ -1,10 +1,10 @@
 package com.sah.service;
 
-import com.sah.dto.BotMoveRequestDTO;
-import com.sah.dto.BotStartResponseDTO;
-import com.sah.dto.MoveResultDTO;
+import com.sah.dto.*;
 import com.sah.entity.BotGames;
+import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
+import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.repository.BotGameRepository;
@@ -13,13 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.awt.*;
+import java.security.Principal;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class BotGameService {
-    private record BotGameSession(ChessBoard board, Sides botSide) {}
+    private record BotGameSession(ChessBoard board, String username, Sides botSide) {}
     private final Map<String, BotGameSession> botBoards = new ConcurrentHashMap<>();
     private final BotGameRepository botGameRepository;
 
@@ -49,12 +51,12 @@ public class BotGameService {
         } while (botGameRepository.findByGameId(gameId) != null);
         return gameId;
     }
-    public BotStartResponseDTO getOrCreateBoard(String username, Sides botSide)
+    public BotStartResponseDTO createBoard(String username, Sides botSide)
     {
         String gameId = "B_"+assignGameId();
         ChessBoard board = new ChessBoard();
         board.initializeBoard();
-        botBoards.put(gameId, new BotGameSession(board, botSide));
+        botBoards.put(gameId, new BotGameSession(board, username, botSide));
 
         return new BotStartResponseDTO(gameId, board);
     }
@@ -90,5 +92,34 @@ public class BotGameService {
             return ColorType.ALB;
         else
             return ColorType.NEGRU;
+    }
+
+    public void saveGame(String gameId, boolean resignation, String playerName) {
+        ChessBoard board = getBoard(gameId);
+        BotGameSession session = getSession(gameId);
+
+        if(session == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sesiunea nu exista!");
+
+        WinType winType = resignation ? WinType.RESIGNATION : WinType.CHECKMATE;
+        ResultType result = board.convertToResult();
+        BotGames botGame = new BotGames(gameId, playerName, session.botSide(), 18, result, winType, board.getMovesPlayed(), board.getAllPGN(), LocalDateTime.now());
+        botGameRepository.save(botGame);
+        botBoards.remove(gameId);
+    }
+
+    public BotMinimalStateDTO getMinimalStateDTO(String gameId) {
+        BotGameSession session = getSession(gameId);
+        if (session == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sesiunea nu exista!");
+
+        ChessBoard board = session.board();
+        return new BotMinimalStateDTO(
+                board.getAllPiecesDTO(),
+                board.getCuloareCurenta(),
+                board.getAllPGN(),
+                session.botSide(),
+                board.getCurrentFen()
+        );
     }
 }

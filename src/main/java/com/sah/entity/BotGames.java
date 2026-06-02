@@ -1,6 +1,7 @@
 package com.sah.entity;
 
 import com.sah.enums.ResultType;
+import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BotGames {
     @Id
     private String gameId;
@@ -18,7 +21,7 @@ public class BotGames {
     private String playerUsername;
 
     @Column(nullable = false)
-    private String botSide; // 'w' sau 'b' sau sides
+    private Sides botSide; // 'w' sau 'b' sau sides
 
     @Column(nullable = false)
     private int stockfishDepth;

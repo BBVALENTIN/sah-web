@@ -173,4 +173,10 @@ export class MousePractice {
     protected afterMove(result: Mutare_Reusita): void {
         this.culoareCurenta = result.culoareCurenta;
     }
+
+    protected updateFEN(fen: string): void {
+        FEN = fen;
+        const fenOutput = document.getElementById('FEN') as HTMLInputElement;
+        if(fenOutput) fenOutput.value = fen;
+    }
 }

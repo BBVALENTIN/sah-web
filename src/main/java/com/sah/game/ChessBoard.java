@@ -444,6 +444,9 @@ public class ChessBoard {
         return moveNotation.allFormattedMoves;
     }
 
+    public String getCurrentFen() { return moveNotation.currentFEN;}
+    public List<String> getAllFEN() { return moveNotation.getFENList(); }
+
     public int getMovesPlayed() {
         return moveNotation.movesPlayed;
     }

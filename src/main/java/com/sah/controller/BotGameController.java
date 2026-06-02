@@ -41,29 +41,34 @@ public class BotGameController {
     }
 
     @PostMapping("/bot-move")
-    public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req) {
+    public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req, Principal principal) {
         ChessBoard board = botGameService.getBoard(req.getGameId());
         if (board == null) return ResponseEntity.notFound().build();
 
         MoveResultDTO result = board.faMiscare(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
+        if(result.isCheckmate())
+        {
+            botGameService.saveGame(req.getGameId(), false, principal.getName());
+        }
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/start")
     public ResponseEntity<?> startGame(@RequestParam Sides botSide, Principal principal)
     {
-        BotStartResponseDTO response = botGameService.getOrCreateBoard(principal.getName(), botSide);
+        BotStartResponseDTO response = botGameService.createBoard(principal.getName(), botSide);
         return ResponseEntity.ok(response);
     }
 
-//    @PostMapping("/end/{gameId}")
-//    public ResponseEntity<?> endGame(@PathVariable Long gameId, Principal principal)
-//    {
-//
-//    }
-//
-//    @GetMapping("/state")
-//    public ResponseEntity<?> getState() {
-//
-//    }
+    @PostMapping("/end/{gameId}")
+    public ResponseEntity<?> endGame(@PathVariable String gameId, Principal principal) // resign endpoint
+    {
+        botGameService.saveGame(gameId, true, principal.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/state/{gameId}")
+    public ResponseEntity<?> getState(@PathVariable String gameId) {
+        return ResponseEntity.ok(botGameService.getMinimalStateDTO(gameId));
+    }
 }
