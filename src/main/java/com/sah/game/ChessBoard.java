@@ -210,9 +210,9 @@ public class ChessBoard {
 
     private NotatieRocada getRocadaType(Piese rocada) {
         if(rocada.col == 7)
-            return NotatieRocada.MARE;
-        else
             return NotatieRocada.MICA;
+        else
+            return NotatieRocada.MARE;
     }
 
     private void increaseHalfMove(Piese piesaSelectata, boolean isCapture) {
