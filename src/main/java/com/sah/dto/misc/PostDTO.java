@@ -16,4 +16,5 @@ public class PostDTO {
     private String content;
     private String userAvatar;
     private String createdAt;
+    private long likeNumber;
 }

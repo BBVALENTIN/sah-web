@@ -1,6 +1,10 @@
 package com.sah.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table(
         uniqueConstraints = {
@@ -9,6 +13,10 @@ import jakarta.persistence.*;
 ) // un user poate da doar un singur like la o postare
 
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostsLikes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +24,14 @@ public class PostsLikes {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users userId;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name="post_id")
-    private Posts postId;
+    private Posts post;
+
+    public PostsLikes(Users users, Posts posts) {
+        this.user = users;
+        this.post = posts;
+    }
 }

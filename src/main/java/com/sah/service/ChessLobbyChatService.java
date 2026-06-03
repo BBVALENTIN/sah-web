@@ -5,7 +5,7 @@ import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.Users;
 import com.sah.enums.MessageType;
-import com.sah.repository.LobbyChatMessagesService;
+import com.sah.repository.LobbyChatMessagesRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class ChessLobbyChatService {
 
     private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
-    private LobbyChatMessagesService lobbyChatMessagesService;
+    private LobbyChatMessagesRepository lobbyChatMessagesService;
 
 
     public ChessLobbyChatMessages sendMessage(String lobbyId,

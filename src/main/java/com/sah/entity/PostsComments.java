@@ -18,7 +18,7 @@ public class PostsComments {
     @JoinColumn(name = "post_id", nullable = false)
     private Posts post;
 
-    @Column(nullable = false, length = 2000)
+    @Column(nullable = false, length = 250)
     private String content;
 
     @Column(nullable = false)

@@ -31,4 +31,14 @@ public class CommunityApiController {
     public List<PostDTO> getPosts(Principal principal) {
         return postsService.returnPosts(principal);
     }
+
+    @PostMapping("/like/${postId}")
+    public void likePost(@PathVariable Long postId, Principal principal) {
+        postsService.likePost(postId, principal);
+    }
+
+    @PostMapping("/comment/${postId}")
+    public void comment(@PathVariable Long postId, Principal principal) {
+
+    }
 }
