@@ -43,7 +43,6 @@ function conectareWebSocket() {
             else {
                 stergeLobbyDinTabel(lobbyDto.lobbyId);
             }
-            console.log(lobbyCount + " gadfgadfigheghriuagbraelgbarlgrbaelire");
             if(lobbyCount === 0) {
                 lobbyInfo.innerText = "There are currently no lobbies open";
             }

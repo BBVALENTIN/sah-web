@@ -44,4 +44,62 @@ addEventListener('DOMContentLoaded', async () => {
            console.log(e);
         }
     });
+
+    const textArea = document.getElementById('post-input');
+    if(textArea) {
+        textArea.addEventListener('input', () => {
+            textArea.style.height = 'auto';
+            textArea.style.height = textArea.scrollHeight + 'px';
+
+            const counter = document.getElementById('char-count');
+            const postButton = document.getElementById('submit-post-button');
+
+            counter.textContent = `${textArea.value.length}/${textArea.maxLength}`;
+            postButton.disabled = textArea.value.length === 0;
+        });
+
+        const postButton = document.getElementById('submit-post-button');
+        if(postButton) postButton.disabled = true;
+    }
+
+    const buttonSubmit = document.getElementById('submit-post-button');
+    if(buttonSubmit) {
+        buttonSubmit.addEventListener('click', async () => {
+            const input = document.getElementById('post-input');
+            let inputContent = "";
+            if(input instanceof HTMLTextAreaElement)
+            {
+                inputContent = input.value;
+            }
+            await fetch('/api/community/post', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    content: inputContent
+                })
+            });
+
+            const postsContainer = document.querySelector('.posts-container');
+            const newPost = document.createElement('div');
+            newPost.classList.add('post-item');
+            newPost.innerHTML = `
+                    <img class="mini-profile-picture" src="/uploads/${avatar}" alt="avatar"/>
+                    <div class="post-item-content">
+                        <div class="post-item-header">
+                            <span class="post-username">${loggedUser}</span>
+                            <span class="post-time">acum</span>
+                        </div>
+                        <p class="post-text">${inputContent}</p>
+                    </div>`;
+
+            postsContainer.prepend(newPost);
+
+            textArea.value = '';
+            textArea.style.height = 'auto';
+            document.getElementById('char-count').textContent = '';
+            document.getElementById('submit-post-button').disabled = true;
+        });
+    }
 });

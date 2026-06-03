@@ -16,10 +16,12 @@ import java.security.Principal;
 @Controller
 public class CommunityPageController {
 
+    private final PostsService postsService;
     private ProfileService profileService;
 
-    public CommunityPageController(ProfileService profileService) {
+    public CommunityPageController(ProfileService profileService, PostsService postsService) {
         this.profileService = profileService;
+        this.postsService = postsService;
     }
 
     @GetMapping("/community")
@@ -27,6 +29,7 @@ public class CommunityPageController {
         ProfileInfoDTO profileInfoDTO = profileService.loadProfileInfo(principal.getName());
         model.addAttribute("username", profileInfoDTO.getUsername());
         model.addAttribute("useravatar", profileInfoDTO.getAvatar());
+        model.addAttribute("posts", postsService.returnPosts(principal));
         return "community/community";
     }
 

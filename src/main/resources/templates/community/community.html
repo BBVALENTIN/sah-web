@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Community</title>
@@ -7,14 +7,32 @@
 </head>
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
-    <div class="post-layout">
-<!--        change the src when done-->
-        <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${useravatar}}" />
-        <div id="post-content">
-            <div id="placeholder-area" aria-label="Write a message. . .">Write a message. . .</div>
-            <div id="contenteditable-root" contenteditable="true" style="display: none;"></div>
+    <div class="post-body">
+        <div class="post-main">
+            <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${useravatar}}" />
+            <div id="post-content">
+                <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
+                <p class="p-info" id="char-count"></p>
+            </div>
+        </div>
+        <div class="post-buttons">
+            <button class="submit-button" id="submit-post-button">Post</button>
         </div>
     </div>
-    <script type="module" th:src="@{/js/scripts.js}"></script>
+
+    <div class="posts-container">
+        <div class="post-item" th:each="post : ${posts}">
+            <img class="mini-profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" alt="avatar"/>
+            <div class="post-item-content">
+                <div class="post-item-header">
+                    <span class="post-username" th:text="${post.username}">username</span>
+                    <span class="post-time" th:text="${post.createdAt}">2m</span>
+                </div>
+                <p class="post-text" th:text="${post.content}">Text...</p>
+            </div>
+        </div>
+    </div>
+    <script type="module" th:src="@{/js/script.js}"></script>
+
 </body>
 </html>

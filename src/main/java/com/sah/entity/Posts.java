@@ -31,6 +31,9 @@ public class Posts {
     @Column(nullable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public Posts(String content, Users user) {
         this.content = content;
         this.creator = user;
