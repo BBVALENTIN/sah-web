@@ -62,17 +62,30 @@ addEventListener('DOMContentLoaded', async () => {
         if(postButton) postButton.disabled = true;
     }
 
+
+    async function toggleLike(btn, endpoint) {
+        const id = btn.dataset.commentId || btn.dataset.postId;
+        const countEl = btn.querySelector('.like-count');
+
+        await fetch(`/api/community/${endpoint}/${id}`, { method: 'POST' });
+
+        const isLiked = btn.classList.toggle('liked');
+        countEl.textContent = isLiked
+            ? parseInt(countEl.textContent) + 1
+            : parseInt(countEl.textContent) - 1;
+    }
+
+    document.querySelectorAll('.like-comments').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            console.log(btn);
+            toggleLike(btn, 'likeComment');
+        });
+    });
+
     document.querySelectorAll('.like-button').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const postId = btn.dataset.postId;
-            const countEl = btn.querySelector('.like-count');
-
-            await fetch(`/api/community/like/${postId}`, { method: 'POST' });
-
-            const isLiked = btn.classList.toggle('liked');
-            countEl.textContent = isLiked
-                ? parseInt(countEl.textContent) + 1
-                : parseInt(countEl.textContent) - 1;
+        btn.addEventListener('click', (e) => {
+            console.log(btn);
+            toggleLike(btn, 'likePost');
         });
     });
 
@@ -114,6 +127,59 @@ addEventListener('DOMContentLoaded', async () => {
             textArea.style.height = 'auto';
             document.getElementById('char-count').textContent = '';
             document.getElementById('submit-post-button').disabled = true;
+        });
+    }
+
+    document.querySelectorAll('.post-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            if(e.target.closest('button')) return;
+
+            const postId = item.dataset.postId;
+            window.location.href = `/post/${postId}`;
+        })
+    });
+
+    const btnSubmitComment = document.getElementById('submit-comment-button');
+    if(btnSubmitComment) {
+        btnSubmitComment.addEventListener('click', async () => {
+            const input = document.getElementById('comment-input');
+            let inputContent = "";
+            if(input instanceof HTMLTextAreaElement)
+            {
+                inputContent = input.value;
+            }
+            const postId = btnSubmitComment.dataset.postId;
+            console.log(postId);
+            await fetch('/api/community/comment', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    postId: postId,
+                    content: inputContent
+                })
+            });
+
+            const postsContainer = document.querySelector('.posts-container');
+            const newPost = document.createElement('div');
+            newPost.classList.add('post-item');
+            newPost.innerHTML = `
+                    <img class="mini-profile-picture" src="/uploads/${avatar}" alt="avatar"/>
+                    <div class="post-item-content">
+                        <div class="post-item-header">
+                            <span class="post-username">${loggedUser}</span>
+                            <span class="post-time">acum</span>
+                        </div>
+                        <p class="post-text">${inputContent}</p>
+                    </div>`;
+
+            postsContainer.prepend(newPost);
+
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('char-count').textContent = '';
+            btnSubmitComment.disabled = true;
         });
     }
 });

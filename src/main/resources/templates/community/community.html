@@ -10,7 +10,7 @@
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="post-body">
-        <div class="post-main">
+        <div class="post-editable">
             <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${useravatar}}" />
             <div id="post-content">
                 <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
@@ -23,7 +23,7 @@
     </div>
 
     <div class="posts-container">
-        <div class="post-item" th:each="post : ${posts}">
+        <div class="post-item" th:each="post : ${posts}" th:data-post-id="${post.postId}">
             <img class="mini-profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" alt="avatar"/>
             <div class="post-item-content">
                 <div class="post-item-header">

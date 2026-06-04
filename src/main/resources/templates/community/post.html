@@ -9,7 +9,7 @@
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
 
-<div class="post-item main-post">
+<div class="post-item post-selected">
     <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" />
     <div class="post-item-content">
         <div class="post-item-header">
@@ -18,7 +18,7 @@
         </div>
         <p class="post-text" th:text="${post.content}"></p>
         <div class="post-buttons">
-            <button class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
+            <button id="selected-post-like-button" class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
                 <i class="ti ti-heart"></i>
                 <i class="ti ti-heart-filled"></i>
                 <span class="like-count" th:text="${post.likeNumber}"></span>
@@ -30,10 +30,10 @@
 <div class="separator"></div>
 
 <div class="post-body">
-    <div class="post-main">
+    <div class="post-editable">
         <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userInfo.useravatar()}}" />
         <div id="post-content">
-            <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
+            <textarea required id="comment-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
             <p class="p-info" id="char-count"></p>
         </div>
     </div>
@@ -50,13 +50,9 @@
                 <span class="post-username" th:text="${comment.creatorName}">username</span>
                 <span class="post-time" th:text="${comment.createdAt}">2m</span>
             </div>
-            <p class="post-text" th:text="${comment.}">Text...</p>
+            <p class="post-text" th:text="${comment.content}">Text...</p>
             <div class="post-buttons">
-                <button class="action-btn comment-button" th:data-post-id="${post.postId}">
-                    <i class="ti ti-message-circle"></i>
-                    <span th:text="${post.commentNumber}"></span>
-                </button>
-                <button class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
+                <button class="action-btn like-comments" th:data-comment-id="${comment.commentId}" th:classappend="${comment.liked} ? ' liked' : ''">
                     <i class="ti ti-heart"></i>
                     <i class="ti ti-heart-filled"></i>
                     <span class="like-count" th:text="${post.likeNumber}"></span>

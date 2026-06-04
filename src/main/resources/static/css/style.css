@@ -5,6 +5,7 @@
     /*game height and width in pixels*/
     --infoWidth: 250px;
     --cWidth: 300px;
+    --pBodyWidth: 600px;
     --cHeight: 600px;
     --infoHeight: 580px; /* modify with padding*/
     --bodyGray: rgba(36, 36, 36);
@@ -756,13 +757,13 @@ input:checked + .slider:before {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    max-width: 600px;
+    max-width: var(--pBodyWidth);
     margin: 0 auto;
     padding: 12px 16px;
     border-bottom: 1px solid #2f3336;
 }
 
-.post-main {
+.post-editable {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -866,7 +867,7 @@ textarea {
 }
 
 .post-item:hover {
-    background-color: #080808;
+    background-color: rgba(94,94,94,0.3);
 }
 
 .post-item-content {
@@ -925,25 +926,30 @@ textarea {
     font-size: 18px;
 }
 
+.like-comments .ti-heart-filled,
 .like-button .ti-heart-filled {
     display: none;
     color: var(--c-likeColor);
 }
 
+.like-comments .ti-heart,
 .like-button .ti-heart {
     display: inline;
 }
 
+.like-comments:hover,
 .like-button:hover {
     color: var(--c-likeColor);
     background-color: var(--c-bg-likeColor-hover);
 }
 
+.like-comments.liked .ti-heart,
 .like-button.liked .ti-heart {
     display: none;
 }
 
-.like-button.liked .ti-heart-filled{
+.like-comments.liked .ti-heart-filled,
+.like-button.liked .ti-heart-filled {
     display: inline;
     color: var(--c-likeColor);
 }
@@ -953,4 +959,16 @@ textarea {
     background-color: var(--c-twitter-blue-bg-hover);
 }
 
+.post-selected {
+    display: flex;
+    max-width: var(--pBodyWidth);
+    align-items: flex-start;
+    margin: 0 auto;
+}
+
+.separator {
+    height: 1px;
+    background-color: #2f3336;
+    margin: 0;
+}
 /* ===================== END POSTS CSS ===================== */
