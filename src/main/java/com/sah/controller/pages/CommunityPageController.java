@@ -37,9 +37,12 @@ public class CommunityPageController {
     @GetMapping("/post/{postId}")
     public String showPostComments(@PathVariable Long postId, Model model, Principal principal)
     {
+        ProfileInfoDTO profileInfoDTO = profileService.loadProfileInfo(principal.getName());
+        model.addAttribute("userInfo", new infoSend(profileInfoDTO.getUsername(), profileInfoDTO.getAvatar()));
         model.addAttribute("post", postsService.returnPost(postId, principal));
         model.addAttribute("comments", postsService.getComments(postId, principal));
         return "community/post";
     }
 
+    private record infoSend(String username, String useravatar) {}
 }

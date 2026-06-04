@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+</head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="post-item main-post">
+    <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" />
+    <div class="post-item-content">
+        <div class="post-item-header">
+            <span class="post-username" th:text="${post.username}"></span>
+            <span class="post-time" th:text="${post.createdAt}"></span>
+        </div>
+        <p class="post-text" th:text="${post.content}"></p>
+        <div class="post-buttons">
+            <button class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
+                <i class="ti ti-heart"></i>
+                <i class="ti ti-heart-filled"></i>
+                <span class="like-count" th:text="${post.likeNumber}"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="separator"></div>
+
+<div class="post-body">
+    <div class="post-main">
+        <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userInfo.useravatar()}}" />
+        <div id="post-content">
+            <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
+            <p class="p-info" id="char-count"></p>
+        </div>
+    </div>
+    <div class="post-buttons">
+        <button class="submit-button" id="submit-comment-button" th:data-post-id="${post.postId}">Post</button>
+    </div>
+</div>
+
+<div class="posts-container">
+    <div class="post-item" th:each="comment : ${comments}">
+        <img class="mini-profile-picture" th:src="@{'/uploads/' + ${comment.creatorAvatar}}" alt="avatar"/>
+        <div class="post-item-content">
+            <div class="post-item-header">
+                <span class="post-username" th:text="${comment.creatorName}">username</span>
+                <span class="post-time" th:text="${comment.createdAt}">2m</span>
+            </div>
+            <p class="post-text" th:text="${comment.}">Text...</p>
+            <div class="post-buttons">
+                <button class="action-btn comment-button" th:data-post-id="${post.postId}">
+                    <i class="ti ti-message-circle"></i>
+                    <span th:text="${post.commentNumber}"></span>
+                </button>
+                <button class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
+                    <i class="ti ti-heart"></i>
+                    <i class="ti ti-heart-filled"></i>
+                    <span class="like-count" th:text="${post.likeNumber}"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" th:src="@{/js/script.js}"></script>
+</body>
+</html>
