@@ -1,15 +1,10 @@
 package com.sah.service;
 
+import com.sah.dto.misc.CommentsDTO;
 import com.sah.dto.misc.PostDTO;
 import com.sah.dto.requests.PostRequestDTO;
-import com.sah.entity.Posts;
-import com.sah.entity.PostsComments;
-import com.sah.entity.PostsLikes;
-import com.sah.entity.Users;
-import com.sah.repository.PostsCommentsRepository;
-import com.sah.repository.PostsLikesRepository;
-import com.sah.repository.PostsRepository;
-import com.sah.repository.UserRepository;
+import com.sah.entity.*;
+import com.sah.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,15 +21,24 @@ public class PostsService {
     private final UserRepository userRepository;
     private final PostsLikesRepository postsLikesRepository;
     private final PostsCommentsRepository postsCommentsRepository;
+    private final CommentsLikesRepository commentsLikesRepository;
     private final int limit = 30;
     private final boolean activePost = false, deletedPost = true;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     @Autowired
-    public PostsService(PostsRepository postsRepository, UserRepository userRepository, PostsLikesRepository postsLikesRepository, PostsCommentsRepository postsCommentsRepository)
+    public PostsService(
+            PostsRepository postsRepository,
+            UserRepository userRepository,
+            PostsLikesRepository postsLikesRepository,
+            PostsCommentsRepository postsCommentsRepository,
+            CommentsLikesRepository commentsLikesRepository)
     {
         this.postsRepository = postsRepository;
         this.userRepository = userRepository;
         this.postsLikesRepository = postsLikesRepository;
         this.postsCommentsRepository = postsCommentsRepository;
+        this.commentsLikesRepository = commentsLikesRepository;
     }
 
     public Posts savePost(PostRequestDTO dto, Principal principal) {
@@ -52,16 +56,32 @@ public class PostsService {
 
     public List<PostDTO> returnPosts(Principal principal) {
         List<PostDTO> postDTOs = new ArrayList<>();
-        Users currentUser = userRepository.findByUsername(principal.getName());
         List<Posts> posts = returnCleanPosts(principal);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         for(Posts post : posts) {
             Users users = post.getCreator();
-            PostDTO postDTO = new PostDTO(post.getPostId(), users.getUsername(), post.getContent(), users.getAvatar(), post.getCreatedAt().format(formatter), getLikeNumber(post), getCommentNumber(post), postsLikesRepository.existsByPostAndUser(post, currentUser));
-            postDTOs.add(postDTO);
+            PostDTO dto = returnPost(post.getPostId(), principal);
+            postDTOs.add(dto);
         }
 
         return postDTOs;
+    }
+
+    public PostDTO returnPost(Long postId,Principal principal)
+    {
+        Posts post = postsRepository.findByPostId(postId);
+        Users currentUser = checkUser(principal);
+        PostDTO postDTO = PostDTO.builder()
+                .postId(postId)
+                .liked(postsLikesRepository.existsByPostAndUser(post, currentUser))
+                .commentNumber(getCommentNumber(post))
+                .createdAt(post.getCreatedAt().format(formatter))
+                .username(currentUser.getUsername())
+                .userAvatar(currentUser.getAvatar())
+                .likeNumber(postsLikesRepository.countByPost(post))
+                .content(post.getContent())
+                .build();
+
+        return postDTO;
     }
 
     public void deletePost(Long postId) {
@@ -102,5 +122,27 @@ public class PostsService {
         Posts post = postsRepository.findByPostId(postId);
         PostsComments comment = new PostsComments(currentUser, post, content);
         postsCommentsRepository.save(comment);
+    }
+
+    public List<CommentsDTO> getComments(Long postId, Principal principal)
+    {
+        Users currentUser = checkUser(principal);
+        Posts post = postsRepository.findByPostId(postId);
+        List<PostsComments> comments = postsCommentsRepository.findByPost(post);
+        List<CommentsDTO> commentsDTO = new ArrayList<>();
+
+        for(PostsComments comment : comments) {
+            Users creator = userRepository.findByUsername(comment.getUser().getUsername());
+            CommentsDTO dto = CommentsDTO.builder()
+                    .commentId(comment.getCommentId())
+                    .createdAt(comment.getCreatedAt().format(formatter))
+                    .likeNumber(commentsLikesRepository.countByComment(comment))
+                    .liked(commentsLikesRepository.existsByCommentAndUser(comment, currentUser))
+                    .creatorName(comment.getUser().getUsername())
+                    .creatorAvatar(creator.getAvatar())
+                    .build();
+            commentsDTO.add(dto);
+        }
+        return commentsDTO;
     }
 }

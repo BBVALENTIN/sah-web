@@ -1,6 +1,7 @@
 package com.sah.repository;
 
 import com.sah.entity.Posts;
+import com.sah.entity.PostsComments;
 import com.sah.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
