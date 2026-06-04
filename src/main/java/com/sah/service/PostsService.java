@@ -6,6 +6,7 @@ import com.sah.dto.requests.PostRequestDTO;
 import com.sah.entity.*;
 import com.sah.repository.*;
 import jakarta.transaction.Transactional;
+import org.hibernate.type.descriptor.java.BigIntegerJavaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,8 +50,7 @@ public class PostsService {
     }
 
     private List<Posts> returnCleanPosts(Principal principal) {
-        Users currentUser = checkUser(principal);
-        return postsRepository.findPostsByDeletedAndCreatorNotOrderByCreatedAtDesc(activePost, currentUser)
+        return postsRepository.findPostsByDeletedOrderByLikesNumberDesc(activePost)
                 .stream().limit(limit).collect(Collectors.toList());
     }
 
@@ -62,7 +62,7 @@ public class PostsService {
             PostDTO dto = returnPost(post.getPostId(), principal);
             postDTOs.add(dto);
         }
-
+        System.out.println(postDTOs);
         return postDTOs;
     }
 
@@ -104,10 +104,28 @@ public class PostsService {
         if(postsLikesRepository.existsByPostAndUser(post, currentUser))
         {
             postsLikesRepository.deleteByPostAndUser(post, currentUser);
+            post.setLikesNumber(post.getLikesNumber() - 1);
         }
         else {
             PostsLikes postsLikes = new PostsLikes(currentUser, post);
             postsLikesRepository.save(postsLikes);
+            post.setLikesNumber(post.getLikesNumber() + 1);
+        }
+    }
+
+    @Transactional
+    public void likeComment(Long commentId, Principal principal)
+    {
+        Users currentUser = checkUser(principal);
+        PostsComments comment = postsCommentsRepository.findByCommentId(commentId);
+        if(commentsLikesRepository.existsByCommentAndUser(comment, currentUser))
+        {
+            commentsLikesRepository.deleteByCommentAndUser(comment, currentUser);
+            comment.setLikesNumber(comment.getLikesNumber() - 1);
+        }
+        else {
+            comment.setLikesNumber(comment.getLikesNumber() + 1);
+            commentsLikesRepository.save(new CommentsLikes(comment, currentUser));
         }
     }
 
@@ -140,6 +158,7 @@ public class PostsService {
                     .liked(commentsLikesRepository.existsByCommentAndUser(comment, currentUser))
                     .creatorName(comment.getUser().getUsername())
                     .creatorAvatar(creator.getAvatar())
+                    .content(comment.getContent())
                     .build();
             commentsDTO.add(dto);
         }

@@ -26,7 +26,7 @@ public class Posts {
     private String content;
 
     @Column(nullable = false)
-    private int likes_number = 0;
+    private long likesNumber = 0;
 
     @Column(nullable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();

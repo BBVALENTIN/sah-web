@@ -23,4 +23,10 @@ public class CommentsLikes {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
+
+    public CommentsLikes(PostsComments comment, Users user)
+    {
+        this.comment = comment;
+        this.user = user;
+    }
 }

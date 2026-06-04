@@ -32,6 +32,9 @@ public class PostsComments {
     @Column(nullable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private long likesNumber;
+
     public PostsComments(Users user, Posts post, String content)
     {
         this.user = user;

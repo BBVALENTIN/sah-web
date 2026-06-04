@@ -1,10 +1,12 @@
 package com.sah.controller.api;
 
+import com.sah.dto.misc.CommentRequestDTO;
 import com.sah.dto.misc.PostDTO;
 import com.sah.dto.requests.PostRequestDTO;
 import com.sah.entity.Posts;
 import com.sah.service.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -32,13 +34,17 @@ public class CommunityApiController {
         return postsService.returnPosts(principal);
     }
 
-    @PostMapping("/like/{postId}")
+    @PostMapping("/likePost/{postId}")
     public void likePost(@PathVariable Long postId, Principal principal) {
         postsService.likePost(postId, principal);
     }
 
-    @PostMapping("/comment/{postId}")
-    public void comment(@PathVariable Long postId, Principal principal, String content) {
-        postsService.publishComment(postId, content, principal);
+    @PostMapping("/comment")
+    public ResponseEntity<?> comment(@RequestBody CommentRequestDTO req, Principal principal) {
+        postsService.publishComment(req.getPostId(), req.getContent(), principal);
+        return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/likeComment/{commentId}")
+    public void likeComment(@PathVariable Long commentId, Principal principal) { postsService.likeComment(commentId, principal);}
 }
