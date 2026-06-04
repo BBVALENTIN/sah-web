@@ -15,6 +15,10 @@
     --c-border: #404040;
     --c-font: #bababa;
     --c-font-dim: #949494;
+    --c-likeColor: #f91880;
+    --c-bg-likeColor-hover: rgba(249, 24, 128, 0.1);
+    --c-twitter-blue: #1d9bf0;
+    --c-twitter-blue-bg-hover: rgba(29, 155, 240, 0.1);
 }
 
 html, body {
@@ -746,6 +750,7 @@ input:checked + .slider:before {
     color: white;
     border-radius: 8px;
 }
+/* ===================== START POSTS CSS ===================== */
 
 .post-body {
     display: flex;
@@ -896,3 +901,56 @@ textarea {
     margin: 0;
     word-break: break-word;
 }
+
+.post-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    display: inherit;
+    background: none;
+    border: none;
+    color: var(--c-font-dim);
+    font-size: 13px;
+    cursor: pointer;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.action-btn i {
+    font-size: 18px;
+}
+
+.like-button .ti-heart-filled {
+    display: none;
+    color: var(--c-likeColor);
+}
+
+.like-button .ti-heart {
+    display: inline;
+}
+
+.like-button:hover {
+    color: var(--c-likeColor);
+    background-color: var(--c-bg-likeColor-hover);
+}
+
+.like-button.liked .ti-heart {
+    display: none;
+}
+
+.like-button.liked .ti-heart-filled{
+    display: inline;
+    color: var(--c-likeColor);
+}
+
+.comment-button:hover {
+    color: var(--c-twitter-blue);
+    background-color: var(--c-twitter-blue-bg-hover);
+}
+
+/* ===================== END POSTS CSS ===================== */

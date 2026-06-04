@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Community</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}"></link>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+
 </head>
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
@@ -29,6 +31,17 @@
                     <span class="post-time" th:text="${post.createdAt}">2m</span>
                 </div>
                 <p class="post-text" th:text="${post.content}">Text...</p>
+                <div class="post-buttons">
+                    <button class="action-btn comment-button" th:data-post-id="${post.postId}">
+                        <i class="ti ti-message-circle"></i>
+                        <span th:text="${post.commentNumber}"></span>
+                    </button>
+                    <button class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
+                        <i class="ti ti-heart"></i>
+                        <i class="ti ti-heart-filled"></i>
+                        <span class="like-count" th:text="${post.likeNumber}"></span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

@@ -12,9 +12,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostDTO {
+    private Long postId;
     private String username;
     private String content;
     private String userAvatar;
     private String createdAt;
     private long likeNumber;
+    private long commentNumber;
+    private boolean liked;
 }

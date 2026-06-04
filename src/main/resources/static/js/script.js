@@ -62,6 +62,20 @@ addEventListener('DOMContentLoaded', async () => {
         if(postButton) postButton.disabled = true;
     }
 
+    document.querySelectorAll('.like-button').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const postId = btn.dataset.postId;
+            const countEl = btn.querySelector('.like-count');
+
+            await fetch(`/api/community/like/${postId}`, { method: 'POST' });
+
+            const isLiked = btn.classList.toggle('liked');
+            countEl.textContent = isLiked
+                ? parseInt(countEl.textContent) + 1
+                : parseInt(countEl.textContent) - 1;
+        });
+    });
+
     const buttonSubmit = document.getElementById('submit-post-button');
     if(buttonSubmit) {
         buttonSubmit.addEventListener('click', async () => {

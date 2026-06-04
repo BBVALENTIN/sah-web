@@ -11,4 +11,5 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     Posts findByPostId(Long postId);
 
     List<Posts> findPostsByDeletedAndCreatorNot(boolean deleted, Users creator);
+    List<Posts> findPostsByDeletedAndCreatorNotOrderByCreatedAtDesc(boolean deleted, Users creator);
 }

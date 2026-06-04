@@ -32,13 +32,13 @@ public class CommunityApiController {
         return postsService.returnPosts(principal);
     }
 
-    @PostMapping("/like/${postId}")
+    @PostMapping("/like/{postId}")
     public void likePost(@PathVariable Long postId, Principal principal) {
         postsService.likePost(postId, principal);
     }
 
-    @PostMapping("/comment/${postId}")
-    public void comment(@PathVariable Long postId, Principal principal) {
-
+    @PostMapping("/comment/{postId}")
+    public void comment(@PathVariable Long postId, Principal principal, String content) {
+        postsService.publishComment(postId, content, principal);
     }
 }
