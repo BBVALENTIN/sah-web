@@ -41,7 +41,7 @@ public class ProfileService {
        if(user != null) {
 
            ProfileInfoDTO dto = new ProfileInfoDTO(
-                   new UserOverviewInfoExpanded(username, user.getDescription(), user.getCountry() ,user.getAvatar()),
+                   new UserOverviewInfoExpanded(username, user.getDescription(), user.getCountry().toLowerCase() ,user.getAvatar()),
                    new GameOverviewInfo(matchHistoryDTOList.size(), matchHistoryDTOList)
            );
 

@@ -11,12 +11,14 @@
     <div class="profile-container">
         <div class="profile-card">
             <div class="profile-header-avatar">
-                <img id="profile-picture" alt="profile picture" th:src="@{'/uploads/' + ${userInfo.avatar}}" />
+                <img id="profile-picture" alt="profile picture" th:src="@{'/uploads/' + ${userInfo.getAvatar()}}" />
             </div>
             <div class="profile-header-user-info">
                 <div class="profile-header-overview">
-                    <div id="profile-info username" th:text="${userInfo.getUsername()}">Guest</div>
-                    <div id="profile-info flag"></div>
+                    <div class="profile-info username" th:text="${userInfo.getUsername()}">Guest</div>
+                    <div class="profile-info flag">
+                        <img th:src="'https://flagcdn.com/' + ${userInfo.getCountry()}+'.svg'" alt="country-flag" width="30">
+                    </div>
                 </div>
                 <div class="profile-user-description">
                     <div id="profile-description"></div>
