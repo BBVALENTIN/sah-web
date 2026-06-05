@@ -182,4 +182,7 @@ addEventListener('DOMContentLoaded', async () => {
             btnSubmitComment.disabled = true;
         });
     }
+    document.querySelector('.settings-btn').addEventListener('click', () => {
+        window.location.href = '/settings/user'
+    });
 });

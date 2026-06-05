@@ -549,6 +549,7 @@ input:checked + .slider:before {
 }
 
 .profile-card {
+    position: relative;
     display: inherit;
     gap: var(--space-24);
     width: 100%;
@@ -560,6 +561,20 @@ input:checked + .slider:before {
     border-radius: 12px;
     box-shadow: 2px 2px 15px rgba(0,0,0,0.4);
     text-align: center;
+}
+
+.profile-settings-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: 1px solid #555;
+    border-radius: 6px;
+    color: #aaa;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
 }
 
 .profile-header-overview {
