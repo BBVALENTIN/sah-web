@@ -55,7 +55,7 @@
                 <button class="action-btn like-comments" th:data-comment-id="${comment.commentId}" th:classappend="${comment.liked} ? ' liked' : ''">
                     <i class="ti ti-heart"></i>
                     <i class="ti ti-heart-filled"></i>
-                    <span class="like-count" th:text="${post.likeNumber}"></span>
+                    <span class="like-count" th:text="${comment.likeNumber}"></span>
                 </button>
             </div>
         </div>
