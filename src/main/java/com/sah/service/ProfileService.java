@@ -1,5 +1,8 @@
 package com.sah.service;
 
+import com.sah.dto.info.GameOverviewInfo;
+import com.sah.dto.info.UserMiscInfo;
+import com.sah.dto.info.UserOverviewInfoExpanded;
 import com.sah.dto.misc.MatchHistoryDTO;
 import com.sah.dto.misc.ProfileInfoDTO;
 import com.sah.entity.ChessGames;
@@ -31,20 +34,25 @@ public class ProfileService {
     }
 
     public ProfileInfoDTO loadProfileInfo(String username) {
-       ProfileInfoDTO profileInfoDTO = new ProfileInfoDTO();
        List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>(loadProfileGames(username));
 
        Users user = userRepo.findByUsername(username);
 
        if(user != null) {
-           profileInfoDTO.setUsername(username);
-           profileInfoDTO.setAvatar(user.getAvatar());
-           profileInfoDTO.setDescription(user.getDescription());
-           profileInfoDTO.setCountry(user.getCountry());
-           profileInfoDTO.setMatchHistoryDTOList(matchHistoryDTOList);
-           profileInfoDTO.setGamesPlayed(matchHistoryDTOList.size());
+
+           ProfileInfoDTO dto = new ProfileInfoDTO(
+                   new UserOverviewInfoExpanded(username, user.getDescription(), user.getCountry() ,user.getAvatar()),
+                   new GameOverviewInfo(matchHistoryDTOList.size(), matchHistoryDTOList)
+           );
+
+           return dto;
        }
-       return profileInfoDTO;
+       return null;
+    }
+
+    public UserMiscInfo returnMiscInfo(String username) {
+        Users user = userRepo.findByUsername(username);
+        return new UserMiscInfo(username, user.getAvatar());
     }
 
     private List<MatchHistoryDTO> loadProfileGames(String username) {

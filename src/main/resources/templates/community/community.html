@@ -11,7 +11,7 @@
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="post-body">
         <div class="post-editable">
-            <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${useravatar}}" />
+            <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userMiscInfo.avatar}}" />
             <div id="post-content">
                 <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
                 <p class="p-info" id="char-count"></p>

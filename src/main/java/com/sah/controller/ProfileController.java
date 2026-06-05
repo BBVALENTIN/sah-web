@@ -23,14 +23,12 @@ public class ProfileController {
     @GetMapping("/{username}")
     public String getProfile(@PathVariable String username, Model model, Principal principal) {
         ProfileInfoDTO profileInfoDTO = profileService.loadProfileInfo(username);
-        if(profileInfoDTO.getUsername() == null) {
+        if(profileInfoDTO == null) {
             return "profile/notfound";
         }
         model.addAttribute("currentUser", principal.getName());
-        model.addAttribute("profileusername", profileInfoDTO.getUsername());
-        model.addAttribute("profileAvatar", profileInfoDTO.getAvatar());
-        model.addAttribute("gamesPlayed", profileInfoDTO.getGamesPlayed());
-        model.addAttribute("matchHistory", profileInfoDTO.getMatchHistoryDTOList());
+        model.addAttribute("userInfo", profileInfoDTO.getUserInfo());
+        model.addAttribute("gameInfo", profileInfoDTO.getGameInfo());
 
         return "profile/index";
     }

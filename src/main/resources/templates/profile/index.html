@@ -7,38 +7,49 @@
 </head>
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
-    <div id="ProfileBox">
-        <div id="profile-flag"></div>
-        <img id="profile-picture" alt="profile picture" th:src="@{'/uploads/' + ${profileAvatar}}" />
-        <div id="profile-username" th:text="${profileusername}">Guest</div>
-        <div id="profile-description"></div>
-    </div>
 
-    <div th:if="${profileusername == currentUser}" class="upload-photo">
-        <form method="POST" action="/upload" enctype="multipart/form-data">
-            <input type="file" name="file" accept="image/*" />
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button type="submit">Change profile picture</button>
-        </form>
-    </div>
-
-
-    <div id="last-games-container">
-        <div id="last-games-header">
-            <small th:text="'Games Played (' + ${gamesPlayed}+')'"></small>
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header-avatar">
+                <img id="profile-picture" alt="profile picture" th:src="@{'/uploads/' + ${userInfo.avatar}}" />
+            </div>
+            <div class="profile-header-user-info">
+                <div class="profile-header-overview">
+                    <div id="profile-info username" th:text="${userInfo.getUsername()}">Guest</div>
+                    <div id="profile-info flag"></div>
+                </div>
+                <div class="profile-user-description">
+                    <div id="profile-description"></div>
+                </div>
+            </div>
         </div>
-        <div id="last-games-list">
-            <ul th:if="${matchHistory != null}">
-                <li th:each="game : ${matchHistory}">
-                    Opponent: <span th:text="${game.opponent}"></span>,
-                    Format: <span th:text="${game.format}"></span>,
-                    Moves: <span th:text="${game.numberOfMoves}"></span>
 
-                    <span th:if="${game.outcome}" class="win">WIN</span>
-                    <span th:unless="${game.outcome}" class="lose">LOSE</span>
-                </li>
-            </ul>
-            <div th:unless="${matchHistory} != null">User currently has no games</div>
+        <div th:if="${userInfo.getUsername() == currentUser}" class="upload-photo">
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+                <input required type="file" name="file" accept="image/*" />
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit">Change profile picture</button>
+            </form>
+        </div>
+
+
+        <div id="last-games-container">
+            <div id="last-games-header">
+                <small th:text="'Games Played (' + ${gameInfo.gamesPlayed}+')'"></small>
+            </div>
+            <div id="last-games-list">
+                <ul th:if="${gameInfo.matchHistoryDTOList != null}">
+                    <li th:each="game : ${gameInfo.matchHistoryDTOList}">
+                        Opponent: <span th:text="${game.opponent}"></span>,
+                        Format: <span th:text="${game.format}"></span>,
+                        Moves: <span th:text="${game.numberOfMoves}"></span>
+
+                        <span th:if="${game.outcome}" class="win">WIN</span>
+                        <span th:unless="${game.outcome}" class="lose">LOSE</span>
+                    </li>
+                </ul>
+                <div th:unless="${gameInfo.matchHistoryDTOList} != null">User currently has no games</div>
+            </div>
         </div>
     </div>
     <script type="module" th:src="@{/js/script.js}"></script>
