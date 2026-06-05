@@ -22,8 +22,11 @@
         </form>
     </div>
 
+
     <div id="last-games-container">
-        <div id="last-games-header"></div>
+        <div id="last-games-header">
+            <small th:text="'Games Played (' + ${gamesPlayed}+')'"></small>
+        </div>
         <div id="last-games-list">
             <ul th:if="${matchHistory != null}">
                 <li th:each="game : ${matchHistory}">

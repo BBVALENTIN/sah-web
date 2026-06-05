@@ -29,6 +29,7 @@ public class ProfileController {
         model.addAttribute("currentUser", principal.getName());
         model.addAttribute("profileusername", profileInfoDTO.getUsername());
         model.addAttribute("profileAvatar", profileInfoDTO.getAvatar());
+        model.addAttribute("gamesPlayed", profileInfoDTO.getGamesPlayed());
         model.addAttribute("matchHistory", profileInfoDTO.getMatchHistoryDTOList());
 
         return "profile/index";
