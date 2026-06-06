@@ -9,4 +9,5 @@ public interface PostsCommentsRepository extends JpaRepository<PostsComments, Lo
     long countByPost(Posts post);
     PostsComments findByCommentId(Long commentId);
     List<PostsComments> findByPost(Posts post);
+    List<PostsComments> findByPostAndDeleted(Posts posts, boolean deleted);
 }

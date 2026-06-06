@@ -29,6 +29,9 @@
                 <div class="post-item-header">
                     <span class="post-username" th:text="${post.username}">username</span>
                     <span class="post-time" th:text="${post.createdAt}">2m</span>
+                    <button class="delete-button" th:if="${post.username == userMiscInfo.username}" th:data-post-id="${post.postId}">
+                        <i class="ti ti-trash"></i>
+                    </button>
                 </div>
                 <p class="post-text" th:text="${post.content}">Text...</p>
                 <div class="post-buttons">

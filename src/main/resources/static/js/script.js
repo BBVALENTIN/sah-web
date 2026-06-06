@@ -182,7 +182,27 @@ addEventListener('DOMContentLoaded', async () => {
             btnSubmitComment.disabled = true;
         });
     }
-    document.querySelector('.settings-btn').addEventListener('click', () => {
-        window.location.href = '/settings/user'
+
+    const settingsBtn = document.querySelector('.settings-btn');
+    if(settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            window.location.href = '/settings/user';
+        });
+    }
+
+    document.querySelectorAll('.delete-button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const postId = btn.dataset.postId;
+            const commentId = btn.dataset.commentId;
+            if(postId) {
+                fetch(`/api/community/deletePost/${postId}`, {method: 'POST'});
+                window.location.href='/community';
+            }
+            else {
+                fetch(`/api/community/deleteComment/${commentId}`, {method: 'POST'});
+                window.location.reload()
+            }
+        });
     });
 });

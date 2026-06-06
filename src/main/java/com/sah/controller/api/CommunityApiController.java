@@ -45,6 +45,16 @@ public class CommunityApiController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/deletePost/{postId}")
+    public void deletePost(@PathVariable Long postId, Principal principal) {
+        postsService.deletePost(postId, principal);
+    }
+
+    @PostMapping("/deleteComment/{commentId}")
+    public void deleteComment(@PathVariable Long commentId, Principal principal) {
+        postsService.deleteComment(commentId, principal);
+    }
+
     @PostMapping("/likeComment/{commentId}")
     public void likeComment(@PathVariable Long commentId, Principal principal) { postsService.likeComment(commentId, principal);}
 }

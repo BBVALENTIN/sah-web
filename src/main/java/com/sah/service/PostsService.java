@@ -6,7 +6,6 @@ import com.sah.dto.requests.PostRequestDTO;
 import com.sah.entity.*;
 import com.sah.repository.*;
 import jakarta.transaction.Transactional;
-import org.hibernate.type.descriptor.java.BigIntegerJavaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class PostsService {
     private final PostsCommentsRepository postsCommentsRepository;
     private final CommentsLikesRepository commentsLikesRepository;
     private final int limit = 30;
-    private final boolean activePost = false, deletedPost = true;
+    private final boolean active = false, deleted = true;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Autowired
@@ -50,7 +49,7 @@ public class PostsService {
     }
 
     private List<Posts> returnCleanPosts(Principal principal) {
-        return postsRepository.findPostsByDeletedOrderByLikesNumberDesc(activePost)
+        return postsRepository.findPostsByDeletedOrderByLikesNumberDesc(active)
                 .stream().limit(limit).collect(Collectors.toList());
     }
 
@@ -58,7 +57,6 @@ public class PostsService {
         List<PostDTO> postDTOs = new ArrayList<>();
         List<Posts> posts = returnCleanPosts(principal);
         for(Posts post : posts) {
-            Users users = post.getCreator();
             PostDTO dto = returnPost(post.getPostId(), principal);
             postDTOs.add(dto);
         }
@@ -84,10 +82,25 @@ public class PostsService {
         return postDTO;
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, Principal principal) {
+        Users currentUser = checkUser(principal);
         Posts post = postsRepository.findByPostId(postId);
-        post.setDeleted(deletedPost);
+        if(post.getCreator() != currentUser) {
+            throw new RuntimeException("You didn't make the post, hence you can't delete it");
+        }
+        post.setDeleted(deleted);
         postsRepository.save(post);
+    }
+
+    public void deleteComment(Long commentId, Principal principal)
+    {
+        Users currentUser = checkUser(principal);
+        PostsComments comment = postsCommentsRepository.findByCommentId(commentId);
+        if(comment.getUser() != currentUser) {
+            throw new RuntimeException("You didn't make the comment, hence you can't delete it");
+        }
+        comment.setDeleted(deleted);
+        postsCommentsRepository.save(comment);
     }
 
     private Users checkUser(Principal principal){
@@ -146,18 +159,17 @@ public class PostsService {
     {
         Users currentUser = checkUser(principal);
         Posts post = postsRepository.findByPostId(postId);
-        List<PostsComments> comments = postsCommentsRepository.findByPost(post);
+        List<PostsComments> comments = postsCommentsRepository.findByPostAndDeleted(post, active);
         List<CommentsDTO> commentsDTO = new ArrayList<>();
 
         for(PostsComments comment : comments) {
-            Users creator = userRepository.findByUsername(comment.getUser().getUsername());
             CommentsDTO dto = CommentsDTO.builder()
                     .commentId(comment.getCommentId())
                     .createdAt(comment.getCreatedAt().format(formatter))
                     .likeNumber(commentsLikesRepository.countByComment(comment))
                     .liked(commentsLikesRepository.existsByCommentAndUser(comment, currentUser))
                     .creatorName(comment.getUser().getUsername())
-                    .creatorAvatar(creator.getAvatar())
+                    .creatorAvatar(comment.getUser().getAvatar())
                     .content(comment.getContent())
                     .build();
             commentsDTO.add(dto);

@@ -43,14 +43,21 @@
 </div>
 
 <div class="posts-container">
+
     <div class="post-item" th:each="comment : ${comments}">
         <img class="mini-profile-picture" th:src="@{'/uploads/' + ${comment.creatorAvatar}}" alt="avatar"/>
+
         <div class="post-item-content">
             <div class="post-item-header">
                 <span class="post-username" th:text="${comment.creatorName}">username</span>
                 <span class="post-time" th:text="${comment.createdAt}">2m</span>
+                <button class="delete-button" th:if="${comment.creatorName == userMiscInfo.username}" th:data-comment-id="${comment.commentId}">
+                    <i class="ti ti-trash"></i>
+                </button>
             </div>
+
             <p class="post-text" th:text="${comment.content}">Text...</p>
+
             <div class="post-buttons">
                 <button class="action-btn like-comments" th:data-comment-id="${comment.commentId}" th:classappend="${comment.liked} ? ' liked' : ''">
                     <i class="ti ti-heart"></i>
@@ -58,6 +65,7 @@
                     <span class="like-count" th:text="${comment.likeNumber}"></span>
                 </button>
             </div>
+
         </div>
     </div>
 </div>
