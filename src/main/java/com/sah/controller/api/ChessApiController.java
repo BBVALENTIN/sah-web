@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.api;
 
 import com.sah.config.WebSocketEventListener;
 import com.sah.dto.chess.MinimalStateDTO;

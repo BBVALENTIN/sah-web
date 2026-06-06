@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.pages;
 
 import com.sah.service.TwitchService;
 import org.springframework.stereotype.Controller;
@@ -6,11 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class IndexController {
+public class IndexPageController {
 
     private final TwitchService twitchService;
 
-    public IndexController(TwitchService twitchService) {
+    public IndexPageController(TwitchService twitchService) {
         this.twitchService = twitchService;
     }
 

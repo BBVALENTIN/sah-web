@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.api;
 
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
@@ -14,12 +14,12 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/bot")
-public class BotGameController {
+public class BotGameApiController {
     private final ChessBoard chessBoard;
     private final BotGameService botGameService;
 
     @Autowired
-    public BotGameController(ChessBoard chessBoard, BotGameService botGameService)
+    public BotGameApiController(ChessBoard chessBoard, BotGameService botGameService)
     {
         this.chessBoard = chessBoard;
         this.botGameService = botGameService;

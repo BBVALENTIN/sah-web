@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.pages;
 
 import com.sah.dto.misc.ProfileInfoDTO;
 import com.sah.service.ProfileService;
@@ -12,11 +12,11 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("/profile")
-public class ProfileController {
+public class ProfilePageController {
 
     private final ProfileService profileService;
 
-    public ProfileController(ProfileService profileService) {
+    public ProfilePageController(ProfileService profileService) {
         this.profileService = profileService;
     }
 

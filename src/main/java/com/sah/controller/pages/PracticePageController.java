@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.pages;
 
 import com.sah.dto.chess.MinimalStateDTO;
 import com.sah.service.PracticeService;
@@ -7,16 +7,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class PracticeController {
+public class PracticePageController {
     PracticeService practiceService;
 
-    PracticeController(PracticeService practiceService) {
+    PracticePageController(PracticeService practiceService) {
         this.practiceService = practiceService;
     }
 
     @GetMapping("/selfpractice")
     public String showSelfPractice() {
         return "practice/selfpractice";
+    }
+
+    @GetMapping("/vsEngine")
+    public String showEnginePage() {
+        return "practice/playBot";
     }
 
     @GetMapping("/practiceBoard")
