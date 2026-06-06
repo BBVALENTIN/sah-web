@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.4</version> <!-- versiunea oficială stabilă -->
+		<version>3.1.4</version>
 		<relativePath/>
 	</parent>
 
@@ -67,6 +67,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.maxmind.geoip2</groupId>
+			<artifactId>geoip2</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
@@ -108,7 +114,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M7</version> <!-- versiune stabilă recomandată -->
+				<version>3.0.0-M7</version>
 			</plugin>
 		</plugins>
 	</build>

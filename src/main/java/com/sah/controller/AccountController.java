@@ -1,7 +1,9 @@
 package com.sah.controller;
 
+import com.maxmind.geoip2.model.CountryResponse;
 import com.sah.dto.requests.RegisterRequestDTO;
 import com.sah.service.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +23,12 @@ public class AccountController {
     public String showRegisterForm() { return "registration/register"; }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute RegisterRequestDTO request, Model model) {
+    public String register(@ModelAttribute RegisterRequestDTO req, Model model, HttpServletRequest httpRequest) {
         try {
-            userService.register(request);
+            String ip = httpRequest.getHeader("X-Forwarded-For");
+            if(ip == null) ip = httpRequest.getRemoteAddr();
+            req.setIp(ip);
+            userService.register(req);
             return "redirect:/success";
         }
         catch (RuntimeException e) {
