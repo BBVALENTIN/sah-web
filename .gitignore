@@ -42,3 +42,6 @@ src/main/resources/static/ts-transpiled
 ### uploads
 uploads/*
 !uploads/default.jpg
+
+### mmdb database for countries, access google docs for that
+geodb-lite/*

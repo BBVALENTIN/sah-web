@@ -18,11 +18,9 @@ import java.util.List;
 public class LobbyController {
 
     private final ChessLobbyService chessLobbyService;
-    private final LobbyRepository lobbyRepository;
 
     public LobbyController(ChessLobbyService chessLobbyService, LobbyRepository lobbyRepository) {
         this.chessLobbyService = chessLobbyService;
-        this.lobbyRepository = lobbyRepository;
     }
 
     @GetMapping("/lobbies")

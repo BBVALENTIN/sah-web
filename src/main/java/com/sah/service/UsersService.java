@@ -1,7 +1,6 @@
 package com.sah.service;
 
 import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.WebServiceClient;
 import com.maxmind.geoip2.model.CountryResponse;
 import com.sah.dto.requests.RegisterRequestDTO;
 import com.sah.entity.Roles;
@@ -10,7 +9,6 @@ import com.sah.enums.RoleType;
 import com.sah.repository.RoleRepository;
 import com.sah.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
