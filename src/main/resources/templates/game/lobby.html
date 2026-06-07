@@ -9,12 +9,15 @@
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="content">
         <div class="lobby-header">
+
             <div class="toolbar-above">
                 <div class="page-info">Click on a lobby below to play, or create your own</div>
                 <div class="lobby-buttons">
                     <button id="createLobbyButton" class="toolbar-buttons">Create Lobby</button>
                     <button id="showAvailableLobbiesButton" class="toolbar-buttons">Show Available</button>
                 </div>
+
+                <div id="lobby-table-body"></div>
             </div>
         </div>
         <div id="lobbiesCount"></div>

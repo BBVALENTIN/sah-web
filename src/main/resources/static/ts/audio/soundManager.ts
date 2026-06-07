@@ -5,7 +5,7 @@ export class SoundManager {
         this.sounds = {
             move: new Audio('../sounds/public_sound_standard_Move.mp3'),
             capture: new Audio('../sounds/public_sound_standard_Capture.mp3'),
-            check: new Audio('../sounds/public_sound_standard_Check.mp3'),
+            check: new Audio('../sounds/public_sound_standard_Check.wav'),
             end: new Audio('../sounds/public_sound_standard_End.mp3'),
         };
 

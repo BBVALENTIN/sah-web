@@ -4,8 +4,6 @@ import {LobbyType} from "../tools/Enums.js";
 declare var SockJS: any;
 declare var Stomp: any;
 
-let currentUsername: string = "Guest";
-
 const state = {
     stompClient: null as any,
     connected: false
@@ -23,7 +21,7 @@ function loadLobbies() {
         .then((lobbies: lobbyInfo[]) => {
             lobbies.forEach(lobby => adaugaLobbyInTabel(lobby));
         })
-        .catch(err => console.error("Eroare la încărcarea inițială:", err));
+        .catch(err => console.error("Loading error:", err));
 }
 
 function conectareWebSocket() {
@@ -31,7 +29,7 @@ function conectareWebSocket() {
     state.stompClient = Stomp.over(socket);
 
     state.stompClient.connect({}, function () {
-        console.log("Conectat la fluxul global de lobby-uri");
+        console.log("Connected to the lobby stream");
 
         state.stompClient.subscribe('/topic/global-lobbies', function (payload: any) {
             const lobbyDto: lobbyInfo = JSON.parse(payload.body);
@@ -81,7 +79,7 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
     }
 
     if (!tableBody) {
-        console.error("Nu s-a găsit containerul #lobbiesContainer în HTML!");
+        console.error("There's no lobby container.");
         return;
     }
 
@@ -136,7 +134,7 @@ function gestionareJoin(event: any) {
         .then(res => res.text())
         .then(data => {
             if (data === "lobbyFull") {
-                alert("Ne pare rău, masa s-a ocupat între timp!");
+                alert("The lobby is already full.");
             } else if (data.startsWith("play=")) {
                 window.location.href = "/" + data;
             }
