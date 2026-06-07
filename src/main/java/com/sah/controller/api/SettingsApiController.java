@@ -1,16 +1,25 @@
 package com.sah.controller.api;
 
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.sah.dto.info.DescriptionDTO;
+import com.sah.service.ProfileService;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/settings")
 public class SettingsApiController {
 
-    @PutMapping("/changeDescription")
-    public void changeDescription() {
+    private final ProfileService profileService;
 
+    public SettingsApiController(ProfileService profileService)
+    {
+        this.profileService = profileService;
+    }
+
+    @PutMapping("/changeDescription")
+    public String changeDescription(@RequestBody DescriptionDTO req, Principal principal) {
+        return profileService.changeDescription(req.getDescription(), principal);
     }
 
     @PutMapping("/changeCountry")

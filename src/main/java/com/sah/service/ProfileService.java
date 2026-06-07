@@ -15,6 +15,7 @@ import com.sah.repository.RoleRepository;
 import com.sah.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -92,5 +93,15 @@ public class ProfileService {
             return true;
         }
         return false;
+    }
+
+    public String changeDescription(String description, Principal principal) {
+        if(description.length() >= 50)
+            return "Your description is too long";
+
+        Users currentUser = userRepo.findByUsername(principal.getName());
+        currentUser.setDescription(description);
+        userRepo.save(currentUser);
+        return "Description saved successfully";
     }
 }

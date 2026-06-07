@@ -27,8 +27,6 @@ public class Users {
     private boolean confirmed_account = false;
     @Column(nullable = true)
     private String description;
-    @Column(nullable = false, name="number_of_games")
-    private int number_of_games;
     @Column(nullable = true)
     private String country; // Temporariliy - maybe will change to CountryId and make a country table
     @Column(nullable = false)

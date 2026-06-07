@@ -10,10 +10,13 @@
     <div th:replace="fragments/navbar :: navbar"></div>
 
     <div class="profile-container">
+
         <div class="profile-card">
+
             <div class="profile-header-avatar">
                 <img id="profile-picture" alt="profile picture" th:src="@{'/uploads/' + ${userInfo.getAvatar()}}" />
             </div>
+
             <div class="profile-header-user-info">
                 <div class="profile-header-overview">
                     <div class="profile-info username" th:text="${userInfo.getUsername()}">Guest</div>
@@ -21,13 +24,19 @@
                         <img th:src="'https://flagcdn.com/' + ${userInfo.getCountry()}+'.svg'" alt="country-flag" width="30">
                     </div>
                 </div>
+
                 <div class="profile-user-description">
-                    <div id="profile-description"></div>
+                    <div class="profile-description" th:text="${userInfo.description}">No description yet</div>
+                    <button class="edit-button" id="edit-description-button">
+                        <i class="ti ti-pencil"></i>
+                    </button>
                 </div>
+
                 <button th:if="${userInfo.getUsername() == currentUser}" class="profile-settings-btn settings-btn">
                     <i class="ti ti-settings"></i>
                 </button>
             </div>
+
         </div>
 
         <div th:if="${userInfo.getUsername() == currentUser}" class="upload-photo">

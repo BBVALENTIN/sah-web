@@ -14,11 +14,9 @@ addEventListener('DOMContentLoaded', async () => {
     }
 
     await fetchUserInfo();
-    console.log(loggedUser, " ", avatar);
     quickPlayNav.addEventListener('click', async () => {
         // let availableLobbies = [];
         // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
-        console.log("user logat: ", loggedUser);
         const responsePlay = await fetch('/api/play/createQuick');
         if(!responsePlay.ok) {
             console.error('API error');
@@ -33,7 +31,6 @@ addEventListener('DOMContentLoaded', async () => {
     const yourProfileAvatar = document.getElementById('user-avatar-mini');
 
     yourProfileNav.innerText = loggedUser;
-    // yourProfileAvatar.src = `/uploads/${avatar}`;
     yourProfile.addEventListener('click', async () => {
         try {
             const response = await fetch(`/profile/${loggedUser}`);
@@ -205,4 +202,38 @@ addEventListener('DOMContentLoaded', async () => {
             }
         });
     });
+
+    const editDescBtn = document.getElementById('edit-description-button');
+    if(editDescBtn) {
+        editDescBtn.addEventListener('click', handleEdit);
+    }
+
+    function handleEdit() {
+        const descDiv = document.querySelector('.profile-description');
+        const currentText = descDiv.textContent;
+        descDiv.innerHTML = `<input type="text" id="desc-input" class="desc-input" value="${currentText}" maxlength="50"/>`;
+
+        const input = document.getElementById('desc-input');
+        input.focus();
+        editDescBtn.innerHTML = '<i class="ti ti-check"></i>';
+        editDescBtn.removeEventListener('click', handleEdit);
+        editDescBtn.addEventListener('click', handleSave);
+    }
+
+    async function handleSave() {
+        const input = document.getElementById('desc-input');
+        const descDiv = document.querySelector('.profile-description');
+        const newDesc = input.value.trim();
+
+        await fetch('/api/settings/changeDescription', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description: newDesc })
+        });
+
+        descDiv.textContent = newDesc;
+        editDescBtn.innerHTML = '<i class="ti ti-pencil"></i>';
+        editDescBtn.removeEventListener('click', handleSave);
+        editDescBtn.addEventListener('click', handleEdit);
+    }
 });
