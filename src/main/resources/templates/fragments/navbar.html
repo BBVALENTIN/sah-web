@@ -53,7 +53,7 @@
                 </li>
 
                 <li class="dropdown">
-                    <a class="dropdown-toggle" id="user-profile-nav">Your profile</a>
+                    <a class="dropdown-toggle" id="user-profile-nav" th:href="@{'/profile'+ ${username}}">Your profile</a>
                     <div class="dropdown-content">
                         <form class="logoutForm" method="post" th:action="@{/logout}">
                             <button class="logoutButton" type="submit">Logout</button>

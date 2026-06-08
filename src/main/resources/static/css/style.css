@@ -497,6 +497,11 @@ input:checked + .slider:before {
     color: inherit;
 }
 
+#user-profile-nav {
+    text-decoration: none;
+    color: var(--c-font);
+}
+
 .dropdown-content{
     display: none;
     position: absolute;
