@@ -1,5 +1,5 @@
-import {Tabla} from "../Tabla.js"
-import {MoveList} from "../MoveList.js"
+import {Tabla} from "./Tabla.js"
+import {MoveList} from "./MoveList.js"
 
 export interface AppCore {
     tabla: Tabla,

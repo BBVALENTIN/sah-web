@@ -1,5 +1,5 @@
 import {minimalState, PiesaDTO} from "../tools/Types.js";
-import {Tabla} from "../Tabla.js";
+import {Tabla} from "../tools/Tabla.js";
 import {FEN, MousePractice} from "./MousePractice.js";
 import {initCanvas, initTabla, onButtonClick} from "../tools/initApp.js";
 

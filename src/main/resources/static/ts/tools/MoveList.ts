@@ -1,4 +1,4 @@
-import {MoveRow} from "./tools/Types.js";
+import {MoveRow} from "./Types.js";
 
 export class MoveList {
     private container: HTMLElement;

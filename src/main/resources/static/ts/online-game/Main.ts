@@ -1,10 +1,9 @@
-import {Tabla} from './Tabla.js';
+import {Tabla} from '../tools/Tabla.js';
 import {Mouse} from "./Mouse.js";
-import {MoveList} from "./MoveList.js";
+import {MoveList} from "../tools/MoveList.js";
 import {connect, culoareCurenta, sendMessage, setCuloareCurenta, state} from "./WebSockets.js"
-import {getInfoLobby} from "./APIs.js";
-import {minimalState} from "./tools/Types.js";
-import {culoriPiesa} from "./tools/Enums.js";
+import {getInfoLobby} from "../misc/APIs.js";
+import {minimalState} from "../tools/Types.js";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;

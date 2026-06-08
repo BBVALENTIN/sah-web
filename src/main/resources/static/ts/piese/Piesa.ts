@@ -1,4 +1,4 @@
-import {Tabla} from "../Tabla.js";
+import {Tabla} from "../tools/Tabla.js";
 import {culoriPiesa, TipPiesa} from "../tools/Enums.js";
 
 export class Piesa {

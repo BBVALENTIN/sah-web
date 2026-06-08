@@ -1,9 +1,9 @@
-import {Tabla} from "../Tabla.js";
+import {Tabla} from "../tools/Tabla.js";
 import {Piesa} from "../piese/Piesa.js";
 import {SoundManager} from "../audio/soundManager.js";
 import {culoriPiesa, moveSounds} from "../tools/Enums.js";
 import {Mutare_Reusita} from "../tools/Types.js";
-import {MoveList} from "../MoveList.js";
+import {MoveList} from "../tools/MoveList.js";
 
 const fenOutput = document.getElementById('FEN') as HTMLInputElement;
 const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;

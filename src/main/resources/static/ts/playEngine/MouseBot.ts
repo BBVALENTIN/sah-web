@@ -1,7 +1,7 @@
 import {MousePractice} from "../practice/MousePractice.js";
-import {Tabla} from "../Tabla.js";
+import {Tabla} from "../tools/Tabla.js";
 import {Mutare_Reusita} from "../tools/Types.js";
-import {MoveList} from "../MoveList.js";
+import {MoveList} from "../tools/MoveList.js";
 import {culoriPiesa} from "../tools/Enums.js";
 
 export class MouseBot extends MousePractice {

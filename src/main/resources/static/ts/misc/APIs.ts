@@ -1,4 +1,4 @@
-import type {lobbyInfo} from "./tools/Types.js";
+import type {lobbyInfo} from "../tools/Types.js";
 
 export let loggedUsername: string | undefined = undefined;
 export const initUser = async () => {

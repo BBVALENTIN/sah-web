@@ -1,5 +1,5 @@
-import {lobbyInfo, Message, Mutare_Reusita} from "./tools/Types.js";
-import {culoriPiesa, MessageType, Sides} from "./tools/Enums.js";
+import {lobbyInfo, Message, Mutare_Reusita} from "../tools/Types.js";
+import {culoriPiesa, MessageType, Sides} from "../tools/Enums.js";
 import {mouse, moveList, tabla} from "./Main.js";
 
 declare var SockJS: any;

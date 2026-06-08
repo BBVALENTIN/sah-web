@@ -1,9 +1,9 @@
-    import { Tabla } from "./Tabla.js";
-    import { SoundManager } from "./audio/soundManager.js";
-    import { Piesa } from "./piese/Piesa.js";
-    import {lobbyInfo} from "./tools/Types.js";
+    import { Tabla } from "../tools/Tabla.js";
+    import { SoundManager } from "../audio/soundManager.js";
+    import { Piesa } from "../piese/Piesa.js";
+    import {lobbyInfo} from "../tools/Types.js";
     import {state, culoareCurenta} from "./WebSockets.js";
-    import {loggedUsername, getInfoLobby} from "./APIs.js";
+    import {loggedUsername, getInfoLobby} from "../misc/APIs.js";
 
 
     export class Mouse {
