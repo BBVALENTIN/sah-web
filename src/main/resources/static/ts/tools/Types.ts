@@ -16,7 +16,7 @@ export interface Mutare_Reusita {
     pgn: string;
     captures: boolean;
     lastMove: LastMove;
-    fen: string; // FUCK JACKSON
+    fen: string;
     capturedPieces: PieceDTO[];
 }
 

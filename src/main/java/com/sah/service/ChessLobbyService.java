@@ -73,7 +73,6 @@ public class ChessLobbyService {
         return new LobbyDTO(lobbyId, lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
     }
 
-    // IMPORTANT LOBBY STUFF
     public LobbyDTO createLobby(String username) {
         ChessLobbies lobby = new ChessLobbies();
         String randomLobbyId = assignLobbyId();
@@ -112,7 +111,7 @@ public class ChessLobbyService {
     }
 
     public ChessGames createClassicalGame() {
-        ChessGames newClassicGame = new ChessGames(); // to put the on
+        ChessGames newClassicGame = new ChessGames();
         return newClassicGame;
     }
 
@@ -122,7 +121,6 @@ public class ChessLobbyService {
     }
 
     public void assignLobbyPlayer(ChessLobbies lobby, String username) {
-        // TO ASSIGN IF THE PLAYER IS ALREADY CONNECTED
         if(isLobbyFull(lobby)) {
             throw new RuntimeException("Lobby is full or player is already assigned");
         }

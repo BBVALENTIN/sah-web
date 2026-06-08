@@ -55,7 +55,6 @@ public class ChessApiController {
     }
 
 
-    // For single player
     @PostMapping("/move")
     public ResponseEntity<?> move(@RequestParam int fromRow,
                            @RequestParam int fromCol,

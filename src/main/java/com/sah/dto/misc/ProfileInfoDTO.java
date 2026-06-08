@@ -13,8 +13,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class ProfileInfoDTO {
-    // user info
     private UserOverviewInfoExpanded userInfo;
-    // matches
     private GameOverviewInfo gameInfo;
 }

@@ -73,11 +73,11 @@ public class ChessBoard {
 
     public synchronized MoveResultDTO makeMove(int fromRow, int fromCol, int targetRow, int targetCol) {
         selectedPiece = board[fromRow][fromCol];
-        if (selectedPiece == null) { // piece inexistenta
+        if (selectedPiece == null) {
             return new MoveResultDTO(ErrorCodes.UNDETECTED_PIECE);
         }
 
-        if (selectedPiece.color != currentColor) { // NU MUTA piece DE CULOAREA ASTA!
+        if (selectedPiece.color != currentColor) {
             return new MoveResultDTO(ErrorCodes.WRONG_ROW);
         }
         boolean enPassant = false;
@@ -88,7 +88,7 @@ public class ChessBoard {
                 enPassant = true;
             }
         }
-        if (!selectedPiece.miscare(targetRow, targetCol) && enPassant == false) { // mutare ilegala
+        if (!selectedPiece.miscare(targetRow, targetCol) && enPassant == false) {
             return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
         }
         CastlingNotation rocadaNotatie = null;
@@ -99,7 +99,7 @@ public class ChessBoard {
             rocadaNotatie = getRocadaType(rocadaCopy);
         } else if(castling != null && canCastle == false)
         {
-            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE); // nu poti face castling in sah
+            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
         }
 
         capturedPiece = getPiesaCapturata(targetRow, targetCol);
@@ -112,7 +112,7 @@ public class ChessBoard {
         List<Pieces> oldList = new ArrayList<>(piecesList);
 
 
-        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, selectedPiece); // de testat cazul in car esteRegeleMeuInSah true
+        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, selectedPiece);
 
         if(selectedPiece.tip == Type.PAWN)
         {
@@ -376,7 +376,6 @@ public class ChessBoard {
 
         boolean inSah = esteRegeInSah(rege);
 
-        // rollback
         rege.row = oldRow;
         rege.col = oldCol;
         board[oldRow][oldCol] = rege;
@@ -389,7 +388,7 @@ public class ChessBoard {
     {
         for(Pieces piece : piecesList) {
             if (piece.color != rege.color)
-                continue; // salvam piesele de aceeasi culoare cu regele nostru
+                continue;
 
             if(piece.tip == Type.KING)
                 continue;
@@ -462,7 +461,7 @@ public class ChessBoard {
     }
 
     public ResultType convertToResult() {
-        return (winner == Sides.WHITE) ? ResultType.WHITE_WIN : ResultType.BLACK_WIN; // for now
+        return (winner == Sides.WHITE) ? ResultType.WHITE_WIN : ResultType.BLACK_WIN;
     }
 
     public boolean getResignation() {

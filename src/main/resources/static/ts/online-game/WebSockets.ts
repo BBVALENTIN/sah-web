@@ -116,7 +116,7 @@ function onMessageReceived(payload: any) {
         messageElement.classList.add("event-message");
         messageElement.innerHTML = `<div>${message.sender} left the lobby!</div>`;
     }
-    else { // MessageType.CHAT
+    else {
         messageElement.classList.add("chat-message");
         messageElement.innerHTML = `<div class="message-content">${message.sender}: ${message.content}</div>`;
     }

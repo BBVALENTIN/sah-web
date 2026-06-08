@@ -59,7 +59,6 @@ async function initializeApp() {
     });
 }
 
-// LOGICA FRONTEND JOC
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
 

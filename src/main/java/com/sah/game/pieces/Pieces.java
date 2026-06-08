@@ -101,7 +101,7 @@ public class Pieces {
     }
 
     public boolean piesaPeDiagonala(int targetRow, int targetCol) {
-        // sus-stanga
+        // top-left
         if (targetRow < this.row && targetCol < this.col) {
             int i = this.row - 1;
             int j = this.col - 1;
@@ -115,7 +115,7 @@ public class Pieces {
             }
         }
 
-        // sus-dreapta
+        // top-right
         if (targetRow < this.row && targetCol > this.col) {
             int i = this.row - 1;
             int j = this.col + 1;
@@ -129,7 +129,7 @@ public class Pieces {
             }
         }
 
-        // jos-stanga
+        // bottom-left
         if (targetRow > this.row && targetCol < this.col) {
             int i = this.row + 1;
             int j = this.col - 1;
@@ -143,7 +143,7 @@ public class Pieces {
             }
         }
 
-        // mutare în jos-dreapta
+        // bottom right
         if (targetRow > this.row && targetCol > this.col) {
             int i = this.row + 1;
             int j = this.col + 1;
@@ -158,11 +158,5 @@ public class Pieces {
         }
 
         return false;
-    }
-
-
-    public String getColorAsString() {
-        if (this.color == ColorType.WHITE) return "alb";
-        else return "negru";
     }
 }
