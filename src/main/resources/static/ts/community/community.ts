@@ -81,11 +81,6 @@ function setupLikeButtons(): void {
     document.querySelectorAll<HTMLButtonElement>('.like-button').forEach(btn => {
         btn.addEventListener('click', () => toggleLike(btn, 'likePost'));
     });
-
-    const selectedPostLike = document.getElementById('selected-post-like-button') as HTMLButtonElement;
-    if (selectedPostLike) {
-        selectedPostLike.addEventListener('click', () => toggleLike(selectedPostLike, 'likePost'));
-    }
 }
 
 function handlePost(user: LoggedUser): void {
