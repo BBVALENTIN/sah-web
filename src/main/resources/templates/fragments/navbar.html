@@ -38,8 +38,12 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle">Practice</a>
                     <div class="dropdown-content">
-                        <div>
+                        <div class="dropdown-item">
                             <a href="/selfpractice">Self-Practice</a>
+                        </div>
+
+                        <div class="dropdown">
+                            <a href="/playengine">Play Engine</a>
                         </div>
                     </div>
                 </li>
@@ -49,16 +53,16 @@
         <div class="nav-links-right">
             <ul class="nav-links nav-links-right">
                 <li class="nav-item active">
-                    <img alt="logo" id="user-avatar-mini" style="width: 32px; height: 32px" th:src="@{'/uploads/' + ${avatar != null ? avatar : 'default.jpg'}}" />
+                    <img alt="logo" id="user-avatar-mini" class="redirectable" style="width: 32px; height: 32px" th:src="@{'/uploads/' + ${avatar != null ? avatar : 'default.jpg'}}" th:data-username="${username}" />
                 </li>
 
                 <li class="dropdown">
-                    <a class="dropdown-toggle" id="user-profile-nav" th:href="@{'/profile'+ ${username}}">Your profile</a>
+                    <a class="dropdown-toggle" id="user-profile-nav" th:href="@{'/profile/'+ ${username}}" th:text="${username}"></a>
                     <div class="dropdown-content">
-                        <form class="logoutForm" method="post" th:action="@{/logout}">
+                        <div class="dropdown-item redirectable" th:data-username="${username}">Your profile</div>
+                        <form class="dropdown-item" method="post" th:action="@{/logout}">
                             <button class="logoutButton" type="submit">Logout</button>
                         </form>
-                        <div class="profile" id="user-profile">Your profile</div>
                     </div>
                 </li>
             </ul>

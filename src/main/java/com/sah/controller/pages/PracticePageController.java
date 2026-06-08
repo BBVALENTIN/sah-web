@@ -19,9 +19,9 @@ public class PracticePageController {
         return "practice/selfpractice";
     }
 
-    @GetMapping("/vsEngine")
+    @GetMapping("/playengine")
     public String showEnginePage() {
-        return "practice/playBot";
+        return "practice/playengine";
     }
 
     @GetMapping("/practiceBoard")

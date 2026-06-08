@@ -17,6 +17,17 @@ function navbarQuickPlay() {
     }
 }
 
+function rediractables() {
+    document.querySelectorAll('.redirectable').forEach(element => {
+        element.addEventListener('click', () => {
+            const username = (element as HTMLElement).dataset.username;
+
+            window.location.href = `/profile/${username}`;
+        });
+    });
+}
+
 export function navbarFuncs() {
     navbarQuickPlay();
+    rediractables();
 }
