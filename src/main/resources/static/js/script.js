@@ -1,3 +1,4 @@
+// to make this script in typescript..
 addEventListener('DOMContentLoaded', async () => {
     const quickPlayNav = document.getElementById('quickPlayNav');
     let loggedUser = null;
@@ -14,33 +15,43 @@ addEventListener('DOMContentLoaded', async () => {
     }
 
     await fetchUserInfo();
-    quickPlayNav.addEventListener('click', async () => {
-        // let availableLobbies = [];
-        // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
-        const responsePlay = await fetch('/api/play/createQuick');
-        if(!responsePlay.ok) {
-            console.error('API error');
-            return;
-        }
-        let lobby = await responsePlay.json();
-        window.location.href =`/play=${lobby.lobbyId}`;
-    });
+    if(quickPlayNav)
+    {
+        quickPlayNav.addEventListener('click', async () => {
+            // let availableLobbies = [];
+            // const responseAvailableLobbies = await fetch(`api/lobbies/{AVAILABLE}`);
+            const responsePlay = await fetch('/api/play/createQuick');
+            if(!responsePlay.ok) {
+                console.error('API error');
+                return;
+            }
+            let lobby = await responsePlay.json();
+            window.location.href =`/play=${lobby.lobbyId}`;
+        });
+    }
+
 
     const yourProfile = document.getElementById('user-profile');
     const yourProfileNav = document.getElementById('user-profile-nav');
     const yourProfileAvatar = document.getElementById('user-avatar-mini');
 
-    yourProfileNav.innerText = loggedUser;
-    yourProfile.addEventListener('click', async () => {
-        try {
-            const response = await fetch(`/profile/${loggedUser}`);
-            if(response.ok) {
-                window.location.href = `/profile/${loggedUser}`;
+    if(yourProfileNav)
+    {
+        yourProfileNav.innerText = loggedUser;
+    }
+    if(yourProfile)
+    {
+        yourProfile.addEventListener('click', async () => {
+            try {
+                const response = await fetch(`/profile/${loggedUser}`);
+                if(response.ok) {
+                    window.location.href = `/profile/${loggedUser}`;
+                }
+            } catch (e) {
+                console.log(e);
             }
-        } catch (e) {
-           console.log(e);
-        }
-    });
+        });
+    }
 
     const textArea = document.getElementById('post-input');
     if(textArea) {
@@ -236,4 +247,30 @@ addEventListener('DOMContentLoaded', async () => {
         editDescBtn.removeEventListener('click', handleSave);
         editDescBtn.addEventListener('click', handleEdit);
     }
+
+    function addSelectCountryComponent(parentComponentId, selectedValue = '') {
+        if(!parentComponentId) return;
+
+        const countries = [
+            { code: 'AF', name: 'Afghanistan'},
+            { code: 'RO', name: 'Romania'},
+            { code: 'US', name: 'United States'}
+        ];
+        const selectCountry = document.createElement('select');
+        selectCountry.id = "select-country";
+        selectCountry.name = 'country';
+        selectCountry.autocomplete = 'country';
+
+        countries.forEach(c => {
+            const option = document.createElement('option');
+            option.value = c.code;
+            option.textContent = c.name;
+            if(c.code === selectedValue) option.selected = true;
+            selectCountry.appendChild(option);
+        });
+
+        document.getElementById(parentComponentId).appendChild(selectCountry);
+    }
+
+    addSelectCountryComponent('country-select-container', 'RO');
 });
