@@ -1,16 +1,16 @@
 import {MousePractice} from "../practice/MousePractice.js";
-import {Tabla} from "../tools/Tabla.js";
+import {Board} from "../tools/Board";
 import {Mutare_Reusita} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
-import {culoriPiesa} from "../tools/Enums.js";
+import {SidesExplicit} from "../tools/Enums.js";
 
 export class MouseBot extends MousePractice {
     private gameId: string;
 
-    constructor(canvas: HTMLCanvasElement, tabla: Tabla, gameId: string, moveList: MoveList, playerSide: culoriPiesa) {
+    constructor(canvas: HTMLCanvasElement, tabla: Board, gameId: string, moveList: MoveList, playerSide: SidesExplicit) {
         super(canvas, tabla, moveList);
         this.gameId = gameId;
-        this.culoareCurenta = playerSide;
+        this.currentColor = playerSide;
     }
 
     protected afterMove(result: Mutare_Reusita): void {
@@ -64,7 +64,7 @@ export class MouseBot extends MousePractice {
         if (response.ok) {
             const result: Mutare_Reusita = await response.json();
             this.tabla.setPiecesFromServer(result.updatedPieces);
-            this.tabla.redesenare();
+            this.tabla.redraw();
             this.moveList.addMove(result.pgn);
             this.addMoveToCopyable(result.pgn);
             this.playSound(result);

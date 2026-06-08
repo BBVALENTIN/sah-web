@@ -1,7 +1,8 @@
-import {minimalState, PiesaDTO} from "../tools/Types.js";
-import {Tabla} from "../tools/Tabla.js";
+import {minimalState, PieceDTO} from "../tools/Types.js";
+import {Board} from "../tools/Board";
 import {FEN, MousePractice} from "./MousePractice.js";
-import {initCanvas, initTabla, onButtonClick} from "../tools/initApp.js";
+import {initCanvas, initBoard, onButtonClick} from "../tools/initApp.js";
+import {Piece} from "../pieces/Piece";
 
 type stockfishLine = {
     rank: number;
@@ -13,10 +14,10 @@ let stockfishOutputs: stockfishLine[] = [];
 const stockfishTrigger = document.getElementById('stockfish-trigger') as HTMLInputElement;
 export let engineOn: boolean = false;
 
-export const { tabla, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
-await initTabla(tabla);
+export const { board, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
+await initBoard(board);
 await loadBoard();
-const mousePractice = new MousePractice(canvas, tabla, moveList);
+const mousePractice = new MousePractice(canvas, board, moveList);
 mousePractice.onEngineRequest = (fen: string) => {
     if(engineOn) cereMutareDeLaStockfish(fen);
 };
@@ -82,11 +83,11 @@ async function loadBoard() {
         const response = await fetch('/practiceBoard');
         if(response.ok) {
             const minimalState: minimalState = await response.json();
-            const piecesData = minimalState.Piese;
+            const piecesData = minimalState.Pieces;
             if(minimalState.currentPGN != null )
                 moveList.addWholePGN(minimalState.currentPGN);
-            tabla.setPiecesFromServer(piecesData);
-            tabla.redesenare();
+            board.setPiecesFromServer(piecesData);
+            board.redraw();
         }
     }
     catch(e) {
@@ -97,18 +98,18 @@ async function loadBoard() {
 loadBoard();
 
 function handleFlip() {
-    tabla.getOrientare() ? tabla.setOrientare(false) : tabla.setOrientare(true);
-    tabla.redesenare(tabla.piese);
+    board.getOrientation() ? board.setOrientation(false) : board.setOrientation(true);
+    board.redraw(board.pieces);
 }
 
 async function handleReset() {
     const reset = await fetch('/api/chess/reset');
     if(reset.ok) {
         console.log("Board reseted successfully");
-        const pieseleLivrateNoi: PiesaDTO[] = await reset.json(); // Delete this after finishing the page
-        console.log(pieseleLivrateNoi);
-        tabla.setPiecesFromServer(pieseleLivrateNoi);
-        tabla.redesenare();
+        const newPieces: PieceDTO[] = await reset.json(); // Delete this after finishing the page
+        console.log(newPieces);
+        board.setPiecesFromServer(newPieces);
+        board.redraw();
         mousePractice.resetByButton(); // might overhaul this, looks weird to be here
     }
     else

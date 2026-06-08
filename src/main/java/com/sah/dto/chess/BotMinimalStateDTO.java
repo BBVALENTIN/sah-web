@@ -12,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class BotMinimalStateDTO {
-    private List<PiesaDTO> Piese;
-    private ColorType culoareCurenta;
+    private List<PieceDTO> Pieces;
+    private ColorType currentColor;
     private String currentPGN;
     private Sides botSide;
     private String currentFEN;

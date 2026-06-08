@@ -2,9 +2,9 @@ package com.sah.game;
 
 import com.sah.dto.chess.MoveDataNotationDTO;
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.NotatieRocada;
-import com.sah.game.GameEnums.Tip;
-import com.sah.game.piese.Piese;
+import com.sah.game.GameEnums.CastlingNotation;
+import com.sah.game.GameEnums.Type;
+import com.sah.game.pieces.Pieces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,16 +29,16 @@ public class MoveNotation {
     }
 
     public String formatMove(MoveDataNotationDTO dto){
-        if(dto.notatieRocada != null)
+        if(dto.castlingNotation != null)
         {
-            if(dto.notatieRocada == NotatieRocada.MARE)
+            if(dto.castlingNotation == CastlingNotation.BIG)
                 return "O-O-O";
             else
                 return "O-O";
         }
 
         char pieceChar;
-        pieceChar = Character.toUpperCase(getCharFromTip(dto.piesa.tip));
+        pieceChar = Character.toUpperCase(getCharFromTip(dto.piece.tip));
 
         char colChar = (char)('a'+dto.targetCol);
         int boardRow = 8 - dto.targetRow;
@@ -47,13 +47,13 @@ public class MoveNotation {
         int fromBoardRow = 8 - dto.fromRow;
 
         String disambiguation = "";
-        if(dto.piesa.tip != Tip.PAWN)
+        if(dto.piece.tip != Type.PAWN)
         {
-            for(Piese p: dto.oldPieces)
+            for(Pieces p: dto.oldPieces)
             {
-                if(p == dto.piesa)
+                if(p == dto.piece)
                     continue;
-                if((p.color == dto.piesa.color && dto.piesa.tip == p.tip) && p.poateAjunge(dto.targetRow, dto.targetCol))
+                if((p.color == dto.piece.color && dto.piece.tip == p.tip) && p.poateAjunge(dto.targetRow, dto.targetCol))
                 {
                     if(p.col == dto.fromCol) {
                         disambiguation = "" + fromBoardRow;
@@ -67,7 +67,7 @@ public class MoveNotation {
 
         String notation = "";
 
-        if(dto.piesa.tip == Tip.PAWN) {
+        if(dto.piece.tip == Type.PAWN) {
             if (dto.isCapture)
             {
                 notation = fromColChar+"x"+colChar+boardRow;
@@ -92,7 +92,7 @@ public class MoveNotation {
         }
         if(dto.isCheckMate)
         {
-            if(dto.culoareCurenta == ColorType.ALB)
+            if(dto.currentColor == ColorType.WHITE)
                 notation = notation + "#" + " 0-1";
             else
                 notation = notation + "#" + " 1-0";
@@ -108,13 +108,13 @@ public class MoveNotation {
             movesPlayed++;
     }
 
-    public String generateFEN(Piese[][] board, ColorType culoareCurenta, short halfMove) {
+    public String generateFEN(Pieces[][] board, ColorType culoareCurenta, short halfMove) {
         StringBuilder fen = new StringBuilder();
 
         for (int r = 0; r < 8; r++) {
             int emptySquares = 0;
             for (int c = 0; c < 8; c++) {
-                Piese piese = board[r][c];
+                Pieces piese = board[r][c];
                 if (piese == null) {
                     emptySquares++;
                 } else {
@@ -123,14 +123,14 @@ public class MoveNotation {
                         emptySquares = 0;
                     }
                     char type = getCharFromTip(piese.tip);
-                    fen.append(piese.color == ColorType.ALB ? Character.toUpperCase(type) : Character.toLowerCase(type));
+                    fen.append(piese.color == ColorType.WHITE ? Character.toUpperCase(type) : Character.toLowerCase(type));
                 }
             }
             if (emptySquares > 0) fen.append(emptySquares);
             if (r < 7) fen.append("/");
         }
 
-        String turn = culoareCurenta == ColorType.ALB ? "w" : "b";
+        String turn = culoareCurenta == ColorType.WHITE ? "w" : "b";
         String enPassant = "-";
         String castling = "KQkq";
 
@@ -141,7 +141,7 @@ public class MoveNotation {
         return currentFEN;
     }
 
-    private char getCharFromTip(Tip tip) {
+    private char getCharFromTip(Type tip) {
         return switch (tip) {
             case PAWN -> 'p';
             case KNIGHT -> 'n';

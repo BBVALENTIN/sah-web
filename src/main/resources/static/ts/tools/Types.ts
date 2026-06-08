@@ -1,23 +1,23 @@
-import {MessageType, LobbyType, Formats, culoriPiesa} from "./Enums.js";
+import {MessageType, LobbyType, Formats, Sides, SidesExplicit} from "./Enums.js";
 
-export interface PiesaDTO {
-    tip: String;
-    color: culoriPiesa;
+export interface PieceDTO {
+    Type: String;
+    color: Sides;
     row: number;
     col: number;
 }
 
 export interface Mutare_Reusita {
-    updatedPieces: PiesaDTO[];
+    updatedPieces: PieceDTO[];
     check: boolean;
     checkmate: boolean;
-    culoareCurenta: culoriPiesa;
+    currentColor: SidesExplicit;
     errorCodes: string;
     pgn: string;
     captures: boolean;
     lastMove: LastMove;
     fen: string; // FUCK JACKSON
-    pieseCapturate: PiesaDTO[];
+    capturedPieces: PieceDTO[];
 }
 
 interface LastMove {
@@ -53,7 +53,7 @@ export interface Message {
 }
 
 export interface minimalState {
-    Piese: PiesaDTO[];
-    culoareCurenta: culoriPiesa;
+    Pieces: PieceDTO[];
+    currentColor: Sides;
     currentPGN: string;
 }

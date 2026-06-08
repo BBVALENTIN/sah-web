@@ -1,14 +1,14 @@
-package com.sah.game.piese;
+package com.sah.game.pieces;
 
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Tip;
+import com.sah.game.GameEnums.Type;
 
-public class Nebun  extends Piese {
-    public Nebun(ColorType color, int row, int col, ChessBoard game)
+public class Bishop extends Pieces {
+    public Bishop(ColorType color, int row, int col, ChessBoard game)
     {
         super(color, row, col, game);
-        tip = Tip.BISHOP;
+        tip = Type.BISHOP;
     }
 
     @Override

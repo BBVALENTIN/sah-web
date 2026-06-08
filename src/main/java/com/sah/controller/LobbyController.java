@@ -61,13 +61,13 @@ public class LobbyController {
 
     @PostMapping("/api/play/create")
     @ResponseBody
-    public LobbyDTO createLobby(@RequestBody CreateLobbyRequest request) { // , @Payload lobbyDTO lobbyDTO, SimpMessageHeaderAccessor headerAccessor
+    public LobbyDTO createLobby(@RequestBody CreateLobbyRequest request) {
         return chessLobbyService.createLobby(request.getUsername());
     }
 
 
     @GetMapping("/play={lobbyId}")
-    public String showLobby(@PathVariable String lobbyId, HttpSession session, Principal principal) {
+    public String showLobby(@PathVariable String lobbyId, HttpSession session) {
         chessLobbyService.registerPlayer(session.getId(), lobbyId);
         return "game/play";
     }

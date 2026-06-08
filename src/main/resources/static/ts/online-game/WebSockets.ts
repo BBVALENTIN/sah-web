@@ -1,6 +1,6 @@
 import {lobbyInfo, Message, Mutare_Reusita} from "../tools/Types.js";
-import {culoriPiesa, MessageType, Sides} from "../tools/Enums.js";
-import {mouse, moveList, tabla} from "./Main.js";
+import {MessageType, SidesExplicit} from "../tools/Enums.js";
+import {mouse, moveList, board} from "./Main.js";
 
 declare var SockJS: any;
 declare var Stomp: any;
@@ -9,7 +9,7 @@ declare var Stomp: any;
 let loggedUsername: string = "";
 let userId: number = 0;
 let currentLobbyId: string = "";
-export let culoareCurenta: culoriPiesa = culoriPiesa.ALB;
+export let culoareCurenta: SidesExplicit = SidesExplicit.WHITE;
 let resignBtn = document.getElementById('resign-button') as HTMLButtonElement;
 
 export const state = {
@@ -127,16 +127,16 @@ function onMessageReceived(payload: any) {
 function onMoveReceived(payload: any) {
     const result: Mutare_Reusita = JSON.parse(payload.body);
     if(result.lastMove.fromRow !== undefined && result.lastMove.toRow !== undefined) {
-        tabla.setLastMove(result.lastMove.fromRow, result.lastMove.fromCol, result.lastMove.toRow, result.lastMove.toCol);
+        board.setLastMove(result.lastMove.fromRow, result.lastMove.fromCol, result.lastMove.toRow, result.lastMove.toCol);
     }
-    tabla.setPiecesFromServer(result.updatedPieces);
-    culoareCurenta = result.culoareCurenta;
+    board.setPiecesFromServer(result.updatedPieces);
+    culoareCurenta = result.currentColor;
     moveList.addMove(result.pgn);
     if(moveList.getMoveCount() < 2)
         resignBtn.innerText = 'Abort';
     else
         resignBtn.innerText = 'Resign';
-    tabla.redesenare();
+    board.redraw();
 
     if (result.checkmate) {
         mouse.soundManager.play("checkmate");
@@ -153,9 +153,9 @@ function onMoveReceived(payload: any) {
 
 function onErrorsReceived(payload: any) {
     const errorCodes = JSON.parse(payload.body);
-    tabla.redesenare();
+    board.redraw();
 }
 
-export function setCuloareCurenta(culoare: culoriPiesa) {
+export function setCuloareCurenta(culoare: SidesExplicit) {
     culoareCurenta = culoare;
 }

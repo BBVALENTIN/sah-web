@@ -1,7 +1,7 @@
 package com.sah.game.GameEnums;
 
 public enum ErrorCodes {
-    PIESA_NEDETECTATA,
-    RAND_GRESIT,
-    MUTARE_ILEGALA,
+    UNDETECTED_PIECE,
+    WRONG_ROW,
+    ILLEGAL_MOVE,
 }

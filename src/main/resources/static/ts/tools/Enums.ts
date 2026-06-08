@@ -7,12 +7,6 @@ export enum TipPiesa {
     KING = 'KING'
 }
 
-export enum culoriPiesa {
-    ALB = "ALB",
-    NEGRU = "NEGRU",
-    OVER = "OVER"
-}
-
 export enum MessageType {
     CHAT = 'CHAT',
     JOIN = 'JOIN',

@@ -1,8 +1,8 @@
-import {Tabla} from "./Tabla.js"
+import {Board} from "./Board.js"
 import {MoveList} from "./MoveList.js"
 
 export interface AppCore {
-    tabla: Tabla,
+    board: Board,
     moveList: MoveList,
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D
@@ -12,20 +12,20 @@ export function initCanvas(canvasId: string, moveListId: string): AppCore {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     const ctx = canvas.getContext('2d')!;
 
-    const size = Tabla.squareSize * 8;
+    const size = Board.squareSize * 8;
     canvas.width = size;
     canvas.height = size;
 
-    const tabla = new Tabla(ctx);
+    const board = new Board(ctx);
     const moveList = new MoveList(moveListId);
 
-    return { tabla, moveList, canvas, ctx };
+    return { board, moveList, canvas, ctx };
 }
 
-export async function initTabla(tabla: Tabla, isBlack = false): Promise<void> {
-    await tabla.loadImages();
-    tabla.setOrientare(isBlack);
-    tabla.redesenare();
+export async function initBoard(board: Board, isBlack = false): Promise<void> {
+    await board.loadImages();
+    board.setOrientation(isBlack);
+    board.redraw();
 }
 
 export async function getLoggedUsername(): Promise<string> {

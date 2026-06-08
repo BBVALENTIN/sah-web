@@ -1,14 +1,14 @@
-package com.sah.game.piese;
+package com.sah.game.pieces;
 
 import com.sah.dto.chess.LastMove;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Tip;
+import com.sah.game.GameEnums.Type;
 
-public class Pion extends Piese {
-    public Pion(ColorType color, int row, int col, ChessBoard game) {
+public class Pawn extends Pieces {
+    public Pawn(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
-        tip = Tip.PAWN;
+        tip = Type.PAWN;
     }
 
     @Override
@@ -16,7 +16,7 @@ public class Pion extends Piese {
     {
         int directie;
         LastMove lastMove = game.getLastMove();
-        if(color == ColorType.ALB)
+        if(color == ColorType.WHITE)
             directie = -1;
         else
             directie = 1;

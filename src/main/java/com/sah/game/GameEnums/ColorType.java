@@ -1,7 +1,7 @@
 package com.sah.game.GameEnums;
 
 public enum ColorType {
-    ALB, NEGRU, OVER;
+    WHITE, BLACK, OVER;
 }
 
 // to implement this in the future

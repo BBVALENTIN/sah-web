@@ -84,15 +84,15 @@ public class BotGameService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Nu poti muta piesele botului!");
         }
 
-        return board.faMiscare(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
+        return board.makeMove(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
     }
 
     private ColorType SideToColorConversion(Sides side)
     {
         if(side == Sides.WHITE)
-            return ColorType.ALB;
+            return ColorType.WHITE;
         else
-            return ColorType.NEGRU;
+            return ColorType.BLACK;
     }
 
     public void saveGame(String gameId, boolean resignation, String playerName) {

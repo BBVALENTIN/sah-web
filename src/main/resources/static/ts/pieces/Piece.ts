@@ -1,9 +1,9 @@
-import {Tabla} from "../tools/Tabla.js";
-import {culoriPiesa, TipPiesa} from "../tools/Enums.js";
+import {Board} from "../tools/Board.js";
+import { SidesExplicit, TipPiesa} from "../tools/Enums.js";
 
-export class Piesa {
+export class Piece {
     readonly tip: TipPiesa | undefined;
-    color: culoriPiesa;
+    color: SidesExplicit;
     row:number;
     col: number;
     x: number = 0;
@@ -12,33 +12,34 @@ export class Piesa {
     dragX?: number;
     dragY?: number;
     img?: HTMLImageElement
-    constructor(color: culoriPiesa, row: number, col: number) {
+
+    constructor(color: SidesExplicit, row: number, col: number) {
         this.color = color
         this.row = row;
         this.col = col;
     }
 
-    desen(ctx: CanvasRenderingContext2D): void {
+    draw(ctx: CanvasRenderingContext2D): void {
         if(!this.img || !this.img.complete) return;
 
-        let xPixeli = this.col * Tabla.squareSize;
-        let yPixeli = this.row * Tabla.squareSize;
+        let xPixeli = this.col * Board.squareSize;
+        let yPixeli = this.row * Board.squareSize;
 
         if (this.isDragging && this.dragX !== undefined && this.dragY !== undefined) {
             xPixeli = this.dragX;
             yPixeli = this.dragY;
         }
 
-        ctx.drawImage(this.img, xPixeli, yPixeli, Tabla.squareSize, Tabla.squareSize);
+        ctx.drawImage(this.img, xPixeli, yPixeli, Board.squareSize, Board.squareSize);
     }
 
     getX(col: number): number
     {
-        return col*Tabla.squareSize;
+        return col*Board.squareSize;
     }
 
     getY(row: number): number
     {
-        return row*Tabla.squareSize
+        return row*Board.squareSize
     }
 }

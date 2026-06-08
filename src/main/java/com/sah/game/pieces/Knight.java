@@ -1,14 +1,14 @@
-package com.sah.game.piese;
+package com.sah.game.pieces;
 
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Tip;
+import com.sah.game.GameEnums.Type;
 
-public class Cal extends Piese {
-    public Cal(ColorType color, int row, int col, ChessBoard game)
+public class Knight extends Pieces {
+    public Knight(ColorType color, int row, int col, ChessBoard game)
     {
         super(color, row, col, game);
-        tip = Tip.KNIGHT;
+        tip = Type.KNIGHT;
     }
 
     @Override

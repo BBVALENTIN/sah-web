@@ -1,22 +1,20 @@
-package com.sah.game.piese;
+package com.sah.game.pieces;
 
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Tip;
+import com.sah.game.GameEnums.Type;
 
-import java.awt.*;
-
-public class Piese {
+public class Pieces {
     public int x, y;
     public int col, row, precol, prerow;
     public ColorType color;
     public boolean miscata;
-    public Piese lovestePiese;
+    public Pieces lovestePiese;
     public String img;
-    public Tip tip;
+    public Type tip;
     protected ChessBoard game;
 
-    public Piese(ColorType color, int row, int col, ChessBoard game)
+    public Pieces(ColorType color, int row, int col, ChessBoard game)
     {
         this.color = color;
         this.col = col;
@@ -33,8 +31,9 @@ public class Piese {
         this.col = col;
         this.miscata = true;
     }
-    public Piese getLovesteP(int targetRow, int targetCol) {
-        Piese lovestePiese = game.board[targetRow][targetCol];
+
+    public Pieces getLovesteP(int targetRow, int targetCol) {
+        Pieces lovestePiese = game.board[targetRow][targetCol];
         if (lovestePiese != null && lovestePiese != this) {
             return lovestePiese;
         }
@@ -56,7 +55,7 @@ public class Piese {
             int start = Math.min(this.col, targetCol) + 1;
             int end = Math.max(this.col, targetCol);
             for (int c = start; c < end; c++) {
-                Piese piesa = game.board[this.row][c];
+                Pieces piesa = game.board[this.row][c];
                 if (piesa != null) {
                     lovestePiese = piesa;
                     return true;
@@ -68,7 +67,7 @@ public class Piese {
             int start = Math.min(this.row, targetRow) + 1;
             int end = Math.max(this.row, targetRow);
             for (int r = start; r < end; r++) {
-                Piese piesa = game.board[r][this.col];
+                Pieces piesa = game.board[r][this.col];
                 if (piesa != null) {
                     lovestePiese = piesa;
                     return true;
@@ -163,7 +162,7 @@ public class Piese {
 
 
     public String getColorAsString() {
-        if (this.color == ColorType.ALB) return "alb";
+        if (this.color == ColorType.WHITE) return "alb";
         else return "negru";
     }
 }

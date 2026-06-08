@@ -46,7 +46,7 @@ public class GameService {
     public boolean isValidMoveForPlayer(String lobbyId, String username, ColorType culoarePiesa) {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
 
-        if(culoarePiesa == ColorType.ALB) {
+        if(culoarePiesa == ColorType.WHITE) {
             return username.equals(lobby.getPlayerWhite());
         }
         else {

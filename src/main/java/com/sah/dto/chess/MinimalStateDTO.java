@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class MinimalStateDTO {
-    public List<PiesaDTO> Piese;
-    public ColorType culoareCurenta; // de facut enum pentru culoare
+    public List<PieceDTO> Pieces;
+    public ColorType currentColor;
     public String currentPGN;
 }

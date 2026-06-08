@@ -1,6 +1,6 @@
-    import { Tabla } from "../tools/Tabla.js";
+    import { Board } from "../tools/Board.js";
     import { SoundManager } from "../audio/soundManager.js";
-    import { Piesa } from "../piese/Piesa.js";
+    import { Piece } from "../pieces/Piece.js";
     import {lobbyInfo} from "../tools/Types.js";
     import {state, culoareCurenta} from "./WebSockets.js";
     import {loggedUsername, getInfoLobby} from "../misc/APIs.js";
@@ -8,16 +8,16 @@
 
     export class Mouse {
         canvas: HTMLCanvasElement;
-        tabla: Tabla;
-        piesaSelectata: Piesa | undefined;
+        board: Board;
+        piesaSelectata: Piece | undefined;
         soundManager: SoundManager = new SoundManager();
         offsetX: number;
         offsetY: number;
         winner: 1 | 0 | -1 | undefined;
         lobbyInfo: lobbyInfo | undefined;
-        constructor(canvas: HTMLCanvasElement, tabla: Tabla) {
+        constructor(canvas: HTMLCanvasElement, board: Board) {
             this.canvas = canvas;
-            this.tabla = tabla;
+            this.board = board;
             this.piesaSelectata = undefined;
             this.offsetX = 0;
             this.offsetY = 0;
@@ -37,10 +37,10 @@
             const x: number = e.clientX - rect.left;
             const y: number = e.clientY - rect.top;
 
-            let col: number = Math.floor(x / Tabla.squareSize);
-            let row: number = Math.floor(y / Tabla.squareSize);
+            let col: number = Math.floor(x / Board.squareSize);
+            let row: number = Math.floor(y / Board.squareSize);
 
-            if(this.tabla.isBlack) {
+            if(this.board.isBlack) {
                 col = 7 - col;
                 row = 7 - row;
             }
@@ -49,23 +49,23 @@
 
         public onMouseDown(e:any):void {
             const { col, row, x, y} = this.getSquareFromMouse(e);
-            const piesa = this.tabla.getPiesa(row, col);
+            const piesa = this.board.getPiece(row, col);
             if (piesa && piesa.color === culoareCurenta) {
                 this.piesaSelectata = piesa;
                 this.piesaSelectata.isDragging = true;
 
-                const vizualCol = this.tabla.isBlack ? 7 - piesa.col : piesa.col;
-                const vizualRow = this.tabla.isBlack ? 7 - piesa.row : piesa.row;
+                const vizualCol = this.board.isBlack ? 7 - piesa.col : piesa.col;
+                const vizualRow = this.board.isBlack ? 7 - piesa.row : piesa.row;
 
-                this.offsetX = x - vizualCol * Tabla.squareSize;
-                this.offsetY = y - vizualRow * Tabla.squareSize;
+                this.offsetX = x - vizualCol * Board.squareSize;
+                this.offsetY = y - vizualRow * Board.squareSize;
 
-                this.tabla.redesenare(this.tabla.piese.filter(p => p !== piesa));
+                this.board.redraw(this.board.pieces.filter(p => p !== piesa));
             }
         }
         public async MouseMove(e:any):Promise<void> {
             const { col, row, x, y} = this.getSquareFromMouse(e);
-            const piesa = this.tabla.getPiesa(row, col);
+            const piesa = this.board.getPiece(row, col);
             if(piesa && piesa.color == culoareCurenta)
                 this.canvas.style.cursor = "grab";
             else
@@ -76,7 +76,7 @@
             this.piesaSelectata.dragX = x - this.offsetX;
             this.piesaSelectata.dragY = y - this.offsetY;
 
-            this.tabla.redesenare(this.tabla.piese, this.piesaSelectata);
+            this.board.redraw(this.board.pieces, this.piesaSelectata);
         }
         public async onMouseUp(e: any): Promise<void> {
             if(!this.piesaSelectata) { return; }
@@ -87,7 +87,7 @@
                 return;
             }
 
-            this.tabla.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
+            this.board.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
 
             try {
                 state.stompClient.send(
@@ -106,7 +106,7 @@
                 console.log("eroare cine stie de ce");
             } finally {
                 if(this.piesaSelectata) {
-                    this.tabla.redesenare(this.tabla.piese);
+                    this.board.redraw(this.board.pieces);
                     this.piesaSelectata.isDragging = false;
                     this.piesaSelectata.dragX = undefined;
                     this.piesaSelectata.dragY = undefined;

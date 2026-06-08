@@ -24,7 +24,6 @@ public class GlobalModelAdvice {
 
         String uri = request.getRequestURI();
 
-        // EXCLUDE pagini
         if (uri.startsWith("/login") ||
                 uri.startsWith("/register") ||
                 uri.startsWith("/public") ||

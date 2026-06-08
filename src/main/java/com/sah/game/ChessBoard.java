@@ -2,34 +2,33 @@ package com.sah.game;
 
 import com.sah.dto.chess.MoveDataNotationDTO;
 import com.sah.dto.responses.MoveResultDTO;
-import com.sah.dto.chess.PiesaDTO;
+import com.sah.dto.chess.PieceDTO;
 import com.sah.dto.chess.LastMove;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
-import com.sah.game.GameEnums.NotatieRocada;
-import com.sah.game.GameEnums.Tip;
-import com.sah.game.piese.*;
+import com.sah.game.GameEnums.CastlingNotation;
+import com.sah.game.GameEnums.Type;
+import com.sah.game.pieces.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-// daca e o mutare duplicata nu se mai insereaza anotatia
 @Service
 public class ChessBoard {
-    public Piese[][] board = new Piese[8][8];
-    public Piese rocada;
-    public Piese sahP, piesaSelectata, piesaCapturata;
-    public List<Piese> pieseList = new ArrayList<>();
+    public Pieces[][] board = new Pieces[8][8];
+    public Pieces castling;
+    public Pieces checkingPiece, selectedPiece, capturedPiece;
+    public List<Pieces> piecesList = new ArrayList<>();
     public short movesPlayed, halfMove;
     public boolean promoted, isCheckMate, resignation, canCastle;
     private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
     private Sides winner;
-    private List<Piese> pieseCapturate = new ArrayList<>();
+    private List<Pieces> capturedPieces = new ArrayList<>();
 
-    public ColorType culoareCurenta = ColorType.ALB;
+    public ColorType currentColor = ColorType.WHITE;
 
 
     public ChessBoard() {
@@ -37,34 +36,34 @@ public class ChessBoard {
     }
 
     public void initializeBoard() {
-        this.board = new Piese[8][8];
+        this.board = new Pieces[8][8];
 
         for (int i = 0; i < 8; i++) {
-            board[1][i] = new Pion(ColorType.NEGRU, 1, i, this);
+            board[1][i] = new Pawn(ColorType.BLACK, 1, i, this);
         }
-        board[0][0] = new Tura(ColorType.NEGRU, 0, 0, this);
-        board[0][7] = new Tura(ColorType.NEGRU, 0, 7, this);
-        board[0][1] = new Cal(ColorType.NEGRU, 0, 1, this);
-        board[0][6] = new Cal(ColorType.NEGRU, 0, 6, this);
-        board[0][2] = new Nebun(ColorType.NEGRU, 0, 2, this);
-        board[0][5] = new Nebun(ColorType.NEGRU, 0, 5, this);
-        board[0][3] = new Regina(ColorType.NEGRU, 0, 3, this);
-        board[0][4] = new Rege(ColorType.NEGRU, 0, 4, this);
+        board[0][0] = new Rook(ColorType.BLACK, 0, 0, this);
+        board[0][7] = new Rook(ColorType.BLACK, 0, 7, this);
+        board[0][1] = new Knight(ColorType.BLACK, 0, 1, this);
+        board[0][6] = new Knight(ColorType.BLACK, 0, 6, this);
+        board[0][2] = new Bishop(ColorType.BLACK, 0, 2, this);
+        board[0][5] = new Bishop(ColorType.BLACK, 0, 5, this);
+        board[0][3] = new Queen(ColorType.BLACK, 0, 3, this);
+        board[0][4] = new King(ColorType.BLACK, 0, 4, this);
 
         for (int i = 0; i < 8; i++) {
-            board[6][i] = new Pion(ColorType.ALB, 6, i, this);
+            board[6][i] = new Pawn(ColorType.WHITE, 6, i, this);
         }
-        board[7][7] = new Tura(ColorType.ALB, 7, 7, this);
-        board[7][0] = new Tura(ColorType.ALB, 7, 0, this);
-        board[7][1] = new Cal(ColorType.ALB, 7, 1, this);
-        board[7][6] = new Cal(ColorType.ALB, 7, 6, this);
-        board[7][5] = new Nebun(ColorType.ALB, 7, 5, this);
-        board[7][2] = new Nebun(ColorType.ALB, 7, 2, this);
-        board[7][3] = new Regina(ColorType.ALB, 7, 3, this);
-        board[7][4] = new Rege(ColorType.ALB, 7, 4, this);
+        board[7][7] = new Rook(ColorType.WHITE, 7, 7, this);
+        board[7][0] = new Rook(ColorType.WHITE, 7, 0, this);
+        board[7][1] = new Knight(ColorType.WHITE, 7, 1, this);
+        board[7][6] = new Knight(ColorType.WHITE, 7, 6, this);
+        board[7][5] = new Bishop(ColorType.WHITE, 7, 5, this);
+        board[7][2] = new Bishop(ColorType.WHITE, 7, 2, this);
+        board[7][3] = new Queen(ColorType.WHITE, 7, 3, this);
+        board[7][4] = new King(ColorType.WHITE, 7, 4, this);
 
-        this.pieseList = getAllPieces();
-        this.culoareCurenta = ColorType.ALB;
+        this.piecesList = getAllPieces();
+        this.currentColor = ColorType.WHITE;
         this.isCheckMate = false;
         this.promoted = false;
         this.winner = null;
@@ -72,154 +71,154 @@ public class ChessBoard {
         this.moveNotation = new MoveNotation();
     }
 
-    public synchronized MoveResultDTO faMiscare(int fromRow, int fromCol, int targetRow, int targetCol) {
-        piesaSelectata = board[fromRow][fromCol];
-        if (piesaSelectata == null) { // piesa inexistenta
-            return new MoveResultDTO(ErrorCodes.PIESA_NEDETECTATA);
+    public synchronized MoveResultDTO makeMove(int fromRow, int fromCol, int targetRow, int targetCol) {
+        selectedPiece = board[fromRow][fromCol];
+        if (selectedPiece == null) { // piece inexistenta
+            return new MoveResultDTO(ErrorCodes.UNDETECTED_PIECE);
         }
 
-        if (piesaSelectata.color != culoareCurenta) { // NU MUTA PIESA DE CULOAREA ASTA!
-            return new MoveResultDTO(ErrorCodes.RAND_GRESIT);
+        if (selectedPiece.color != currentColor) { // NU MUTA piece DE CULOAREA ASTA!
+            return new MoveResultDTO(ErrorCodes.WRONG_ROW);
         }
         boolean enPassant = false;
-        if(piesaSelectata.tip == Tip.PAWN && this.lastMove != null) {
+        if(selectedPiece.tip == Type.PAWN && this.lastMove != null) {
 
-            if(isEnPassant(piesaSelectata, fromRow, fromCol, targetRow, targetCol) && canEnPassant(this.lastMove, piesaSelectata, targetRow, targetCol)) {
-                applyEnPassant(piesaSelectata, targetRow, targetCol);
+            if(isEnPassant(selectedPiece, fromRow, fromCol, targetRow, targetCol) && canEnPassant(this.lastMove, selectedPiece, targetRow, targetCol)) {
+                applyEnPassant(selectedPiece, targetRow, targetCol);
                 enPassant = true;
             }
         }
-        if (!piesaSelectata.miscare(targetRow, targetCol) && enPassant == false) { // mutare ilegala
-            return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
+        if (!selectedPiece.miscare(targetRow, targetCol) && enPassant == false) { // mutare ilegala
+            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
         }
-        NotatieRocada rocadaNotatie = null;
+        CastlingNotation rocadaNotatie = null;
 
-        if (rocada != null && canCastle == true) {
-            Piese rocadaCopy = rocada;
-            makeRocada(rocada);
+        if (castling != null && canCastle == true) {
+            Pieces rocadaCopy = castling;
+            makeRocada(castling);
             rocadaNotatie = getRocadaType(rocadaCopy);
-        } else if(rocada != null && canCastle == false)
+        } else if(castling != null && canCastle == false)
         {
-            return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA); // nu poti face rocada in sah
+            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE); // nu poti face castling in sah
         }
 
-        piesaCapturata = getPiesaCapturata(targetRow, targetCol);
+        capturedPiece = getPiesaCapturata(targetRow, targetCol);
         boolean isCapture = false;
-        if(piesaCapturata != null) {
+        if(capturedPiece != null) {
             isCapture = true;
-            pieseCapturate.add(piesaCapturata);
+            capturedPieces.add(capturedPiece);
         }
 
-        List<Piese> oldList = new ArrayList<>(pieseList);
+        List<Pieces> oldList = new ArrayList<>(piecesList);
 
 
-        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, piesaSelectata); // de testat cazul in car esteRegeleMeuInSah true
+        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, selectedPiece); // de testat cazul in car esteRegeleMeuInSah true
 
-        if(piesaSelectata.tip == Tip.PAWN)
+        if(selectedPiece.tip == Type.PAWN)
         {
-            checkPromotion(piesaSelectata, targetRow, targetCol);
+            checkPromotion(selectedPiece, targetRow, targetCol);
         }
         getAllPieces();
 
         if(esteRegeleMeuInSah())
         {
-            rollBack(targetRow, targetCol, fromRow, fromCol, piesaSelectata);
-            return new MoveResultDTO(ErrorCodes.MUTARE_ILEGALA);
+            rollBack(targetRow, targetCol, fromRow, fromCol, selectedPiece);
+            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
         }
-        lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol, toDTO(piesaSelectata, targetRow, targetCol));
+        lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol, toDTO(selectedPiece, targetRow, targetCol));
         switchTurn();
 
-        Piese regeAdvers = getRege(false);
+        Pieces regeAdvers = getRege(false);
 
         boolean isCheck = esteRegeInSah(regeAdvers);
 
         if (isCheck) {
             isCheckMate = esteSahMat(regeAdvers);
         }
-        increaseHalfMove(piesaSelectata, isCapture);
-        MoveDataNotationDTO dto = new MoveDataNotationDTO(piesaSelectata, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, culoareCurenta, rocadaNotatie, oldList);
+        increaseHalfMove(selectedPiece, isCapture);
+        MoveDataNotationDTO dto = new MoveDataNotationDTO(selectedPiece, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, currentColor, rocadaNotatie, oldList);
         String currentFormattedMove = moveNotation.formatMove(dto);
-        String currentFEN = moveNotation.generateFEN(board, culoareCurenta, halfMove);
+        String currentFEN = moveNotation.generateFEN(board, currentColor, halfMove);
 
         promoted = false;
         if(isCheckMate) {
-            winner = (culoareCurenta == ColorType.ALB) ? Sides.BLACK : Sides.WHITE;
-            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove, currentFEN, convertToPiecesDTO(pieseCapturate));
+            winner = (currentColor == ColorType.WHITE) ? Sides.BLACK : Sides.WHITE;
+            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove, currentFEN, convertToPiecesDTO(capturedPieces));
         }
 
         return new MoveResultDTO(
                 getAllPiecesDTO(),
                 isCheck,
                 isCheckMate,
-                culoareCurenta,
+                currentColor,
                 currentFormattedMove,
                 isCapture,
                 lastMove,
                 currentFEN,
-                convertToPiecesDTO(pieseCapturate)
+                convertToPiecesDTO(capturedPieces)
         );
     }
 
-    public synchronized List<Piese> getAllPieces() {
-        pieseList.clear();
+    public synchronized List<Pieces> getAllPieces() {
+        piecesList.clear();
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] != null) {
-                    pieseList.add(board[row][col]);
+                    piecesList.add(board[row][col]);
                 }
             }
         }
-        return pieseList;
+        return piecesList;
     }
 
-    private boolean isEnPassant(Piese pawn, int fromRow, int fromCol, int targetRow, int targetCol) {
-        if(pawn.tip != Tip.PAWN) return false;
+    private boolean isEnPassant(Pieces pawn, int fromRow, int fromCol, int targetRow, int targetCol) {
+        if(pawn.tip != Type.PAWN) return false;
 
-        int dir = (pawn.color == ColorType.ALB) ? -1 : 1;
+        int dir = (pawn.color == ColorType.WHITE) ? -1 : 1;
 
         return Math.abs(fromCol-targetCol) == 1 && targetRow == fromRow + dir;
     }
 
-    private boolean canEnPassant(LastMove lastMove, Piese pawn, int targetRow, int targetCol) {
-        if(lastMove == null || lastMove.getLastPiece().getTip() != Tip.PAWN) return false;
+    private boolean canEnPassant(LastMove lastMove, Pieces pawn, int targetRow, int targetCol) {
+        if(lastMove == null || lastMove.getLastPiece().getType() != Type.PAWN) return false;
 
         boolean movedTwoSquares = Math.abs(lastMove.getFromRow() - lastMove.getToRow()) == 2;
 
         return movedTwoSquares && lastMove.getToRow() == pawn.row && lastMove.getToCol() == targetCol;
     }
 
-    private void applyEnPassant(Piese pawn, int targetRow, int targetCol) {
-        int dir = (pawn.color == ColorType.ALB) ? 1 : -1;
+    private void applyEnPassant(Pieces pawn, int targetRow, int targetCol) {
+        int dir = (pawn.color == ColorType.WHITE) ? 1 : -1;
 
-        Piese capturedPawn = board[targetRow + dir][targetCol];
+        Pieces capturedPawn = board[targetRow + dir][targetCol];
 
-        if(capturedPawn != null && capturedPawn.tip == Tip.PAWN) {
+        if(capturedPawn != null && capturedPawn.tip == Type.PAWN) {
             board[targetRow+dir][targetCol] = null;
-            pieseCapturate.add(capturedPawn);
+            capturedPieces.add(capturedPawn);
         }
     }
 
-    private void makeRocada(Piese rocada) {
-        int rookOldRow = rocada.row;
-        int rookOldCol = rocada.col;
-        int rookNewCol = (rocada.col == 7) ? 5 : 3;
+    private void makeRocada(Pieces castling) {
+        int rookOldRow = castling.row;
+        int rookOldCol = castling.col;
+        int rookNewCol = (castling.col == 7) ? 5 : 3;
 
-        board[rookOldRow][rookNewCol] = rocada;
+        board[rookOldRow][rookNewCol] = castling;
         board[rookOldRow][rookOldCol] = null;
-        rocada.setPosition(rookOldRow, rookNewCol);
+        castling.setPosition(rookOldRow, rookNewCol);
 
-        this.rocada = null;
+        this.castling = null;
     }
 
-    private NotatieRocada getRocadaType(Piese rocada) {
-        if(rocada.col == 7)
-            return NotatieRocada.MARE;
+    private CastlingNotation getRocadaType(Pieces castling) {
+        if(castling.col == 7)
+            return CastlingNotation.BIG;
         else
-            return NotatieRocada.MICA;
+            return CastlingNotation.SMALL;
     }
 
-    private void increaseHalfMove(Piese piesaSelectata, boolean isCapture) {
-        if(piesaSelectata.tip == Tip.PAWN || isCapture) {
+    private void increaseHalfMove(Pieces selectedPiece, boolean isCapture) {
+        if(selectedPiece.tip == Type.PAWN || isCapture) {
             halfMove = 0;
         }
         else {
@@ -227,50 +226,50 @@ public class ChessBoard {
         }
     }
 
-    private void mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Piese piesaSelectata)
+    private void mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Pieces selectedPiece)
     {
         board[fromRow][fromCol] = null;
-        board[targetRow][targetCol] = piesaSelectata;
+        board[targetRow][targetCol] = selectedPiece;
 
-        piesaSelectata.setPosition(targetRow, targetCol);
+        selectedPiece.setPosition(targetRow, targetCol);
     }
 
-    private void rollBack(int targetRow, int targetCol, int fromRow, int fromCol, Piese piesaSelectata) {
-        board[fromRow][fromCol] = piesaSelectata;
-        if(piesaCapturata == null) {
+    private void rollBack(int targetRow, int targetCol, int fromRow, int fromCol, Pieces selectedPiece) {
+        board[fromRow][fromCol] = selectedPiece;
+        if(capturedPiece == null) {
             board[targetRow][targetCol] = null;
         }
         else {
-            board[targetRow][targetCol] = piesaCapturata;
+            board[targetRow][targetCol] = capturedPiece;
         }
-        piesaSelectata.setPosition(fromRow, fromCol);
+        selectedPiece.setPosition(fromRow, fromCol);
     }
 
 
-    public Piese getPiesaCapturata(int targetRow, int targetCol) {
+    public Pieces getPiesaCapturata(int targetRow, int targetCol) {
         return board[targetRow][targetCol];
     }
 
     private void switchTurn() {
-        if(culoareCurenta == ColorType.ALB)
-            culoareCurenta = ColorType.NEGRU;
+        if(currentColor == ColorType.WHITE)
+            currentColor = ColorType.BLACK;
         else
-            culoareCurenta = ColorType.ALB;
+            currentColor = ColorType.WHITE;
         movesPlayed++;
     }
 
     public ColorType getCuloareCurenta() {
-        return culoareCurenta;
+        return currentColor;
     }
 
 
-    public Piese getRege(boolean opponent) {
-        for (Piese piesa : pieseList) {
-            if (piesa.tip == Tip.KING) {
-                if (opponent && piesa.color != culoareCurenta)
-                    return piesa;
-                if (!opponent && piesa.color == culoareCurenta)
-                    return piesa;
+    public Pieces getRege(boolean opponent) {
+        for (Pieces piece : piecesList) {
+            if (piece.tip == Type.KING) {
+                if (opponent && piece.color != currentColor)
+                    return piece;
+                if (!opponent && piece.color == currentColor)
+                    return piece;
             }
         }
         return null;
@@ -278,25 +277,25 @@ public class ChessBoard {
 
 
     private boolean esteRegeleMeuInSah() {
-        Piese rege = getRege(false);
+        Pieces rege = getRege(false);
         return rege != null && esteRegeInSah(rege);
     }
 
-    public boolean esteRegeInSah(Piese rege) {
-        for (Piese piesa : pieseList) {
-            if (piesa.color != rege.color) {
-                if (piesa.miscare(rege.row, rege.col)) {
-                    sahP = piesa;
+    public boolean esteRegeInSah(Pieces rege) {
+        for (Pieces piece : piecesList) {
+            if (piece.color != rege.color) {
+                if (piece.miscare(rege.row, rege.col)) {
+                    checkingPiece = piece;
                     return true;
                 }
             }
         }
-        sahP = null;
+        checkingPiece = null;
         return false;
     }
 
-    public static PiesaDTO toDTO(Piese p, int r, int c) {
-        return new PiesaDTO(
+    public static PieceDTO toDTO(Pieces p, int r, int c) {
+        return new PieceDTO(
                 p.tip,
                 p.color,
                 r,
@@ -304,15 +303,15 @@ public class ChessBoard {
         );
     }
 
-    public Piese[][] getBoard() {
+    public Pieces[][] getBoard() {
         return board;
     }
 
-    public List<PiesaDTO> getAllPiecesDTO() {
-        List<PiesaDTO> dto = new ArrayList<>();
+    public List<PieceDTO> getAllPiecesDTO() {
+        List<PieceDTO> dto = new ArrayList<>();
         for(int r = 0; r < 8; r++) {
             for(int c = 0; c < 8; c++) {
-                Piese p = board[r][c];
+                Pieces p = board[r][c];
                 if(p != null) {
                     dto.add(toDTO(p, r, c));
                 }
@@ -321,18 +320,18 @@ public class ChessBoard {
         return dto;
     }
 
-    private List<PiesaDTO> convertToPiecesDTO(List<Piese> list) {
-        List<PiesaDTO> dto = new ArrayList<>();
+    private List<PieceDTO> convertToPiecesDTO(List<Pieces> list) {
+        List<PieceDTO> dto = new ArrayList<>();
         if(list == null) {
             return dto;
         }
-        for(Piese p : list) {
+        for(Pieces p : list) {
             dto.add(toDTO(p, p.row, p.col));
         }
         return dto;
     }
 
-    private boolean esteSahMat(Piese rege)
+    private boolean esteSahMat(Pieces rege)
     {
         if(!esteRegeInSah(rege))
             return false;
@@ -343,7 +342,7 @@ public class ChessBoard {
         return true;
     }
 
-    private boolean miscareRege(Piese rege){
+    private boolean miscareRege(Pieces rege){
         if(isValidMoveRege(rege, -1, -1)) return true;
         if(isValidMoveRege(rege, -1, -0)) return true;
         if(isValidMoveRege(rege, -1, 1)) return true;
@@ -355,14 +354,14 @@ public class ChessBoard {
 
         return false;
     }
-    private boolean isValidMoveRege(Piese rege, int rowSafe, int colSafe)
+    private boolean isValidMoveRege(Pieces rege, int rowSafe, int colSafe)
     {
         int newRow = rege.row + rowSafe;
         int newCol = rege.col + colSafe;
 
         if(!rege.peTabla(newRow, newCol)) return false;
 
-        Piese lovita = board[newRow][newCol];
+        Pieces lovita = board[newRow][newCol];
 
         if(lovita != null && lovita.color == rege.color)
             return false;
@@ -386,36 +385,36 @@ public class ChessBoard {
         return !inSah;
     }
 
-    private boolean canSaveRege(Piese rege)
+    private boolean canSaveRege(Pieces rege)
     {
-        for(Piese piesa : pieseList) {
-            if (piesa.color != rege.color)
+        for(Pieces piece : piecesList) {
+            if (piece.color != rege.color)
                 continue; // salvam piesele de aceeasi culoare cu regele nostru
 
-            if(piesa.tip == Tip.KING)
+            if(piece.tip == Type.KING)
                 continue;
 
             for(int r = 0; r < 8; r++)
                 for(int c = 0; c < 8; c++)
                 {
-                    if(!piesa.miscare(r, c))
+                    if(!piece.miscare(r, c))
                         continue;
 
-                    Piese lovita = board[r][c];
+                    Pieces lovita = board[r][c];
 
-                    board[piesa.row][piesa.col] = null;
-                    board[r][c] = piesa;
+                    board[piece.row][piece.col] = null;
+                    board[r][c] = piece;
 
-                    int oldRow = piesa.row;
-                    int oldCol = piesa.col;
-                    piesa.row = r;
-                    piesa.col = c;
+                    int oldRow = piece.row;
+                    int oldCol = piece.col;
+                    piece.row = r;
+                    piece.col = c;
 
                     boolean inSah = esteRegeInSah(rege);
 
-                    piesa.row = oldRow;
-                    piesa.col = oldCol;
-                    board[oldRow][oldCol] = piesa;
+                    piece.row = oldRow;
+                    piece.col = oldCol;
+                    board[oldRow][oldCol] = piece;
                     board[r][c] = lovita;
 
                     if (!inSah)
@@ -426,15 +425,15 @@ public class ChessBoard {
         return false;
     }
 
-    private void checkPromotion(Piese piesa, int row, int col)
+    private void checkPromotion(Pieces piece, int row, int col)
     {
         promoted = false;
-        if(row == 7 && piesa.color == ColorType.NEGRU && piesa.tip == Tip.PAWN) {
-            board[row][col] = new Regina(piesa.color, row, col, this);
+        if(row == 7 && piece.color == ColorType.BLACK && piece.tip == Type.PAWN) {
+            board[row][col] = new Queen(piece.color, row, col, this);
             promoted = true;
         }
-        else if (row == 0 && piesa.color == ColorType.ALB) {
-            board[row][col] = new Regina(piesa.color, row, col, this);
+        else if (row == 0 && piece.color == ColorType.WHITE) {
+            board[row][col] = new Queen(piece.color, row, col, this);
             promoted = true;
         }
     }

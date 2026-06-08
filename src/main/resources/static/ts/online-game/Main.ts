@@ -1,4 +1,4 @@
-import {Tabla} from '../tools/Tabla.js';
+import {Board} from '../tools/Board.js';
 import {Mouse} from "./Mouse.js";
 import {MoveList} from "../tools/MoveList.js";
 import {connect, culoareCurenta, sendMessage, setCuloareCurenta, state} from "./WebSockets.js"
@@ -23,7 +23,7 @@ try{
 catch (e) {
     console.log(e);
 }
-// LOGICA FRONTEND MESAJE
+
 async function initializeApp() {
     try {
         const lobbyInfo = await getInfoLobby();
@@ -41,9 +41,9 @@ async function initializeApp() {
             }
             const lobbyId: string = lobbyInfo.lobbyId;
             const isBlack = (lobbyInfo.playerBlack === loggedUsername);
-            await tabla.loadImages();
-            tabla.setOrientare(isBlack);
-            tabla.redesenare();
+            await board.loadImages();
+            board.setOrientation(isBlack);
+            board.redraw();
             connect(username, lobbyId);
             await loadBoard(lobbyId);
         }
@@ -63,26 +63,26 @@ async function initializeApp() {
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
 
-const size: number = Tabla.squareSize * 8;
+const size: number = Board.squareSize * 8;
 canvas.width = size;
 canvas.height = size;
 
-export const tabla: Tabla = new Tabla(ctx);
+export const board: Board = new Board(ctx);
 export const moveList:MoveList = new MoveList("move-list");
 
-export const mouse: Mouse = new Mouse(canvas, tabla);
+export const mouse: Mouse = new Mouse(canvas, board);
 const resignBtn = document.getElementById("resign-button") as HTMLButtonElement;
 async function loadBoard(lobbyId: string):Promise<void>
 {
     try {
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
         const minimalState: minimalState = await response.json();
-        const piecesData = minimalState.Piese;
-        setCuloareCurenta(minimalState.culoareCurenta);
+        const piecesData = minimalState.Pieces;
+        // setCuloareCurenta(minimalState.currentColor);
         if(minimalState.currentPGN != null )
             moveList.addWholePGN(minimalState.currentPGN);
-        tabla.setPiecesFromServer(piecesData);
-        tabla.redesenare();
+        board.setPiecesFromServer(piecesData);
+        board.redraw();
     }
     catch (e) {
         console.error("Eroare la incarcare de date - loadboard");

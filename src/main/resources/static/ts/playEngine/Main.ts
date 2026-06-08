@@ -1,10 +1,10 @@
-import {initCanvas, initTabla, onButtonClick} from "../tools/initApp.js";
-import {culoriPiesa, SidesExplicit} from "../tools/Enums.js";
+import {initCanvas, initBoard, onButtonClick} from "../tools/initApp.js";
+import {Sides, SidesExplicit} from "../tools/Enums.js";
 import {MouseBot} from "./MouseBot.js";
 import {minimalState} from "../tools/Types.js";
 
-export const { tabla, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
-await initTabla(tabla);
+export const { board, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
+await initBoard(board);
 
 const startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 let botGameId: string;
@@ -33,7 +33,7 @@ const savedGameId = sessionStorage.getItem('botGameId');
 if (savedGameId) {
     botGameId = savedGameId;
     document.getElementById('side-select-overlay')?.remove();
-    await resumeGame(botGameId); // <-- resume in loc de loadBoard
+    await resumeGame(botGameId);
 } else {
     document.getElementById('side-select-overlay')?.style.setProperty('display', 'flex');
 }
@@ -42,7 +42,6 @@ async function resumeGame(gameId: string) {
     try {
         const response = await fetch(`/api/bot/state/${gameId}`);
         if (!response.ok) {
-            // sesiunea a expirat (server restartat)
             sessionStorage.removeItem('botGameId');
             document.getElementById('side-select-overlay')?.style.setProperty('display', 'flex');
             return;
@@ -50,16 +49,16 @@ async function resumeGame(gameId: string) {
         const state = await response.json();
         if (state.currentPGN != null)
             moveList.addWholePGN(state.currentPGN);
-        tabla.setPiecesFromServer(state.piese);
-        tabla.redesenare();
+        board.setPiecesFromServer(state.piese);
+        board.redraw();
 
         const botSide = state.botSide as SidesExplicit;
         mouseBot = new MouseBot(
-            canvas, tabla, gameId, moveList,
-            botSide === SidesExplicit.BLACK ? culoriPiesa.ALB : culoriPiesa.NEGRU
+            canvas, board, gameId, moveList,
+            botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
         );
         mouseBot.onEngineRequest = (fen: string) => requestStockfishMove(fen);
-        tabla.setOrientare(botSide === SidesExplicit.WHITE);
+        board.setOrientation(botSide === SidesExplicit.WHITE);
     } catch(e) {
         console.error('Eroare resume:', e);
     }
@@ -74,11 +73,11 @@ async function startBotGame(botSide: SidesExplicit) {
     sessionStorage.setItem('botGameId', botGameId);
 
     mouseBot = new MouseBot(
-        canvas, tabla, botGameId, moveList,
-        botSide === SidesExplicit.BLACK ? culoriPiesa.ALB : culoriPiesa.NEGRU
+        canvas, board, botGameId, moveList,
+        botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
     );
     mouseBot.onEngineRequest = (fen: string) => requestStockfishMove(fen);
-    tabla.setOrientare(botSide === SidesExplicit.WHITE);
+    board.setOrientation(botSide === SidesExplicit.WHITE);
 
     if (botSide === SidesExplicit.WHITE)
         requestStockfishMove(startingFEN);

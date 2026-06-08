@@ -1,19 +1,19 @@
 package com.sah.dto.chess;
 
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.NotatieRocada;
-import com.sah.game.piese.Piese;
+import com.sah.game.GameEnums.CastlingNotation;
+import com.sah.game.pieces.Pieces;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
 
 @AllArgsConstructor
 public class MoveDataNotationDTO {
-    public Piese piesa;
+    public Pieces piece;
     public int fromRow, fromCol;
     public int targetRow, targetCol;
     public boolean isCheck, isCheckMate, promoted, isCapture;
-    public ColorType culoareCurenta;
-    public NotatieRocada notatieRocada;
-    public List<Piese> oldPieces;
+    public ColorType currentColor;
+    public CastlingNotation castlingNotation;
+    public List<Pieces> oldPieces;
 }

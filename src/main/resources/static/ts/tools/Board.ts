@@ -1,14 +1,14 @@
-import {Piesa} from "../piese/Piesa.js";
-import {Pion} from "../piese/Pion.js";
-import {Nebun} from "../piese/Nebun.js";
-import {Cal} from "../piese/Cal.js";
-import {Tura} from "../piese/Tura.js";
-import {Rege} from "../piese/Rege.js";
-import {Regina} from "../piese/Regina.js";
-import {culoriPiesa, TipPiesa} from "./Enums.js";
-import {PiesaDTO} from "./Types.js";
+import {Piece} from "../pieces/Piece.js";
+import {Pawn} from "../pieces/Pawn.js";
+import {Bishop} from "../pieces/Bishop.js";
+import {Knight} from "../pieces/Knight.js";
+import {Rook} from "../pieces/Rook.js";
+import {King} from "../pieces/King.js";
+import {Queen} from "../pieces/Queen.js";
+import {Sides, SidesExplicit, TipPiesa} from "./Enums.js";
+import {PieceDTO} from "./Types.js";
 
-export class Tabla {
+export class Board {
     static squareSize: number = 75;
     lastMove?: {
         fromRow: number,
@@ -19,7 +19,7 @@ export class Tabla {
     ctx: CanvasRenderingContext2D;
     rows: number;
     cols: number;
-    piese: Piesa[];
+    pieces: Piece[];
     imageCache: Record<string, HTMLImageElement>
     isBlack: boolean;
 
@@ -31,20 +31,20 @@ export class Tabla {
         this.ctx = ctx;
         this.rows = 8;
         this.cols = 8;
-        this.piese = [];
+        this.pieces = [];
         this.imageCache = {};
         this.isBlack = false;
     }
 
-    getPiesa(row: number, col: number): Piesa | undefined {
-        return this.piese.find(p => p.row === row && p.col === col);
+    getPiece(row: number, col: number): Piece  | undefined {
+        return this.pieces.find(p => p.row === row && p.col === col);
     }
 
-    setOrientare(isBlack: boolean) {
+    setOrientation(isBlack: boolean) {
         this.isBlack = isBlack;
     }
 
-    getOrientare() {
+    getOrientation() {
         return this.isBlack;
     }
 
@@ -69,7 +69,7 @@ export class Tabla {
                     };
                     img.onerror = () => {
                         console.error(`Nu am putut incarca imaginea la: ${img.src}`);
-                        resolve(); // Mergem mai departe chiar dacă una lipseste, AIAE
+                        resolve();
                     };
                 });
                 promises.push(p);
@@ -77,13 +77,13 @@ export class Tabla {
         });
 
         await Promise.all(promises);
-        console.log("Toate imaginile au fost puse în cache.");
+        console.log("All images have been stocked in cache.");
     }
 
-    redesenare(piese: Piesa[] = this.piese, piesaSelectata?: Piesa): void {
+    redraw(pieces: Piece[] = this.pieces, selectedPiece?: Piece): void {
         let c = 0;
         const ctx = this.ctx;
-        const size = Tabla.squareSize;
+        const size = Board.squareSize;
         const boardSize = size * 8;
 
         for(let row = 0; row < this.rows; row++){
@@ -99,37 +99,37 @@ export class Tabla {
         this.desenareUltimaMiscare(this.ctx);
 
 
-        piese.forEach(p => this.deseneazaPiesaOrientata(p));
+        pieces.forEach(p => this.drawOrientedPiece(p));
 
-        if(piesaSelectata && piesaSelectata.img?.complete) {
-            this.deseneazaPiesaOrientata(piesaSelectata);
+        if(selectedPiece && selectedPiece.img?.complete) {
+            this.drawOrientedPiece(selectedPiece);
         }
 
-        this.desenareCoordonate();
+        this.drawCoordinates();
     }
 
-    private deseneazaPiesaOrientata(piesa: Piesa) {
-        const size = Tabla.squareSize;
+    private drawOrientedPiece(piece: Piece) {
+        const size = Board.squareSize;
 
-        const vizualCol = this.isBlack ? 7 - piesa.col : piesa.col;
-        const vizualRow = this.isBlack ? 7 - piesa.row : piesa.row;
+        const vizualCol = this.isBlack ? 7 - piece.col : piece.col;
+        const vizualRow = this.isBlack ? 7 - piece.row : piece.row;
 
-        if (piesa.isDragging && piesa.dragX !== undefined && piesa.dragY !== undefined) {
-            piesa.desen(this.ctx);
+        if (piece.isDragging && piece.dragX !== undefined && piece.dragY !== undefined) {
+            piece.draw(this.ctx);
         } else {
             const x = vizualCol * size;
             const y = vizualRow * size;
 
-            if (piesa.img && piesa.img.complete) {
-                this.ctx.drawImage(piesa.img, x, y, size, size);
+            if (piece.img && piece.img.complete) {
+                this.ctx.drawImage(piece.img, x, y, size, size);
             }
         }
     }
 
-    private desenareCoordonate() {
+    private drawCoordinates() {
         const ctx = this.ctx;
-        const size = Tabla.squareSize;
-        ctx.font = "600 14px Inter, sans-serif";
+        const size = Board.squareSize;
+        ctx.font = "600 14px Fira Code, sans-serif";
         ctx.fillStyle = "#4a4a4a";
 
         for (let i = 0; i < 8; i++) {
@@ -140,37 +140,39 @@ export class Tabla {
             ctx.fillText(number.toString(), 4, i * size + 14);
         }
     }
-    createPiesaFromData(data: any):Piesa
-    {
-        const { tip, color, row, col } = data;
-        let piesa: Piesa;
 
-        switch (tip.toLowerCase()) {
-            case "pawn": piesa = new Pion(color, row, col); break;
-            case "queen": piesa = new Regina(color, row, col); break;
-            case "king": piesa = new Rege(color, row, col); break;
-            case "rook": piesa = new Tura(color, row, col); break;
-            case "bishop": piesa = new Nebun(color, row, col); break;
-            case "knight": piesa = new Cal(color, row, col); break;
-            default: throw new Error("Tip necunoscut");
+    createPieceFromData(data: any): Piece
+    {
+        const { type, color, row, col } = data;
+
+        let piece: Piece;
+
+        switch (type.toLowerCase()) {
+            case "pawn": piece = new Pawn(color, row, col); break;
+            case "queen": piece = new Queen(color, row, col); break;
+            case "king": piece = new King(color, row, col); break;
+            case "rook": piece = new Rook(color, row, col); break;
+            case "bishop": piece = new Bishop(color, row, col); break;
+            case "knight": piece = new Knight(color, row, col); break;
+            default: throw new Error("Unknown piece type");
         }
 
-        const colorKey = (color === culoriPiesa.ALB) ? "white" : "black"; // pentru load in director
-        const imgKey = `${colorKey}-${tip.toLowerCase()}`;
+        const colorKey = (color === SidesExplicit.WHITE) ? "white" : "black";
+        const imgKey = `${colorKey}-${type.toLowerCase()}`;
 
         if (this.imageCache[imgKey]) {
-            piesa.img = this.imageCache[imgKey];
+            piece.img = this.imageCache[imgKey];
         }
 
-        return piesa;
+        return piece;
     }
 
-    setPiecesFromServer(piecesData: PiesaDTO[]): void {
-        this.piese = piecesData.map((p:any) => this.createPiesaFromData(p));
+    setPiecesFromServer(piecesData: PieceDTO[]): void {
+        this.pieces = piecesData.map((p:any) => this.createPieceFromData(p));
     }
 
     desenareUltimaMiscare(ctx: CanvasRenderingContext2D) {
-        const size = Tabla.squareSize;
+        const size = Board.squareSize;
         if(!this.lastMove) return;
 
         let {fromRow, fromCol, toRow, toCol} = this.lastMove;
@@ -188,7 +190,7 @@ export class Tabla {
 
     drawHighlight(ctx: CanvasRenderingContext2D, row: number, col: number) {
         ctx.fillStyle = 'rgba(255, 255, 0, 0.4)';
-        const size = Tabla.squareSize;
+        const size = Board.squareSize;
         ctx.fillRect(col*size, row*size, size, size);
     }
 }

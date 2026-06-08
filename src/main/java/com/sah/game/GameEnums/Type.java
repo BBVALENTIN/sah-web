@@ -1,5 +1,5 @@
 package com.sah.game.GameEnums;
 
-public enum Tip {
+public enum Type {
     PAWN, KNIGHT, BISHOP, ROOK, KING, QUEEN;
 }

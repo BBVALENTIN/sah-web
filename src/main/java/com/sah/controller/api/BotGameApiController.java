@@ -43,7 +43,7 @@ public class BotGameApiController {
         ChessBoard board = botGameService.getBoard(req.getGameId());
         if (board == null) return ResponseEntity.notFound().build();
 
-        MoveResultDTO result = board.faMiscare(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
+        MoveResultDTO result = board.makeMove(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
         if(result.isCheckmate())
         {
             botGameService.saveGame(req.getGameId(), false, principal.getName());

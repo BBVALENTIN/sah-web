@@ -13,7 +13,7 @@ public class PracticeService {
     public MinimalStateDTO initialize() {
         chessBoard.initializeBoard();
 
-        MinimalStateDTO minimalStateDTO = new MinimalStateDTO(chessBoard.getAllPiecesDTO(), chessBoard.culoareCurenta, "");
+        MinimalStateDTO minimalStateDTO = new MinimalStateDTO(chessBoard.getAllPiecesDTO(), chessBoard.currentColor, "");
 
         return minimalStateDTO;
     }

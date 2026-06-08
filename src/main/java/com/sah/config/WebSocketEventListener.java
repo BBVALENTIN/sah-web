@@ -36,7 +36,7 @@ public class WebSocketEventListener {
 
     public static void userReturned(String username) {
         if (username != null) {
-            log.info("Utilizatorul {} s-a întors fizic pe pagină. Anulăm penalizarea.", username);
+            log.info("The user {} is back on the page.", username);
             pendingReconnections.remove(username);
         }
     }
@@ -44,8 +44,8 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println("EVENIMENT DECONECTARE DECLANȘAT! Sesiune: " + headerAccessor.getSessionId());
-        System.out.println("Atribute sesiune: " + headerAccessor.getSessionAttributes());
+        System.out.println("User disconnected event! session: " + headerAccessor.getSessionId());
+        System.out.println("Session attributes: " + headerAccessor.getSessionAttributes());
         String sessionId = headerAccessor.getSessionId();
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         String lobbyId = (String) headerAccessor.getSessionAttributes().get("lobbyId");
@@ -72,7 +72,7 @@ public class WebSocketEventListener {
         if(lobby == null) return;
 
         if(username != null && !pendingReconnections.containsKey(username)) {
-            log.info("Jucătorul {} s-a reconectat cu succes după refresh în lobby-ul {}.", username, lobby.getLobbyId());
+            log.info("The user {} reconnected, lobby Id: {}.", username, lobby.getLobbyId());
             return;
         }
 

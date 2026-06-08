@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LastMove {
     private int fromRow, fromCol, toRow, toCol;
-    private PiesaDTO lastPiece;
+    private PieceDTO lastPiece;
 }

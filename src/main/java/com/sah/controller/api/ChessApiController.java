@@ -2,7 +2,7 @@ package com.sah.controller.api;
 
 import com.sah.config.WebSocketEventListener;
 import com.sah.dto.chess.MinimalStateDTO;
-import com.sah.dto.chess.PiesaDTO;
+import com.sah.dto.chess.PieceDTO;
 import com.sah.dto.misc.ChatMessageDTO;
 import com.sah.dto.requests.GameEndRequest;
 import com.sah.dto.requests.MoveRequestDTO;
@@ -12,7 +12,7 @@ import com.sah.enums.MessageType;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
-import com.sah.game.piese.Piese;
+import com.sah.game.pieces.Pieces;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.service.ChessLobbyChatService;
@@ -62,7 +62,7 @@ public class ChessApiController {
                            @RequestParam int toRow,
                            @RequestParam int toCol
     ) {
-        MoveResultDTO result =  chessBoard.faMiscare(fromRow, fromCol, toRow, toCol);
+        MoveResultDTO result =  chessBoard.makeMove(fromRow, fromCol, toRow, toCol);
 
         if(result.getErrorCodes() != null) {
             return ResponseEntity.badRequest().body(result.getErrorCodes());
@@ -79,16 +79,16 @@ public class ChessApiController {
 
 
     @GetMapping("/reset")
-    public List<PiesaDTO> ResetBoard()
+    public List<PieceDTO> ResetBoard()
     {
-        chessBoard.pieseList.clear();
+        chessBoard.piecesList.clear();
         for(int i = 0; i < 8; i++)
             for(int j = 0; j < 8; j++)
                 chessBoard.board[i][j] = null;
         chessBoard.resetMoveNotations();
         chessBoard.initializeBoard();
-        List<PiesaDTO> dto = new ArrayList<>();
-        for(Piese p : chessBoard.getAllPieces())
+        List<PieceDTO> dto = new ArrayList<>();
+        for(Pieces p : chessBoard.getAllPieces())
             dto.add(ChessBoard.toDTO(p, p.row, p.col));
         return dto;
     }
@@ -96,18 +96,18 @@ public class ChessApiController {
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
-        Piese piesa = lobbyBoard.board[request.getFromRow()][request.getFromCol()];
+        Pieces piece = lobbyBoard.board[request.getFromRow()][request.getFromCol()];
 
-        if (piesa == null) {
+        if (piece == null) {
             sendError(request.getPlayer(), "Nu există nicio piesă acolo!");
             return;
         }
 
-        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), request.getPlayer(), piesa.color)) {
+        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), request.getPlayer(), piece.color)) {
             sendError(request.getPlayer(), "Nu poți muta piesele adversarului!");
             return;
         }
-        MoveResultDTO result = lobbyBoard.faMiscare(request.getFromRow(), request.getFromCol(), request.getToRow(), request.getToCol());
+        MoveResultDTO result = lobbyBoard.makeMove(request.getFromRow(), request.getFromCol(), request.getToRow(), request.getToCol());
 
         if(result.getErrorCodes() == null) {
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
@@ -123,8 +123,7 @@ public class ChessApiController {
     @GetMapping("/onlineState/{lobbyId}")
     public MinimalStateDTO getOnlineState(@PathVariable String lobbyId) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
-        MinimalStateDTO minimalStateDTO = new MinimalStateDTO(lobbyBoard.getAllPiecesDTO(), lobbyBoard.culoareCurenta, lobbyBoard.getAllPGN());
-        return minimalStateDTO;
+        return new MinimalStateDTO(lobbyBoard.getAllPiecesDTO(), lobbyBoard.currentColor, lobbyBoard.getAllPGN());
     }
 
     @MessageMapping("/chat.sendMessage/{lobbyId}")

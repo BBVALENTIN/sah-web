@@ -1,7 +1,7 @@
-import {Tabla} from "../tools/Tabla.js";
-import {Piesa} from "../piese/Piesa.js";
+import {Board} from "../tools/Board.js";
+import {Piece} from "../pieces/Piece.js";
 import {SoundManager} from "../audio/soundManager.js";
-import {culoriPiesa, moveSounds} from "../tools/Enums.js";
+import {SidesExplicit, moveSounds} from "../tools/Enums.js";
 import {Mutare_Reusita} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 
@@ -10,17 +10,17 @@ const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;
 export let FEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'; // starting FEN
 export class MousePractice {
     canvas: HTMLCanvasElement;
-    tabla: Tabla;
-    piesaSelectata: Piesa | undefined;
+    tabla: Board;
+    piesaSelectata: Piece | undefined;
     soundManager: SoundManager = new SoundManager();
     offsetX: number;
     offsetY: number;
     moveNumber: number;
-    culoareCurenta: culoriPiesa;
+    currentColor: SidesExplicit;
     currentMove: string;
     moveList: MoveList;
     onEngineRequest?: (fen: string) => void;
-    constructor(canvas: HTMLCanvasElement, tabla: Tabla, moveList: MoveList) {
+    constructor(canvas: HTMLCanvasElement, tabla: Board, moveList: MoveList) {
         this.canvas = canvas;
         this.tabla = tabla;
         this.moveList = moveList;
@@ -28,7 +28,7 @@ export class MousePractice {
         this.offsetX = 0;
         this.offsetY = 0;
         this.moveNumber = 1;
-        this.culoareCurenta = culoriPiesa.ALB;
+        this.currentColor = SidesExplicit.WHITE;
         this.currentMove = "";
         this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
         this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
@@ -60,8 +60,8 @@ export class MousePractice {
         const x: number = e.clientX - rect.left;
         const y: number = e.clientY - rect.top;
 
-        let col: number = Math.floor(x / Tabla.squareSize);
-        let row: number = Math.floor(y / Tabla.squareSize);
+        let col: number = Math.floor(x / Board.squareSize);
+        let row: number = Math.floor(y / Board.squareSize);
 
         if(this.tabla.isBlack) {
             col = 7 - col;
@@ -74,24 +74,24 @@ export class MousePractice {
 
     public async onMouseDown(e:any) {
         const { col, row, x, y} = this.getSquareFromMouse(e);
-        const piesa = this.tabla.getPiesa(row, col);
-        if (piesa && piesa.color === this.culoareCurenta) {
+        const piesa = this.tabla.getPiece(row, col);
+        if (piesa && piesa.color === this.currentColor) {
             this.piesaSelectata = piesa;
             this.piesaSelectata.isDragging = true;
 
             const vizualCol = this.tabla.isBlack ? 7 - piesa.col : piesa.col;
             const vizualRow = this.tabla.isBlack ? 7 - piesa.row : piesa.row;
 
-            this.offsetX = x - vizualCol * Tabla.squareSize;
-            this.offsetY = y - vizualRow * Tabla.squareSize;
+            this.offsetX = x - vizualCol * Board.squareSize;
+            this.offsetY = y - vizualRow * Board.squareSize;
 
-            this.tabla.redesenare(this.tabla.piese.filter(p => p !== piesa));
+            this.tabla.redraw(this.tabla.pieces.filter(p => p !== piesa));
         }
     }
     public async MouseMove(e:any):Promise<void> {
         const { col, row, x, y} = this.getSquareFromMouse(e);
-        const piesa = this.tabla.getPiesa(row, col);
-        if(piesa && piesa.color == this.culoareCurenta)
+        const piesa = this.tabla.getPiece(row, col);
+        if(piesa && piesa.color == this.currentColor)
             this.canvas.style.cursor = "grab";
         else
             this.canvas.style.cursor = "default";
@@ -101,7 +101,7 @@ export class MousePractice {
         this.piesaSelectata.dragX = x - this.offsetX;
         this.piesaSelectata.dragY = y - this.offsetY;
 
-        this.tabla.redesenare(this.tabla.piese, this.piesaSelectata);
+        this.tabla.redraw(this.tabla.pieces, this.piesaSelectata);
     }
     public async onMouseUp(e: any): Promise<void> {
         if(!this.piesaSelectata) { return; }
@@ -141,11 +141,11 @@ export class MousePractice {
         this.piesaSelectata = undefined;
 
         this.canvas.style.cursor = "default";
-        this.tabla.redesenare(this.tabla.piese);
+        this.tabla.redraw(this.tabla.pieces);
     }
 
     resetByButton(): void {
-        this.culoareCurenta = culoriPiesa.ALB;
+        this.currentColor = SidesExplicit.WHITE;
         FEN = "";
         fenOutput.value = FEN;
     }
@@ -171,7 +171,7 @@ export class MousePractice {
     }
 
     protected afterMove(result: Mutare_Reusita): void {
-        this.culoareCurenta = result.culoareCurenta;
+        this.currentColor = result.currentColor;
     }
 
     protected updateFEN(fen: string): void {
