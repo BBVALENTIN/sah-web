@@ -3,7 +3,7 @@ function navbarQuickPlay() {
 
     if(quickPlayNav) {
         quickPlayNav.addEventListener('click', async () => {
-            const responsePlay = await fetch('/api/play/createQuick');
+            const responsePlay = await fetch('/api/lobby/createQuick');
             if(!responsePlay.ok) {
                 console.error('API error');
                 return;
@@ -17,7 +17,7 @@ function navbarQuickPlay() {
     }
 }
 
-function rediractables() {
+function redirectables() {
     document.querySelectorAll('.redirectable').forEach(element => {
         element.addEventListener('click', () => {
             const username = (element as HTMLElement).dataset.username;
@@ -29,5 +29,5 @@ function rediractables() {
 
 export function navbarFuncs() {
     navbarQuickPlay();
-    rediractables();
+    redirectables();
 }

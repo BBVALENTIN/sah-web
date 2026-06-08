@@ -40,7 +40,7 @@ document.addEventListener(("DOMContentLoaded"), async () => {
     createLobbyButton.addEventListener(("click"), async () => {
         console.log("clicked");
         try {
-            const response = await fetch("/api/play/create", {
+            const response = await fetch("/api/lobby/create", {
                 method: 'POST',
                 headers: {
                     'Content-Type': "application/json"

@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.api;
 
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.dto.misc.loggedUser;

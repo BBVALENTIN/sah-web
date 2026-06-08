@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadLobbies() {
-    fetch(`/api/lobbies/${LobbyType.AVAILABLE}`)
+    fetch(`/api/lobby/${LobbyType.AVAILABLE}`)
         .then(res => res.json())
         .then((lobbies: lobbyInfo[]) => {
             lobbies.forEach(lobby => adaugaLobbyInTabel(lobby));

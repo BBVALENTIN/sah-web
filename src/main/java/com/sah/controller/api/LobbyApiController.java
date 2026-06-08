@@ -1,41 +1,33 @@
-package com.sah.controller;
+package com.sah.controller.api;
 
 import com.sah.dto.misc.CreateLobbyRequest;
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
-import com.sah.repository.LobbyRepository;
 import com.sah.service.ChessLobbyService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 
-@Controller
-public class LobbyController {
+@RestController
+@RequestMapping("/api/lobby")
+public class LobbyApiController {
 
     private final ChessLobbyService chessLobbyService;
 
-    public LobbyController(ChessLobbyService chessLobbyService, LobbyRepository lobbyRepository) {
-        this.chessLobbyService = chessLobbyService;
+    public LobbyApiController(ChessLobbyService cls)
+    {
+        chessLobbyService = cls;
     }
 
-    @GetMapping("/lobbies")
-    public String getLobbyPage() {
-        return "/game/lobby";
-    }
-
-    @GetMapping("/api/lobbies/{desiredLobby}")
-    @ResponseBody
+    @GetMapping("/{desiredLobby}")
     public List<LobbyDTO> getLobbies(@PathVariable LobbyType desiredLobby) {
         return chessLobbyService.getAllDesiredLobbies(desiredLobby);
     }
 
-    @PostMapping("/api/joinLobby/{lobbyId}")
-    @ResponseBody
+    @PostMapping("/{lobbyId}")
     public String joinLobby(@PathVariable String lobbyId, Principal principal) {
         ChessLobbies lobby = chessLobbyService.getLobbyFromId(lobbyId);
         if(chessLobbyService.isLobbyFull(lobby))
@@ -46,29 +38,20 @@ public class LobbyController {
         return "play="+lobbyId;
     }
 
-    @GetMapping("/api/getLobbyDTO")
+    @GetMapping("/getLobbyDTO")
     public LobbyDTO getLobbyDTO(@RequestParam String lobbyId, SimpMessageHeaderAccessor headerAccessor) {
         headerAccessor.getSessionAttributes().put("lobbyId", lobbyId);
         return chessLobbyService.getLobbyDTO(lobbyId);
     }
 
-    @GetMapping("/api/play/createQuick")
-    @ResponseBody
+    @GetMapping("/createQuick")
     public LobbyDTO createQuickLobby(Principal principal) {
         LobbyDTO newLobby = chessLobbyService.createLobby(principal.getName());
         return newLobby;
     }
 
-    @PostMapping("/api/play/create")
-    @ResponseBody
+    @PostMapping("/create")
     public LobbyDTO createLobby(@RequestBody CreateLobbyRequest request) {
         return chessLobbyService.createLobby(request.getUsername());
-    }
-
-
-    @GetMapping("/play={lobbyId}")
-    public String showLobby(@PathVariable String lobbyId, HttpSession session) {
-        chessLobbyService.registerPlayer(session.getId(), lobbyId);
-        return "game/play";
     }
 }

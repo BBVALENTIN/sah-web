@@ -5,9 +5,34 @@
     <title>User Settings</title>
 </head>
 <body>
-    <div id="country-select-container">
 
+    <div class="page-container">
+
+        <div class="settings-container">
+
+            <div class="profile-picture-change">
+
+                <div class="profile-card-big">
+                    <!--                here the profile picture change-->
+                    <img src="fillthistommorrow"/>
+                </div>
+
+                <div th:if="${userInfo.getUsername() == currentUser}" class="upload-photo">
+                    <form method="POST" action="/upload" enctype="multipart/form-data">
+                        <input required type="file" name="file" accept="image/*" />
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit">Change profile picture</button>
+                    </form>
+                </div>
+
+                <div class="misc-change">
+                    <div class="description-change"></div>
+                    <div class="country-change"></div>
+                </div>
+            </div>
+        </div>
     </div>
+
     <script type="module" th:src="@{/ts-transpiled/main.js}"></script>
 </body>
 </html>
