@@ -1,0 +1,1 @@
+Proiectarea bazei de date a început cu realizarea diagramei entitate-legătura, apoi alegerea unui sistem de gestiune a bazelor de date, unde am ales SQL Server, din cauza obișnuinței și mediului de lucru simplu. Altă alegere a consituit-o și interfața de administrare unde am folosit SQL Server Management Studio, din cauza interfeței simple, moderne și experienței.
