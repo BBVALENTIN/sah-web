@@ -801,11 +801,23 @@ input:checked + .slider:before {
     box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
 }
 
+.lobby-header {
+    display: flex;
+    flex-direction: row;
+    font: inherit;
+    color: var(--c-font);
+    padding: 5px 10px;
+    margin-left: var(--space-6);
+    gap: var(--space-6);
+}
+
 .toolbar-buttons {
     font: inherit;
+    margin-top: var(--space-6);
     background: #949494;
     color: white;
-    border-radius: 8px;
+    border-radius: 999px;
+    border-color: var(--c-border);
 }
 /* ===================== START POSTS CSS ===================== */
 

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Lobbies</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 </head>
 <body>
     <div th:replace="fragments/navbar :: navbar"></div>
@@ -13,7 +14,10 @@
             <div class="toolbar-above">
                 <div class="page-info">Click on a lobby below to play, or create your own</div>
                 <div class="lobby-buttons">
-                    <button id="createLobbyButton" class="toolbar-buttons">Create Lobby</button>
+                    <button id="createLobbyButton" class="toolbar-buttons">
+                        <i class="ti ti-plus"></i>
+                        <label class="button-text">Create lobby</label>
+                    </button>
                     <button id="showAvailableLobbiesButton" class="toolbar-buttons">Show Available</button>
                 </div>
 

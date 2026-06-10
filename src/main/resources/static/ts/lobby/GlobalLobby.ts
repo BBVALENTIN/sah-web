@@ -12,19 +12,20 @@ let lobbyCount = 0;
 const lobbyInfo = document.getElementById('lobbiesCount') as HTMLDivElement;
 document.addEventListener("DOMContentLoaded", () => {
     loadLobbies();
-    conectareWebSocket();
+    connectWS();
+    handleCreate();
 });
 
 function loadLobbies() {
     fetch(`/api/lobby/${LobbyType.AVAILABLE}`)
         .then(res => res.json())
         .then((lobbies: lobbyInfo[]) => {
-            lobbies.forEach(lobby => adaugaLobbyInTabel(lobby));
+            lobbies.forEach(lobby => addLobbyRow(lobby));
         })
         .catch(err => console.error("Loading error:", err));
 }
 
-function conectareWebSocket() {
+function connectWS() {
     const socket = new SockJS('/ws');
     state.stompClient = Stomp.over(socket);
 
@@ -36,10 +37,10 @@ function conectareWebSocket() {
 
             if (lobbyDto.lobbyType === LobbyType.AVAILABLE) {
                 lobbyCount++;
-                adaugaLobbyInTabel(lobbyDto);
+                addLobbyRow(lobbyDto);
             }
             else {
-                stergeLobbyDinTabel(lobbyDto.lobbyId);
+                deleteTableRow(lobbyDto.lobbyId);
             }
             if(lobbyCount === 0) {
                 lobbyInfo.innerText = "There are currently no lobbies open";
@@ -56,7 +57,7 @@ function conectareWebSocket() {
     });
 }
 
-function adaugaLobbyInTabel(lobby: lobbyInfo) {
+function addLobbyRow(lobby: lobbyInfo) {
     let tableBody = document.getElementById("lobby-table-body") as HTMLTableSectionElement;
     if (!tableBody) {
         const container = document.getElementById("lobbiesContainer");
@@ -83,11 +84,11 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
         return;
     }
 
-    let randExistent = document.getElementById(`lobby-${lobby.lobbyId}`);
+    let createdRow = document.getElementById(`lobby-${lobby.lobbyId}`);
     const creator = lobby.playerWhite ? lobby.playerWhite : (lobby.playerBlack ? lobby.playerBlack : "Unknown");
 
-    if (randExistent) {
-        randExistent.innerHTML = `
+    if (createdRow) {
+        createdRow.innerHTML = `
             <td style="padding: 10px; border-bottom: 1px solid #080710;">${creator}</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;">${lobby.lobbyId}</td>
             <td style="padding: 10px; border-bottom: 1px solid #080710;">Waiting for opponent...</td>
@@ -106,10 +107,10 @@ function adaugaLobbyInTabel(lobby: lobbyInfo) {
         tableBody.appendChild(tr);
     }
 
-    atasazaEvenimentJoin();
+    getJoinEvent();
 }
 
-function stergeLobbyDinTabel(lobbyId: string) {
+function deleteTableRow(lobbyId: string) {
     const row = document.getElementById(`lobby-${lobbyId}`);
     if (row) {
         lobbyCount--;
@@ -117,18 +118,18 @@ function stergeLobbyDinTabel(lobbyId: string) {
     }
 }
 
-function atasazaEvenimentJoin() {
-    const butoane = document.querySelectorAll(".join-btn");
-    butoane.forEach(buton => {
-        buton.removeEventListener("click", gestionareJoin);
-        buton.addEventListener("click", gestionareJoin);
+function getJoinEvent() {
+    const joinButtons = document.querySelectorAll(".join-btn");
+    joinButtons.forEach(buton => {
+        buton.removeEventListener("click", handleJoin);
+        buton.addEventListener("click", handleJoin);
     });
 }
 
-function gestionareJoin(event: any) {
+function handleJoin(event: any) {
     const lobbyId = event.target.getAttribute("data-id");
 
-    fetch(`/api/joinLobby/${lobbyId}`, {
+    fetch(`/api/lobby/${lobbyId}`, {
         method: 'POST',
     })
         .then(res => res.text())
@@ -139,4 +140,12 @@ function gestionareJoin(event: any) {
                 window.location.href = "/" + data;
             }
         });
+}
+
+function handleCreate() {
+    const createButton = document.getElementById('createLobbyButton');
+    createButton?.addEventListener('click', async () => {
+        const res = await fetch('/api/lobby/create');
+        window.location.href = await res.text();
+    })
 }

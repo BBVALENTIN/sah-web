@@ -45,13 +45,14 @@ public class LobbyApiController {
     }
 
     @GetMapping("/createQuick")
-    public LobbyDTO createQuickLobby(Principal principal) {
-        LobbyDTO newLobby = chessLobbyService.createLobby(principal.getName());
-        return newLobby;
+    public String createQuickLobby(Principal principal) {
+        String lobbyId = chessLobbyService.createLobby(principal.getName());
+        return "play=" + lobbyId;
     }
 
-    @PostMapping("/create")
-    public LobbyDTO createLobby(@RequestBody CreateLobbyRequest request) {
-        return chessLobbyService.createLobby(request.getUsername());
+    @GetMapping("/create")
+    public String createLobby(Principal principal) {
+        String lobbyId = chessLobbyService.createLobby(principal.getName());
+        return "play=" + lobbyId;
     }
 }

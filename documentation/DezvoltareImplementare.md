@@ -16,3 +16,16 @@ din interfață devine foarte mare, fiind ușor să pierzi cursul programului.
 
 Pentru comunicarea dintre server și interfața utilizatorului s-au folosit diferite protocoale de comunicare, cum ar fi:
 
+    - Websocket
+    - HTTP
+
+Ambele sunt protocoale la nivel de aplicație, care rulează peste TCP, iar la nivel de rețea, fiind o aplicație web avem
+protocolul IP.
+<figura explicativă model ISO/OSI aplicație, sau descrisă o ierarhie cu toate protocoalele folosite explicate>
+
+# Segmente importante
+
+Unul dintre cele mai importante segmente, și punctul cheie al aplicației este logica jocului de șah. În jurul 
+acestuia sunt realizate toate celelalte utilități ale site-ului. Logica este împărțită în multe clase, 
+
+# Dificultăți întâmpinate

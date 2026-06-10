@@ -3,13 +3,8 @@ function navbarQuickPlay() {
 
     if(quickPlayNav) {
         quickPlayNav.addEventListener('click', async () => {
-            const responsePlay = await fetch('/api/lobby/createQuick');
-            if(!responsePlay.ok) {
-                console.error('API error');
-                return;
-            }
-            let lobby = await responsePlay.json();
-            window.location.href =`/play=${lobby.lobbyId}`;
+            const res = await fetch('/api/lobby/createQuick');
+            window.location.href = await res.text();
         });
     }
     else {

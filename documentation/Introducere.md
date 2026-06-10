@@ -25,3 +25,4 @@ Aplicația urmărește implementarea unui mecanism eficient de gestionare a stă
 Din cauza faptului că proiectul folosește fișiere audio provenite din proiectul Lichess.org (github.com/lila), folosite în aplicarea mutărilor într-un meci de șah. Proiectul este licențiat sub GNU Affero General Public License versiunea 3 (AGPL v3), iar aceasta permite utilizarea, studiere, modificare și redistrbuire cu condiția publicării codului sursă la rândul nostru.
 
 De asemenea, aplicația utilizează și o bază de date GeoLite2 de la MaxMind pentru determinarea țării utlizatorului asociată pe adresa IP (folosită numai la înregistrarea contului, țara putând fi schimbată ulterior). Datele sunt furnizate de MaxMind și sunt utilizate conform termenilor și condițiilor impuse de aceștia ("End User License Agreement" - EULA).
+

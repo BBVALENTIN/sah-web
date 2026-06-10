@@ -104,4 +104,11 @@ public class ProfileService {
         userRepo.save(currentUser);
         return "Description saved successfully";
     }
+
+    public String changeCountry(String countryCode, Principal principal) // expects ISO code
+    {
+        Users currentUser = userRepo.findByUsername(principal.getName());
+        currentUser.setCountry(countryCode.toLowerCase());
+        return "Country changed successful";
+    }
 }

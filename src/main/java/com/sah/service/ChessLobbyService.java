@@ -73,7 +73,7 @@ public class ChessLobbyService {
         return new LobbyDTO(lobbyId, lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
     }
 
-    public LobbyDTO createLobby(String username) {
+    public String createLobby(String username) {
         ChessLobbies lobby = new ChessLobbies();
         String randomLobbyId = assignLobbyId();
         lobby.setLobbyId(randomLobbyId);
@@ -88,7 +88,7 @@ public class ChessLobbyService {
         lobbyRepository.save(lobby);
         LobbyDTO lobbyDTO = convertLobbyDTO(lobby);
         simpMessagingTemplate.convertAndSend("/topic/global-lobbies", lobbyDTO);
-        return lobbyDTO;
+        return lobby.getLobbyId();
     }
 
     public void joinLobby(String lobbyId, String username) {
