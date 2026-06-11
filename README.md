@@ -2,6 +2,12 @@
 
 This project uses audio files from Lichess (https://lichess.org) for in-game sound effects.
 
-Their GitHub repostiry: [https://github.com/lila]
+Their GitHub repository: [https://github.com/lila]
 
-All rights belong to their respective authors. The audio assets are used under Lichess terms of use.
+This project uses stockfish.js from the official stockfish.js repository.
+
+Their Github repository: [https://github.com/lichess-org/stockfish.js]
+
+Official Stockfish repository: [https://github.com/official-stockfish/stockfish]
+
+All rights belong to their respective authors. All assets are used under terms of use.
