@@ -1,6 +1,7 @@
 export function profileFuncs() {
     openSettings();
-    setupEditDescription()
+    setupEditDescription();
+    handleResultString();
 }
 
 function openSettings() {
@@ -53,3 +54,20 @@ function setupEditDescription(): void {
     editDescBtn.addEventListener('click', handleEdit);
 }
 
+function handleResultString() {
+    const resultString = document.getElementById('resultStrings') as HTMLDivElement;
+    if(!resultString) return;
+
+    console.log("what are we doing");
+    const gameHistory = resultString.dataset.history;
+    if(!gameHistory) return;
+
+    console.log("ello? " +gameHistory);
+
+    resultString.innerHTML = gameHistory.split('').map(m => {
+        if (m === 'W') return '<span class="hchar win-char">W</span>'
+        if (m === 'L') return '<span class="hchar lose-char">L</span>'
+        if (m === 'D') return '<span class="hchar draw-char">D</span>'
+        return m;
+    }).join('');
+}

@@ -5,28 +5,86 @@
     <meta charset="UTF-8">
     <title>Bine ai venit pe site</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 </head>
 <body>
-    <div class="content">
-        <div th:insert="fragments/navbar :: navbar"></div>
-        <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
-        <div class="streams-container">
-            <a class="stream-card" th:href="'https://www.twitch.tv/' + ${stream.userName}" target="_blank">
+    <div th:insert="fragments/navbar :: navbar"></div>
+    <div class="content-main">
 
-                <div class="thumbnail-wrapper">
-                    <span class="live-badge">Live</span>
-                    <img class="stream-thumbnail" th:src="${stream.thumbnailUrl}" />
-                </div>
+        <div class="content-main-left">
 
-                <div class="stream-info">
-                    <h3 class="stream-user" th:text="${stream.userName}"></h3>
-                    <p class="stream-title" th:text="${stream.title}"></p>
-                    <div class="viewer-count">
-                        <span th:text="${stream.viewerCount}"></span> Viewers
+            <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
+
+            <div th:if="${stream != null}" class="main-stream">
+                <a class="stream-card" th:href="'https://www.twitch.tv/' + ${stream.userName}" target="_blank">
+
+                    <div class="thumbnail-wrapper">
+                        <span class="live-badge">Live</span>
+                        <img alt="stream-thumbnail" class="stream-thumbnail" th:src="${stream.thumbnailUrl}" />
+                    </div>
+
+                    <div class="stream-info">
+                        <h3 class="stream-user" th:text="${stream.userName}"></h3>
+                        <p class="stream-title" th:text="${stream.title}"></p>
+                        <div class="viewer-count">
+                            <span th:text="${stream.viewerCount}"></span> Viewers
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div th:unless="${stream != null}">
+                <p class="no-main-stream">There is currently no stream available :(</p>
+            </div>
+        </div>
+
+        <div class="content-center">
+            <div class="post-body">
+                <div class="post-editable">
+                    <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userMiscInfo.avatar}}" />
+                    <div id="post-content">
+                        <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
+                        <p class="p-info" id="char-count"></p>
                     </div>
                 </div>
+                <div class="post-buttons">
+                    <button class="submit-button" id="submit-post-button">Post</button>
+                </div>
+            </div>
 
-            </a>
+            <div class="posts-container">
+                <div class="post-item" th:each="post : ${posts}" th:data-post-id="${post.postId}">
+                    <img class="mini-profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" alt="avatar"/>
+                    <div class="post-item-content">
+                        <div class="post-item-header">
+                            <span class="post-username" th:text="${post.username}">username</span>
+                            <span class="post-time" th:text="${post.createdAt}">2m</span>
+                            <button class="delete-button" th:if="${post.username == userMiscInfo.username}" th:data-post-id="${post.postId}">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </div>
+                        <p class="post-text" th:text="${post.content}">Text...</p>
+                        <div class="post-buttons">
+                            <button class="action-btn comment-button" th:data-post-id="${post.postId}">
+                                <i class="ti ti-message-circle"></i>
+                                <span th:text="${post.commentNumber}"></span>
+                            </button>
+                            <button class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
+                                <i class="ti ti-heart"></i>
+                                <i class="ti ti-heart-filled"></i>
+                                <span class="like-count" th:text="${post.likeNumber}"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-right">
+            <div class="chess-statistics">
+                <h1>Your last games</h1>
+                <div class="result-string" id="resultStrings" th:data-history="${resultString}"></div>
+            </div>
         </div>
     </div>
     <script type="module" th:src="@{/ts-transpiled/main.js}"></script>

@@ -8,8 +8,11 @@
     --pBodyWidth: 600px;
     --space-24: 2.4rem;
     --space-6: 6px;
+    --stream-height: 320px;
+    --stream-width: 320px;
     --cHeight: 600px;
     --infoHeight: 580px; /* modify with padding*/
+    --section-width: 350px;
     /*COLORS*/
     --bodyGray: rgba(36, 36, 36);
     --twitch-purple: #9147ff;
@@ -25,6 +28,9 @@
     --c-twitter-blue: #1d9bf0;
     --c-twitter-blue-bg-hover: rgba(29, 155, 240, 0.1);
     --c-separator-gray: #2f3336;
+    --c-winChar-green: #66ff10;
+    --c-loseChar-red: #ff000d;
+    --c-drawChar-brightGray: #3C4151;
 }
 
 html, body {
@@ -1093,4 +1099,61 @@ textarea {
 
 .profile-card-big {
 
+}
+
+.content-main {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto auto var(--space-24);
+    padding: 24px 16px;
+    gap: var(--space-24);
+}
+
+.content-main-left {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    width: 400px;
+    margin-left: var(--space-6);
+    flex-shrink: 0;
+    margin-right: var(--space-24);
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.content-center {
+    width: var(--pBodyWidth);
+    border-left: 1px solid var(--c-separator-gray);
+    border-right: 1px solid var(--c-separator-gray);
+    flex-shrink: 0;
+    padding: 24px;
+}
+
+.main-stream {
+    display: flex;
+    width: var(--stream-height);
+    height: var(--stream-width);
+    gap: var(--space-24);
+}
+
+.no-main-stream {
+    display: flex;
+    color: var(--c-font-dim);
+    text-decoration: none;
+}
+
+.hchar {
+    font-weight: bold;
+}
+
+.win-char {
+    color: var(--c-winChar-green);
+}
+
+.lose-char {
+    color: var(--c-loseChar-red);
+}
+
+.draw-char {
+    color: var(--c-drawChar-brightGray);
 }

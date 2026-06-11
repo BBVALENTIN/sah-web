@@ -13,4 +13,5 @@ public interface LobbyRepository extends JpaRepository<ChessLobbies, String> {
     List<ChessLobbies> findByLobbyType(LobbyType lobbyType);
     List<ChessLobbies> findByPlayerBlack(String username);
     List<ChessLobbies> findByPlayerWhite(String username);
+    List<ChessLobbies> findTop15ByPlayerBlackOrPlayerWhiteOrderByCreatedAtDesc(String playerBlack, String playerWhite);
 }

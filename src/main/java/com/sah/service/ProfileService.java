@@ -41,12 +41,10 @@ public class ProfileService {
 
        if(user != null) {
 
-           ProfileInfoDTO dto = new ProfileInfoDTO(
+           return new ProfileInfoDTO(
                    new UserOverviewInfoExpanded(username, user.getDescription(), user.getCountry().toLowerCase() ,user.getAvatar()),
                    new GameOverviewInfo(matchHistoryDTOList.size(), matchHistoryDTOList)
            );
-
-           return dto;
        }
        return null;
     }
@@ -76,6 +74,21 @@ public class ProfileService {
         return matchHistoryDTOList;
     }
 
+    public String getLastGamesOutcome(Principal principal) {
+        String currentUsername = principal.getName();
+        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findTop15ByPlayerBlackOrPlayerWhiteOrderByCreatedAtDesc(currentUsername, currentUsername));
+        StringBuilder resultString = new StringBuilder();
+        for(ChessLobbies lobby : allLobbies)
+        {
+            if(getOutcome(lobby, currentUsername))
+                resultString.append('W');
+            else
+                resultString.append('L');
+        }
+
+        return resultString.toString();
+    }
+
     private String getOpponent(ChessLobbies lobby, String username) {
         if(Objects.equals(lobby.getPlayerBlack(), username)) {
             return lobby.getPlayerWhite();
@@ -89,6 +102,11 @@ public class ProfileService {
 
     private boolean getOutcome(ChessLobbies lobby, String username) { // MODIFY FOR DRAWS
         ChessGames game = gameRepo.findByLobby(lobby);
+
+        if (game == null || game.getResult() == null) {
+            return false;
+        }
+
         if(Objects.equals(lobby.getPlayerBlack(), username) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) {
             return true;
         }

@@ -4,6 +4,6 @@ import {profileFuncs} from "./profile/profile.js";
 
 addEventListener('DOMContentLoaded', async () => {
     navbarFuncs();
-    await communityFuncs();
     profileFuncs();
+    await communityFuncs();
 });
