@@ -46,13 +46,11 @@ public class LobbyApiController {
 
     @GetMapping("/createQuick")
     public String createQuickLobby(Principal principal) {
-        String lobbyId = chessLobbyService.createLobby(principal.getName());
-        return "play=" + lobbyId;
+        return chessLobbyService.createLobby(principal.getName());
     }
 
     @GetMapping("/create")
     public String createLobby(Principal principal) {
-        String lobbyId = chessLobbyService.createLobby(principal.getName());
-        return "play=" + lobbyId;
+        return chessLobbyService.createLobby(principal.getName());
     }
 }

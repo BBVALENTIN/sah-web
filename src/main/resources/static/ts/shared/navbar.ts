@@ -4,7 +4,8 @@ function navbarQuickPlay() {
     if(quickPlayNav) {
         quickPlayNav.addEventListener('click', async () => {
             const res = await fetch('/api/lobby/createQuick');
-            window.location.href = await res.text();
+            const lobbyId = await res.text();
+            window.location.href = `/play=${lobbyId}`;
         });
     }
     else {
