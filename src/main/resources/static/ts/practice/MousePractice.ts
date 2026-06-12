@@ -85,7 +85,7 @@ export class MousePractice {
             this.offsetX = x - vizualCol * Board.squareSize;
             this.offsetY = y - vizualRow * Board.squareSize;
 
-            this.tabla.redraw(this.tabla.pieces.filter(p => p !== piesa));
+            this.tabla.redraw(this.tabla.pieces.filter(p => p !== piesa), this.piesaSelectata);
         }
     }
     public async MouseMove(e:any):Promise<void> {

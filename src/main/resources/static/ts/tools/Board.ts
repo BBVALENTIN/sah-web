@@ -96,7 +96,7 @@ export class Board {
             c = 1 - c;
         }
 
-        this.desenareUltimaMiscare(this.ctx);
+        this.drawLastMove(this.ctx);
 
 
         pieces.forEach(p => this.drawOrientedPiece(p));
@@ -111,14 +111,19 @@ export class Board {
     private drawOrientedPiece(piece: Piece) {
         const size = Board.squareSize;
 
-        const vizualCol = this.isBlack ? 7 - piece.col : piece.col;
-        const vizualRow = this.isBlack ? 7 - piece.row : piece.row;
+        if (piece.isDragging && piece.dragX !== undefined && piece.dragY !== undefined) {
+            piece.draw(this.ctx);
+            return;
+        }
+
+        const visualCol = this.isBlack ? 7 - piece.col : piece.col;
+        const visualRow = this.isBlack ? 7 - piece.row : piece.row;
 
         if (piece.isDragging && piece.dragX !== undefined && piece.dragY !== undefined) {
             piece.draw(this.ctx);
         } else {
-            const x = vizualCol * size;
-            const y = vizualRow * size;
+            const x = visualCol * size;
+            const y = visualRow * size;
 
             if (piece.img && piece.img.complete) {
                 this.ctx.drawImage(piece.img, x, y, size, size);
@@ -171,7 +176,7 @@ export class Board {
         this.pieces = piecesData.map((p:any) => this.createPieceFromData(p));
     }
 
-    desenareUltimaMiscare(ctx: CanvasRenderingContext2D) {
+    drawLastMove(ctx: CanvasRenderingContext2D) {
         const size = Board.squareSize;
         if(!this.lastMove) return;
 
