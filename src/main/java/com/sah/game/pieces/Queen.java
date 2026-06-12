@@ -7,20 +7,20 @@ import com.sah.game.GameEnums.Type;
 public class Queen extends Pieces {
     public Queen(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
-        tip = Type.QUEEN;
+        type = Type.QUEEN;
     }
 
     @Override
-    public boolean miscare(int targetRow, int targetCol) {
-        if(acelasiPatrat(targetRow, targetCol)){
+    public boolean move(int targetRow, int targetCol) {
+        if(sameSquare(targetRow, targetCol)){
             return false;
         }
-        if(patratValid(targetRow, targetCol) && !piesaPeDiagonala(targetRow, targetCol)){
+        if(validSquare(targetRow, targetCol) && !pieceOnDiagonal(targetRow, targetCol)){
             if(Math.abs(targetRow - row) == Math.abs(targetCol - col)){
                 return true;
             }
         }
-        if(patratValid(targetRow, targetCol) && !piesaInFata(targetRow, targetCol)){
+        if(validSquare(targetRow, targetCol) && !pieceInFront(targetRow, targetCol)){
             if(targetRow == row || targetCol == col){
                 return true;
             }

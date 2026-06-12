@@ -8,10 +8,10 @@ public class Pieces {
     public int x, y;
     public int col, row, precol, prerow;
     public ColorType color;
-    public boolean miscata;
-    public Pieces lovestePiese;
+    public boolean moved;
+    public Pieces hittedPiece;
     public String img;
-    public Type tip;
+    public Type type;
     protected ChessBoard game;
 
     public Pieces(ColorType color, int row, int col, ChessBoard game)
@@ -21,7 +21,7 @@ public class Pieces {
         this.row = row;
         precol = col;
         prerow = row;
-        this.miscata = false;
+        this.moved = false;
         this.game = game;
     }
     public void setPosition(int row, int col) {
@@ -29,13 +29,13 @@ public class Pieces {
         this.precol = this.col;
         this.row = row;
         this.col = col;
-        this.miscata = true;
+        this.moved = true;
     }
 
-    public Pieces getLovesteP(int targetRow, int targetCol) {
-        Pieces lovestePiese = game.board[targetRow][targetCol];
-        if (lovestePiese != null && lovestePiese != this) {
-            return lovestePiese;
+    public Pieces getHittedPiece(int targetRow, int targetCol) {
+        Pieces hittedPiece = game.board[targetRow][targetCol];
+        if (hittedPiece != null && hittedPiece != this) {
+            return hittedPiece;
         }
         return null;
     }
@@ -46,18 +46,18 @@ public class Pieces {
         return targetCol >= 0 && targetRow >=0 && targetCol <= 7 && targetRow <= 7;
     }
 
-    public boolean poateAjunge(int targetRow, int targetCol){
+    public boolean canGetTo(int targetRow, int targetCol){
         return false;
     }
 
-    public boolean piesaInFata(int targetRow, int targetCol) {
+    public boolean pieceInFront(int targetRow, int targetCol) {
         if (this.row == targetRow) {
             int start = Math.min(this.col, targetCol) + 1;
             int end = Math.max(this.col, targetCol);
             for (int c = start; c < end; c++) {
                 Pieces piesa = game.board[this.row][c];
                 if (piesa != null) {
-                    lovestePiese = piesa;
+                    hittedPiece = piesa;
                     return true;
                 }
             }
@@ -69,7 +69,7 @@ public class Pieces {
             for (int r = start; r < end; r++) {
                 Pieces piesa = game.board[r][this.col];
                 if (piesa != null) {
-                    lovestePiese = piesa;
+                    hittedPiece = piesa;
                     return true;
                 }
             }
@@ -79,35 +79,35 @@ public class Pieces {
     }
 
 
-    public boolean patratValid(int targetRow, int targetCol) {
-        lovestePiese = getLovesteP(targetRow, targetCol);
-        if (lovestePiese == null) {
+    public boolean validSquare(int targetRow, int targetCol) {
+        hittedPiece = getHittedPiece(targetRow, targetCol);
+        if (hittedPiece == null) {
             return true;
         }
-        if(lovestePiese != null && lovestePiese.color != this.color){
+        if(hittedPiece != null && hittedPiece.color != this.color){
             return true;
         }
         return false;
     }
 
-    public boolean acelasiPatrat(int targetRow, int targetCol) {
+    public boolean sameSquare(int targetRow, int targetCol) {
         return (targetRow == this.row && targetCol == this.col);
     }
 
 
-    public boolean miscare(int targetRow, int targetCol)
+    public boolean move(int targetRow, int targetCol)
     {
         return false;
     }
 
-    public boolean piesaPeDiagonala(int targetRow, int targetCol) {
+    public boolean pieceOnDiagonal(int targetRow, int targetCol) {
         // top-left
         if (targetRow < this.row && targetCol < this.col) {
             int i = this.row - 1;
             int j = this.col - 1;
             while (i > targetRow && j > targetCol) {
                 if (game.board[i][j] != null) {
-                    lovestePiese = game.board[i][j];
+                    hittedPiece = game.board[i][j];
                     return true;
                 }
                 i--;
@@ -121,7 +121,7 @@ public class Pieces {
             int j = this.col + 1;
             while (i > targetRow && j < targetCol) {
                 if (game.board[i][j] != null) {
-                    lovestePiese = game.board[i][j];
+                    hittedPiece = game.board[i][j];
                     return true;
                 }
                 i--;
@@ -135,7 +135,7 @@ public class Pieces {
             int j = this.col - 1;
             while (i < targetRow && j > targetCol) {
                 if (game.board[i][j] != null) {
-                    lovestePiese = game.board[i][j];
+                    hittedPiece = game.board[i][j];
                     return true;
                 }
                 i++;
@@ -149,7 +149,7 @@ public class Pieces {
             int j = this.col + 1;
             while (i < targetRow && j < targetCol) {
                 if (game.board[i][j] != null) {
-                    lovestePiese = game.board[i][j];
+                    hittedPiece = game.board[i][j];
                     return true;
                 }
                 i++;

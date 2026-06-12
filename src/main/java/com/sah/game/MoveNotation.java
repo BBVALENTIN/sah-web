@@ -38,7 +38,7 @@ public class MoveNotation {
         }
 
         char pieceChar;
-        pieceChar = Character.toUpperCase(getCharFromTip(dto.piece.tip));
+        pieceChar = Character.toUpperCase(getCharFromTip(dto.piece.type));
 
         char colChar = (char)('a'+dto.targetCol);
         int boardRow = 8 - dto.targetRow;
@@ -47,13 +47,13 @@ public class MoveNotation {
         int fromBoardRow = 8 - dto.fromRow;
 
         String disambiguation = "";
-        if(dto.piece.tip != Type.PAWN)
+        if(dto.piece.type != Type.PAWN)
         {
             for(Pieces p: dto.oldPieces)
             {
                 if(p == dto.piece)
                     continue;
-                if((p.color == dto.piece.color && dto.piece.tip == p.tip) && p.poateAjunge(dto.targetRow, dto.targetCol))
+                if((p.color == dto.piece.color && dto.piece.type == p.type) && p.canGetTo(dto.targetRow, dto.targetCol))
                 {
                     if(p.col == dto.fromCol) {
                         disambiguation = "" + fromBoardRow;
@@ -67,7 +67,7 @@ public class MoveNotation {
 
         String notation = "";
 
-        if(dto.piece.tip == Type.PAWN) {
+        if(dto.piece.type == Type.PAWN) {
             if (dto.isCapture)
             {
                 notation = fromColChar+"x"+colChar+boardRow;
@@ -122,7 +122,7 @@ public class MoveNotation {
                         fen.append(emptySquares);
                         emptySquares = 0;
                     }
-                    char type = getCharFromTip(piese.tip);
+                    char type = getCharFromTip(piese.type);
                     fen.append(piese.color == ColorType.WHITE ? Character.toUpperCase(type) : Character.toLowerCase(type));
                 }
             }
