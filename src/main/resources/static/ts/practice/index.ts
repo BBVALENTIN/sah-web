@@ -91,7 +91,7 @@ async function loadBoard() {
         }
     }
     catch(e) {
-        console.error('Eroare: ', e);
+        console.error('Error: ', e);
     }
 }
 

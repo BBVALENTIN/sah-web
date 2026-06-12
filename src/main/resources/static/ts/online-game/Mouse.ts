@@ -9,7 +9,7 @@
     export class Mouse {
         canvas: HTMLCanvasElement;
         board: Board;
-        piesaSelectata: Piece | undefined;
+        selectedPiece: Piece | undefined;
         soundManager: SoundManager = new SoundManager();
         offsetX: number;
         offsetY: number;
@@ -18,7 +18,7 @@
         constructor(canvas: HTMLCanvasElement, board: Board) {
             this.canvas = canvas;
             this.board = board;
-            this.piesaSelectata = undefined;
+            this.selectedPiece = undefined;
             this.offsetX = 0;
             this.offsetY = 0;
             this.winner = undefined;
@@ -49,53 +49,53 @@
 
         public onMouseDown(e:any):void {
             const { col, row, x, y} = this.getSquareFromMouse(e);
-            const piesa = this.board.getPiece(row, col);
-            if (piesa && piesa.color === culoareCurenta) {
-                this.piesaSelectata = piesa;
-                this.piesaSelectata.isDragging = true;
+            const piece = this.board.getPiece(row, col);
+            if (piece && piece.color === culoareCurenta) {
+                this.selectedPiece = piece;
+                this.selectedPiece.isDragging = true;
 
-                const vizualCol = this.board.isBlack ? 7 - piesa.col : piesa.col;
-                const vizualRow = this.board.isBlack ? 7 - piesa.row : piesa.row;
+                const visualCol = this.board.isBlack ? 7 - piece.col : piece.col;
+                const visualRow = this.board.isBlack ? 7 - piece.row : piece.row;
 
-                this.offsetX = x - vizualCol * Board.squareSize;
-                this.offsetY = y - vizualRow * Board.squareSize;
+                this.offsetX = x - visualCol * Board.squareSize;
+                this.offsetY = y - visualRow * Board.squareSize;
 
-                this.board.redraw(this.board.pieces.filter(p => p !== piesa));
+                this.board.redraw(this.board.pieces.filter(p => p !== piece), this.selectedPiece);
             }
         }
         public async MouseMove(e:any):Promise<void> {
             const { col, row, x, y} = this.getSquareFromMouse(e);
-            const piesa = this.board.getPiece(row, col);
-            if(piesa && piesa.color == culoareCurenta)
+            const piece = this.board.getPiece(row, col);
+            if(piece && piece.color == culoareCurenta)
                 this.canvas.style.cursor = "grab";
             else
                 this.canvas.style.cursor = "default";
-            if (!this.piesaSelectata) return;
+            if (!this.selectedPiece) return;
 
             this.canvas.style.cursor = "grabbing";
-            this.piesaSelectata.dragX = x - this.offsetX;
-            this.piesaSelectata.dragY = y - this.offsetY;
+            this.selectedPiece.dragX = x - this.offsetX;
+            this.selectedPiece.dragY = y - this.offsetY;
 
-            this.board.redraw(this.board.pieces, this.piesaSelectata);
+            this.board.redraw(this.board.pieces, this.selectedPiece);
         }
         public async onMouseUp(e: any): Promise<void> {
-            if(!this.piesaSelectata) { return; }
+            if(!this.selectedPiece) { return; }
             const { col, row } = this.getSquareFromMouse(e);
             const currentLobbyId = this.lobbyInfo?.lobbyId;
             if(!currentLobbyId) {
-                console.error("nu stim lobbyId");
+                console.error("Lobby not found.");
                 return;
             }
 
-            this.board.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
+            this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
             try {
                 state.stompClient.send(
                     "/app/chess.move",
                     {},
                     JSON.stringify({
-                        fromRow: this.piesaSelectata!.row,
-                        fromCol: this.piesaSelectata!.col,
+                        fromRow: this.selectedPiece!.row,
+                        fromCol: this.selectedPiece!.col,
                         toRow: row,
                         toCol: col,
                         player: loggedUsername,
@@ -103,14 +103,14 @@
                     })
                 );
             } catch(err){
-                console.log("eroare cine stie de ce");
+                console.log("Error: ", err);
             } finally {
-                if(this.piesaSelectata) {
+                if(this.selectedPiece) {
                     this.board.redraw(this.board.pieces);
-                    this.piesaSelectata.isDragging = false;
-                    this.piesaSelectata.dragX = undefined;
-                    this.piesaSelectata.dragY = undefined;
-                    this.piesaSelectata = undefined;
+                    this.selectedPiece.isDragging = false;
+                    this.selectedPiece.dragX = undefined;
+                    this.selectedPiece.dragY = undefined;
+                    this.selectedPiece = undefined;
                     this.canvas.style.cursor = "default";
                 }
             }

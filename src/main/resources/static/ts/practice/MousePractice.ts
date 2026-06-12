@@ -10,8 +10,8 @@ const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;
 export let FEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'; // starting FEN
 export class MousePractice {
     canvas: HTMLCanvasElement;
-    tabla: Board;
-    piesaSelectata: Piece | undefined;
+    board: Board;
+    selectedPiece: Piece | undefined;
     soundManager: SoundManager = new SoundManager();
     offsetX: number;
     offsetY: number;
@@ -20,11 +20,11 @@ export class MousePractice {
     currentMove: string;
     moveList: MoveList;
     onEngineRequest?: (fen: string) => void;
-    constructor(canvas: HTMLCanvasElement, tabla: Board, moveList: MoveList) {
+    constructor(canvas: HTMLCanvasElement, board: Board, moveList: MoveList) {
         this.canvas = canvas;
-        this.tabla = tabla;
+        this.board = board;
         this.moveList = moveList;
-        this.piesaSelectata = undefined;
+        this.selectedPiece = undefined;
         this.offsetX = 0;
         this.offsetY = 0;
         this.moveNumber = 1;
@@ -40,18 +40,18 @@ export class MousePractice {
         let mutare: Promise<Mutare_Reusita>;
         let errorText: any;
         const moveData = {
-            fromRow: this.piesaSelectata!.row,
-            fromCol: this.piesaSelectata!.col,
+            fromRow: this.selectedPiece!.row,
+            fromCol: this.selectedPiece!.col,
             toRow: row,
             toCol: col
         };
-        const respMutare: Response = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
-        if(!respMutare.ok) {
-            const errorText = await respMutare.text();
+        const res: Response = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
+        if(!res.ok) {
+            const errorText = await res.text();
             this.reset();
             throw new Error(errorText);
         }
-        mutare = await respMutare.json();
+        mutare = await res.json();
         return mutare;
     }
 
@@ -63,7 +63,7 @@ export class MousePractice {
         let col: number = Math.floor(x / Board.squareSize);
         let row: number = Math.floor(y / Board.squareSize);
 
-        if(this.tabla.isBlack) {
+        if(this.board.isBlack) {
             col = 7 - col;
             row = 7 - row;
         }
@@ -74,40 +74,40 @@ export class MousePractice {
 
     public async onMouseDown(e:any) {
         const { col, row, x, y} = this.getSquareFromMouse(e);
-        const piesa = this.tabla.getPiece(row, col);
+        const piesa = this.board.getPiece(row, col);
         if (piesa && piesa.color === this.currentColor) {
-            this.piesaSelectata = piesa;
-            this.piesaSelectata.isDragging = true;
+            this.selectedPiece = piesa;
+            this.selectedPiece.isDragging = true;
 
-            const vizualCol = this.tabla.isBlack ? 7 - piesa.col : piesa.col;
-            const vizualRow = this.tabla.isBlack ? 7 - piesa.row : piesa.row;
+            const vizualCol = this.board.isBlack ? 7 - piesa.col : piesa.col;
+            const vizualRow = this.board.isBlack ? 7 - piesa.row : piesa.row;
 
             this.offsetX = x - vizualCol * Board.squareSize;
             this.offsetY = y - vizualRow * Board.squareSize;
 
-            this.tabla.redraw(this.tabla.pieces.filter(p => p !== piesa), this.piesaSelectata);
+            this.board.redraw(this.board.pieces.filter(p => p !== piesa), this.selectedPiece);
         }
     }
     public async MouseMove(e:any):Promise<void> {
         const { col, row, x, y} = this.getSquareFromMouse(e);
-        const piesa = this.tabla.getPiece(row, col);
+        const piesa = this.board.getPiece(row, col);
         if(piesa && piesa.color == this.currentColor)
             this.canvas.style.cursor = "grab";
         else
             this.canvas.style.cursor = "default";
-        if (!this.piesaSelectata) return;
+        if (!this.selectedPiece) return;
 
         this.canvas.style.cursor = "grabbing";
-        this.piesaSelectata.dragX = x - this.offsetX;
-        this.piesaSelectata.dragY = y - this.offsetY;
+        this.selectedPiece.dragX = x - this.offsetX;
+        this.selectedPiece.dragY = y - this.offsetY;
 
-        this.tabla.redraw(this.tabla.pieces, this.piesaSelectata);
+        this.board.redraw(this.board.pieces, this.selectedPiece);
     }
     public async onMouseUp(e: any): Promise<void> {
-        if(!this.piesaSelectata) { return; }
+        if(!this.selectedPiece) { return; }
         const { col, row } = this.getSquareFromMouse(e);
 
-        this.tabla.setLastMove(this.piesaSelectata.row, this.piesaSelectata.col, row, col);
+        this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
         try {
             const result:Mutare_Reusita | undefined = await this.handleMutareAPI(e);
@@ -117,7 +117,7 @@ export class MousePractice {
             this.playSound(result);
 
             this.moveList.addMove(result.pgn);
-            this.tabla.setPiecesFromServer(result.updatedPieces);
+            this.board.setPiecesFromServer(result.updatedPieces);
             this.afterMove(result);
             FEN = result.fen;
             if(this.onEngineRequest)
@@ -132,16 +132,16 @@ export class MousePractice {
     }
 
     reset() {
-        if(this.piesaSelectata) {
-            this.piesaSelectata.isDragging = false;
-            this.piesaSelectata.dragX = undefined;
-            this.piesaSelectata.dragY = undefined;
+        if(this.selectedPiece) {
+            this.selectedPiece.isDragging = false;
+            this.selectedPiece.dragX = undefined;
+            this.selectedPiece.dragY = undefined;
         }
 
-        this.piesaSelectata = undefined;
+        this.selectedPiece = undefined;
 
         this.canvas.style.cursor = "default";
-        this.tabla.redraw(this.tabla.pieces);
+        this.board.redraw(this.board.pieces);
     }
 
     resetByButton(): void {
