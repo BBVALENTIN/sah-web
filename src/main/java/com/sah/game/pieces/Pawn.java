@@ -8,24 +8,24 @@ import com.sah.game.GameEnums.Type;
 public class Pawn extends Pieces {
     public Pawn(ColorType color, int row, int col, ChessBoard game) {
         super(color, row, col, game);
-        tip = Type.PAWN;
+        type = Type.PAWN;
     }
 
     @Override
-    public boolean miscare(int targetRow, int targetCol)
+    public boolean move(int targetRow, int targetCol)
     {
-        int directie;
+        int direction;
         LastMove lastMove = game.getLastMove();
         if(color == ColorType.WHITE)
-            directie = -1;
+            direction = -1;
         else
-            directie = 1;
-        this.lovestePiese = getLovesteP(targetRow, targetCol);
-        if(targetCol == col && targetRow == row+directie && this.lovestePiese == null)
+            direction = 1;
+        this.hittedPiece = getHittedPiece(targetRow, targetCol);
+        if(targetCol == col && targetRow == row+direction && this.hittedPiece == null)
             return true;
-        if(targetCol == col && targetRow == row+directie*2 && this.miscata == false && piesaInFata(targetRow, targetCol) == false && this.lovestePiese == null)
+        if(targetCol == col && targetRow == row+direction*2 && this.moved == false && pieceInFront(targetRow, targetCol) == false && this.hittedPiece == null)
             return true;
-        if(Math.abs(targetCol-col) == 1 && targetRow == row+directie && lovestePiese != null && lovestePiese.color != this.color)
+        if(Math.abs(targetCol-col) == 1 && targetRow == row+direction && hittedPiece != null && hittedPiece.color != this.color)
             return true;
         return false;
     }

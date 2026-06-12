@@ -7,17 +7,17 @@ import com.sah.game.GameEnums.Type;
 public class Rook extends Pieces {
     public Rook(ColorType color, int row, int col, ChessBoard game){
         super(color, row, col, game);
-        tip = Type.ROOK;
+        type = Type.ROOK;
     }
 
     @Override
-    public boolean miscare(int targetRow, int targetCol) {
-        if(acelasiPatrat(targetRow, targetCol)){
+    public boolean move(int targetRow, int targetCol) {
+        if(sameSquare(targetRow, targetCol)){
             return false;
         }
 
         if (targetRow == this.row || targetCol == this.col) {
-            if (!piesaInFata(targetRow, targetCol) && patratValid(targetRow, targetCol)) {
+            if (!pieceInFront(targetRow, targetCol) && validSquare(targetRow, targetCol)) {
                 return true;
             }
         }
@@ -27,8 +27,8 @@ public class Rook extends Pieces {
     }
 
     @Override
-    public boolean poateAjunge(int targetRow, int targetCol) {
-        if ((targetRow == this.row || targetCol == this.col) && !piesaInFata(targetRow, targetCol)) {
+    public boolean canGetTo(int targetRow, int targetCol) {
+        if ((targetRow == this.row || targetCol == this.col) && !pieceInFront(targetRow, targetCol)) {
             return true;
         }
         return false;

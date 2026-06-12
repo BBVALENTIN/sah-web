@@ -81,28 +81,28 @@ public class ChessBoard {
             return new MoveResultDTO(ErrorCodes.WRONG_ROW);
         }
         boolean enPassant = false;
-        if(selectedPiece.tip == Type.PAWN && this.lastMove != null) {
+        if(selectedPiece.type == Type.PAWN && this.lastMove != null) {
 
             if(isEnPassant(selectedPiece, fromRow, fromCol, targetRow, targetCol) && canEnPassant(this.lastMove, selectedPiece, targetRow, targetCol)) {
                 applyEnPassant(selectedPiece, targetRow, targetCol);
                 enPassant = true;
             }
         }
-        if (!selectedPiece.miscare(targetRow, targetCol) && enPassant == false) {
+        if (!selectedPiece.move(targetRow, targetCol) && enPassant == false) {
             return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
         }
-        CastlingNotation rocadaNotatie = null;
+        CastlingNotation castleNotation = null;
 
         if (castling != null && canCastle == true) {
-            Pieces rocadaCopy = castling;
+            Pieces castleCopy = castling;
             makeRocada(castling);
-            rocadaNotatie = getRocadaType(rocadaCopy);
+            castleNotation = getRocadaType(castleCopy);
         } else if(castling != null && canCastle == false)
         {
             return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
         }
 
-        capturedPiece = getPiesaCapturata(targetRow, targetCol);
+        capturedPiece = getCapturedPiece(targetRow, targetCol);
         boolean isCapture = false;
         if(capturedPiece != null) {
             isCapture = true;
@@ -112,9 +112,9 @@ public class ChessBoard {
         List<Pieces> oldList = new ArrayList<>(piecesList);
 
 
-        mutarePiesaSelectata(fromRow, fromCol, targetRow, targetCol, selectedPiece);
+        moveSelectedPiece(fromRow, fromCol, targetRow, targetCol, selectedPiece);
 
-        if(selectedPiece.tip == Type.PAWN)
+        if(selectedPiece.type == Type.PAWN)
         {
             checkPromotion(selectedPiece, targetRow, targetCol);
         }
@@ -128,15 +128,15 @@ public class ChessBoard {
         lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol, toDTO(selectedPiece, targetRow, targetCol));
         switchTurn();
 
-        Pieces regeAdvers = getRege(false);
+        Pieces opponentKing = getKing(false);
 
-        boolean isCheck = esteRegeInSah(regeAdvers);
+        boolean isCheck = esteRegeInSah(opponentKing);
 
         if (isCheck) {
-            isCheckMate = esteSahMat(regeAdvers);
+            isCheckMate = esteSahMat(opponentKing);
         }
         increaseHalfMove(selectedPiece, isCapture);
-        MoveDataNotationDTO dto = new MoveDataNotationDTO(selectedPiece, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, currentColor, rocadaNotatie, oldList);
+        MoveDataNotationDTO dto = new MoveDataNotationDTO(selectedPiece, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, currentColor, castleNotation, oldList);
         String currentFormattedMove = moveNotation.formatMove(dto);
         String currentFEN = moveNotation.generateFEN(board, currentColor, halfMove);
 
@@ -172,7 +172,7 @@ public class ChessBoard {
     }
 
     private boolean isEnPassant(Pieces pawn, int fromRow, int fromCol, int targetRow, int targetCol) {
-        if(pawn.tip != Type.PAWN) return false;
+        if(pawn.type != Type.PAWN) return false;
 
         int dir = (pawn.color == ColorType.WHITE) ? -1 : 1;
 
@@ -192,7 +192,7 @@ public class ChessBoard {
 
         Pieces capturedPawn = board[targetRow + dir][targetCol];
 
-        if(capturedPawn != null && capturedPawn.tip == Type.PAWN) {
+        if(capturedPawn != null && capturedPawn.type == Type.PAWN) {
             board[targetRow+dir][targetCol] = null;
             capturedPieces.add(capturedPawn);
         }
@@ -218,7 +218,7 @@ public class ChessBoard {
     }
 
     private void increaseHalfMove(Pieces selectedPiece, boolean isCapture) {
-        if(selectedPiece.tip == Type.PAWN || isCapture) {
+        if(selectedPiece.type == Type.PAWN || isCapture) {
             halfMove = 0;
         }
         else {
@@ -226,7 +226,7 @@ public class ChessBoard {
         }
     }
 
-    private void mutarePiesaSelectata(int fromRow, int fromCol, int targetRow, int targetCol, Pieces selectedPiece)
+    private void moveSelectedPiece(int fromRow, int fromCol, int targetRow, int targetCol, Pieces selectedPiece)
     {
         board[fromRow][fromCol] = null;
         board[targetRow][targetCol] = selectedPiece;
@@ -246,7 +246,7 @@ public class ChessBoard {
     }
 
 
-    public Pieces getPiesaCapturata(int targetRow, int targetCol) {
+    public Pieces getCapturedPiece(int targetRow, int targetCol) {
         return board[targetRow][targetCol];
     }
 
@@ -263,9 +263,9 @@ public class ChessBoard {
     }
 
 
-    public Pieces getRege(boolean opponent) {
+    public Pieces getKing(boolean opponent) {
         for (Pieces piece : piecesList) {
-            if (piece.tip == Type.KING) {
+            if (piece.type == Type.KING) {
                 if (opponent && piece.color != currentColor)
                     return piece;
                 if (!opponent && piece.color == currentColor)
@@ -277,14 +277,14 @@ public class ChessBoard {
 
 
     private boolean esteRegeleMeuInSah() {
-        Pieces rege = getRege(false);
+        Pieces rege = getKing(false);
         return rege != null && esteRegeInSah(rege);
     }
 
     public boolean esteRegeInSah(Pieces rege) {
         for (Pieces piece : piecesList) {
             if (piece.color != rege.color) {
-                if (piece.miscare(rege.row, rege.col)) {
+                if (piece.move(rege.row, rege.col)) {
                     checkingPiece = piece;
                     return true;
                 }
@@ -296,7 +296,7 @@ public class ChessBoard {
 
     public static PieceDTO toDTO(Pieces p, int r, int c) {
         return new PieceDTO(
-                p.tip,
+                p.type,
                 p.color,
                 r,
                 c
@@ -335,14 +335,14 @@ public class ChessBoard {
     {
         if(!esteRegeInSah(rege))
             return false;
-        if(miscareRege(rege))
+        if(moveRege(rege))
             return false;
         if(canSaveRege(rege))
             return false;
         return true;
     }
 
-    private boolean miscareRege(Pieces rege){
+    private boolean moveRege(Pieces rege){
         if(isValidMoveRege(rege, -1, -1)) return true;
         if(isValidMoveRege(rege, -1, -0)) return true;
         if(isValidMoveRege(rege, -1, 1)) return true;
@@ -390,13 +390,13 @@ public class ChessBoard {
             if (piece.color != rege.color)
                 continue;
 
-            if(piece.tip == Type.KING)
+            if(piece.type == Type.KING)
                 continue;
 
             for(int r = 0; r < 8; r++)
                 for(int c = 0; c < 8; c++)
                 {
-                    if(!piece.miscare(r, c))
+                    if(!piece.move(r, c))
                         continue;
 
                     Pieces lovita = board[r][c];
@@ -427,7 +427,7 @@ public class ChessBoard {
     private void checkPromotion(Pieces piece, int row, int col)
     {
         promoted = false;
-        if(row == 7 && piece.color == ColorType.BLACK && piece.tip == Type.PAWN) {
+        if(row == 7 && piece.color == ColorType.BLACK && piece.type == Type.PAWN) {
             board[row][col] = new Queen(piece.color, row, col, this);
             promoted = true;
         }

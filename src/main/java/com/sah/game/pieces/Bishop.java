@@ -8,13 +8,13 @@ public class Bishop extends Pieces {
     public Bishop(ColorType color, int row, int col, ChessBoard game)
     {
         super(color, row, col, game);
-        tip = Type.BISHOP;
+        type = Type.BISHOP;
     }
 
     @Override
-    public boolean miscare(int targetRow, int targetCol) {
+    public boolean move(int targetRow, int targetCol) {
 
-        if(patratValid(targetRow, targetCol) && Math.abs(targetRow - this.row) == Math.abs(targetCol - this.col) && piesaPeDiagonala(targetRow, targetCol) == false && !acelasiPatrat(targetRow, targetCol))
+        if(validSquare(targetRow, targetCol) && Math.abs(targetRow - this.row) == Math.abs(targetCol - this.col) && pieceOnDiagonal(targetRow, targetCol) == false && !sameSquare(targetRow, targetCol))
             return true;
         return false;
     }
