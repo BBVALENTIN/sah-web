@@ -359,7 +359,7 @@ public class ChessBoard {
         int newRow = rege.row + rowSafe;
         int newCol = rege.col + colSafe;
 
-        if(!rege.peTabla(newRow, newCol)) return false;
+        if(!rege.onTable(newRow, newCol)) return false;
 
         Pieces lovita = board[newRow][newCol];
 

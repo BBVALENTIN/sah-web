@@ -41,7 +41,7 @@ public class Pieces {
     }
 
 
-    public boolean peTabla(int targetRow, int targetCol)
+    public boolean onTable(int targetRow, int targetCol)
     {
         return targetCol >= 0 && targetRow >=0 && targetCol <= 7 && targetRow <= 7;
     }

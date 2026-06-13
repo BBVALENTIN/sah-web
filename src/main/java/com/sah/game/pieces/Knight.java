@@ -14,7 +14,7 @@ public class Knight extends Pieces {
     @Override
     public boolean move(int targetRow, int targetCol)
     {
-        if(validSquare(targetRow, targetCol) && peTabla(targetRow, targetCol))
+        if(validSquare(targetRow, targetCol) && onTable(targetRow, targetCol))
             if(Math.abs(targetRow-row) * Math.abs(targetCol-col) == 2)
                 return true;
         return false;
