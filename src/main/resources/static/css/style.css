@@ -54,6 +54,10 @@ html, body {
     font-family: inherit;
 }
 
+.icon {
+    color: var(--c-font);
+}
+
 /* ------------------------ START LUCRURI LEGATE DE CANVAS SI DE INFO WRAPPEr ------------------------*/
 #chessCanvas{
     border: 1px solid black;
@@ -174,7 +178,12 @@ button, input, optgroup, select, textarea {
     border-radius: 6px;
     border: 1px solid #444;
     background-color: #2c2c2c;
+    scrollbar-width: none;
     color: #f5f5f5;
+}
+
+#move-list::-webkit-scrollbar {
+    display: none;
 }
 
 .move-number {
@@ -682,6 +691,13 @@ input:checked + .slider:before {
     border-radius: 6px;
     border: 1px solid #444;
     font-size: 14px;
+}
+
+.misc-buttons button {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
 }
 
 /* WIN / LOSE */

@@ -7,8 +7,8 @@ import {SidesExplicit} from "../tools/Enums.js";
 export class MouseBot extends MousePractice {
     private gameId: string;
 
-    constructor(canvas: HTMLCanvasElement, tabla: Board, gameId: string, moveList: MoveList, playerSide: SidesExplicit) {
-        super(canvas, tabla, moveList);
+    constructor(canvas: HTMLCanvasElement, board: Board, gameId: string, moveList: MoveList, playerSide: SidesExplicit) {
+        super(canvas, board, moveList);
         this.gameId = gameId;
         this.currentColor = playerSide;
     }
@@ -20,8 +20,8 @@ export class MouseBot extends MousePractice {
         const { col, row } = this.getSquareFromMouse(e);
         const moveData = {
             gameId: this.gameId,
-            fromRow: this.piesaSelectata!.row,
-            fromCol: this.piesaSelectata!.col,
+            fromRow: this.selectedPiece!.row,
+            fromCol: this.selectedPiece!.col,
             toRow: row,
             toCol: col
         };
@@ -63,8 +63,8 @@ export class MouseBot extends MousePractice {
 
         if (response.ok) {
             const result: Mutare_Reusita = await response.json();
-            this.tabla.setPiecesFromServer(result.updatedPieces);
-            this.tabla.redraw();
+            this.board.setPiecesFromServer(result.updatedPieces);
+            this.board.redraw();
             this.moveList.addMove(result.pgn);
             this.addMoveToCopyable(result.pgn);
             this.playSound(result);

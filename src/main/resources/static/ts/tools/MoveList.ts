@@ -43,6 +43,8 @@ export class MoveList {
                 this.createCell("move", row.black ?? "")
             );
         }
+
+        this.container.scrollTop = this.container.scrollHeight;
     }
 
     public addWholePGN(PGN: string) {
