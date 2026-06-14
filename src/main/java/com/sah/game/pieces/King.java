@@ -24,7 +24,7 @@ public class King extends Pieces {
 
            if(targetCol == col + 2 && targetRow == row && pieceInFront(targetRow, targetCol) == false)
            {
-               if(!checkBigCastle(color, row, precol+1, precol+2))
+               if(!checkSmallCastle(color, row, precol+1, precol+2))
                    return false;
                if(board[prerow][precol+3].moved == false){
                    game.castling = board[prerow][precol+3];
@@ -34,7 +34,7 @@ public class King extends Pieces {
 
            if(targetCol == col - 2 && targetRow == row && !pieceInFront(targetRow, targetCol))
            {
-               if(!checkSmallCastle(color, row, precol-1, precol-2)) {
+               if(!checkBigCastle(color, row, precol-1, precol-2)) {
                    return false;
                }
                if(board[prerow][precol-4].moved == false){
@@ -46,9 +46,9 @@ public class King extends Pieces {
         return false;
     }
 
-    private boolean checkBigCastle(ColorType culoareCurenta, int targetRow, int square1, int square2) {
+    private boolean checkBigCastle(ColorType currentColor, int targetRow, int square1, int square2) {
         for(Pieces p : game.piecesList) {
-            if(p.color == culoareCurenta) continue;
+            if(p.color == currentColor) continue;
             if(p.type == Type.KING) continue;
             if(p.move(targetRow, square1) || p.move(targetRow, square2)) {
                 game.canCastle = true;
@@ -58,27 +58,29 @@ public class King extends Pieces {
         return true;
     }
 
-    private boolean checkSmallCastle(ColorType culoareCurenta, int targetRow, int square1, int square2) {
+    private boolean checkSmallCastle(ColorType currentColor, int targetRow, int square1, int square2) {
         for(Pieces p : game.piecesList) {
-            if(p.color == culoareCurenta) continue;
+            if(p.color == currentColor) continue;
             if(p.type == Type.KING) continue;
             if(p.move(targetRow, square1) || p.move(targetRow, square2)) {
-                game.canCastle = true;
+                game.canCastle = false;
                 return false;
             }
         }
+        game.canCastle = true;
         return true;
     }
 
-    private boolean checkCastle(ColorType culoareCurenta, int kingRow, int kingCol) {
+    private boolean checkCastle(ColorType currentColor, int kingRow, int kingCol) {
         for(Pieces p : game.piecesList) {
-            if(p.color == culoareCurenta) continue;
+            if(p.color == currentColor) continue;
             if(p.type == Type.KING) continue;
             if(p.move(kingRow, kingCol)) {
                 game.canCastle = false;
                 return false;
             }
         }
+        game.canCastle = true;
         return true;
     }
 }
