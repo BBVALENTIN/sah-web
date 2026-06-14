@@ -48,19 +48,27 @@ public class PostsService {
         return postsRepository.save(posts);
     }
 
-    private List<Posts> returnCleanPosts(Principal principal) {
+    private List<Posts> returnCleanPostsByLikes(Principal principal) {
         return postsRepository.findPostsByDeletedOrderByLikesNumberDesc(active)
                 .stream().limit(limit).collect(Collectors.toList());
     }
 
+//    private List<Posts> returnCleanPostsByDateNewestAndUser() {
+//
+//    }
+
+    private List<Posts> returnCleanPostsByDateNewest() {
+        return postsRepository.findPostsByDeletedOrderByCreatedAtDesc(active)
+                .stream().limit(limit).toList();
+    }
+
     public List<PostDTO> returnPosts(Principal principal) {
         List<PostDTO> postDTOs = new ArrayList<>();
-        List<Posts> posts = returnCleanPosts(principal);
+        List<Posts> posts = returnCleanPostsByDateNewest();
         for(Posts post : posts) {
             PostDTO dto = returnPost(post.getPostId(), principal);
             postDTOs.add(dto);
         }
-        System.out.println(postDTOs);
         return postDTOs;
     }
 
@@ -73,7 +81,7 @@ public class PostsService {
                 .liked(postsLikesRepository.existsByPostAndUser(post, currentUser))
                 .commentNumber(getCommentNumber(post))
                 .createdAt(post.getCreatedAt().format(formatter))
-                .username(currentUser.getUsername())
+                .username(post.getCreator().getUsername())
                 .userAvatar(currentUser.getAvatar())
                 .likeNumber(postsLikesRepository.countByPost(post))
                 .content(post.getContent())
