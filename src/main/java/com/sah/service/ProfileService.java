@@ -107,10 +107,7 @@ public class ProfileService {
             return false;
         }
 
-        if(Objects.equals(lobby.getPlayerBlack(), username) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) {
-            return true;
-        }
-        return false;
+        return (Objects.equals(lobby.getPlayerBlack(), username) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite(), username) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
     }
 
     public String changeDescription(String description, Principal principal) {
