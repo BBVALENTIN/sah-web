@@ -17,8 +17,13 @@ public class King extends Pieces {
         if(validSquare(targetRow, targetCol) && (Math.abs(targetRow - this.row) + Math.abs(targetCol - this.col) == 1 || Math.abs(targetRow - this.row) * Math.abs(targetCol - this.col) == 1)) {
             return true;
         }
-       if(moved == false)
-       {
+
+        if(moved == true) {
+            setAllCastleFalse();
+        }
+
+        if(moved == false)
+        {
            if(!checkCastle(color, row, precol))
                return false;
 
@@ -26,8 +31,9 @@ public class King extends Pieces {
            {
                if(!checkSmallCastle(color, row, precol+1, precol+2))
                    return false;
-               if(board[prerow][precol+3].moved == false){
-                   game.castling = board[prerow][precol+3];
+               if(board[prerow][precol+3].moved == false) {
+                   game.castling = board[prerow][precol + 3];
+                   setAllCastleFalse();
                    return true;
                }
            }
@@ -39,6 +45,7 @@ public class King extends Pieces {
                }
                if(board[prerow][precol-4].moved == false){
                    game.castling = board[prerow][precol-4];
+                   setAllCastleFalse();
                    return true;
                }
            }
@@ -82,5 +89,22 @@ public class King extends Pieces {
         }
         game.canCastle = true;
         return true;
+    }
+
+    private void setPossibleShortCastleFalse() {
+        if(color == ColorType.WHITE)
+            game.castlingInfo.possibleCastleWhiteShort = false;
+        else game.castlingInfo.possibleCastleBlackShort = false;
+    }
+
+    private void setPossibleLongCastleFalse() {
+        if(color == ColorType.WHITE)
+            game.castlingInfo.possibleCastleWhiteLong = false;
+        else game.castlingInfo.possibleCastleBlackLong = false;
+    }
+
+    private void setAllCastleFalse() {
+        setPossibleLongCastleFalse();
+        setPossibleShortCastleFalse();
     }
 }

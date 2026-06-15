@@ -18,10 +18,13 @@ public class Rook extends Pieces {
 
         if (targetRow == this.row || targetCol == this.col) {
             if (!pieceInFront(targetRow, targetCol) && validSquare(targetRow, targetCol)) {
+                if(row == 0)
+                    setPossibleShortCastleFalse();
+                if(row == 7)
+                    setPossibleLongCastleFalse();
                 return true;
             }
         }
-
 
         return false;
     }
@@ -32,5 +35,17 @@ public class Rook extends Pieces {
             return true;
         }
         return false;
+    }
+
+    private void setPossibleShortCastleFalse() {
+        if(color == ColorType.WHITE)
+            game.castlingInfo.possibleCastleWhiteShort = false;
+        else game.castlingInfo.possibleCastleBlackShort = false;
+    }
+
+    private void setPossibleLongCastleFalse() {
+        if(color == ColorType.WHITE)
+            game.castlingInfo.possibleCastleWhiteLong = false;
+        else game.castlingInfo.possibleCastleBlackLong = false;
     }
 }

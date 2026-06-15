@@ -1,9 +1,7 @@
 package com.sah.game;
 
-import com.sah.dto.chess.MoveDataNotationDTO;
+import com.sah.dto.chess.*;
 import com.sah.dto.responses.MoveResultDTO;
-import com.sah.dto.chess.PieceDTO;
-import com.sah.dto.chess.LastMove;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.game.GameEnums.ColorType;
@@ -23,6 +21,7 @@ public class ChessBoard {
     public List<Pieces> piecesList = new ArrayList<>();
     public short movesPlayed, halfMove;
     public boolean promoted, isCheckMate, resignation, canCastle;
+    public CastlingInfoDTO castlingInfo;
     private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
     private Sides winner;
@@ -69,6 +68,7 @@ public class ChessBoard {
         this.winner = null;
         this.movesPlayed = 1;
         this.moveNotation = new MoveNotation();
+        this.castlingInfo = new CastlingInfoDTO();
     }
 
     public synchronized MoveResultDTO makeMove(int fromRow, int fromCol, int targetRow, int targetCol) {
@@ -138,7 +138,7 @@ public class ChessBoard {
         increaseHalfMove(selectedPiece, isCapture);
         MoveDataNotationDTO dto = new MoveDataNotationDTO(selectedPiece, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, currentColor, castleNotation, oldList);
         String currentFormattedMove = moveNotation.formatMove(dto);
-        String currentFEN = moveNotation.generateFEN(board, currentColor, halfMove);
+        String currentFEN = moveNotation.generateFEN(new FENRequestDTO(board, currentColor, halfMove, castlingInfo));
 
         promoted = false;
         if(isCheckMate) {

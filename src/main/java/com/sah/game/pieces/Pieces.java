@@ -10,7 +10,6 @@ public class Pieces {
     public ColorType color;
     public boolean moved;
     public Pieces hittedPiece;
-    public String img;
     public Type type;
     protected ChessBoard game;
 
