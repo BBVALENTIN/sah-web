@@ -1,5 +1,7 @@
 package com.sah.game;
 
+import com.sah.dto.chess.CastlingInfoDTO;
+import com.sah.dto.chess.FENRequestDTO;
 import com.sah.dto.chess.MoveDataNotationDTO;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.CastlingNotation;
@@ -108,13 +110,13 @@ public class MoveNotation {
             movesPlayed++;
     }
 
-    public String generateFEN(Pieces[][] board, ColorType culoareCurenta, short halfMove) {
+    public String generateFEN(FENRequestDTO req) {
         StringBuilder fen = new StringBuilder();
 
         for (int r = 0; r < 8; r++) {
             int emptySquares = 0;
             for (int c = 0; c < 8; c++) {
-                Pieces piese = board[r][c];
+                Pieces piese = req.board[r][c];
                 if (piese == null) {
                     emptySquares++;
                 } else {
@@ -130,13 +132,14 @@ public class MoveNotation {
             if (r < 7) fen.append("/");
         }
 
-        String turn = culoareCurenta == ColorType.WHITE ? "w" : "b";
+        String turn = req.getCurrentColor() == ColorType.WHITE ? "w" : "b";
         String enPassant = "-";
-        String castling = "KQkq";
+        String castling = calculateCastlingNotation(req.getCastlingInfo());
+
 
         int fullMove = (movesPlayed / 2) + 1;
         this.currentFEN = String.format("%s %s %s %s %d %d",
-                fen.toString(), turn, castling, enPassant, halfMove, fullMove);
+                fen.toString(), turn, castling, enPassant, req.getHalfMove(), fullMove);
         FENList.add(currentFEN);
         return currentFEN;
     }
@@ -157,6 +160,23 @@ public class MoveNotation {
         allFormattedMoves = "";
         currentFormattedMove = "";
         this.FENList.clear();
+    }
+
+    private String calculateCastlingNotation(CastlingInfoDTO dto) {
+        StringBuilder sb = new StringBuilder();
+
+        if(dto.possibleCastleWhiteShort)
+            sb.append('K');
+        if(dto.possibleCastleWhiteLong)
+            sb.append('Q');
+        if(dto.possibleCastleBlackShort)
+            sb.append('k');
+        if(dto.possibleCastleBlackLong)
+            sb.append('q');
+
+        if(sb.isEmpty())
+            sb.append('-');
+        return sb.toString();
     }
 
     public String getAllFormattedMoves() {
