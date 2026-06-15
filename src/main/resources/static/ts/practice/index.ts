@@ -105,12 +105,11 @@ function handleFlip() {
 async function handleReset() {
     const reset = await fetch('/api/chess/reset');
     if(reset.ok) {
-        console.log("Board reseted successfully");
         const newPieces: PieceDTO[] = await reset.json(); // Delete this after finishing the page
-        console.log(newPieces);
         board.setPiecesFromServer(newPieces);
         board.redraw();
-        mousePractice.resetByButton(); // might overhaul this, looks weird to be here
+        moveList.reset();
+        mousePractice.resetGame();
     }
     else
         console.log("Fail");

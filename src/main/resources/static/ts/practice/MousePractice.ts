@@ -144,10 +144,10 @@ export class MousePractice {
         this.board.redraw(this.board.pieces);
     }
 
-    resetByButton(): void {
+    resetGame() {
+        this.reset();
+        this.moveNumber = 1;
         this.currentColor = SidesExplicit.WHITE;
-        FEN = "";
-        fenOutput.value = FEN;
     }
 
     addMoveToCopyable(currentPGN: string) {

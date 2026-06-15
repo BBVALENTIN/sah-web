@@ -66,6 +66,20 @@ export class MoveList {
         this.moveCount = 0;
         this.lastPGN = "";
         this.container.innerHTML = "";
+        this.resetCopyables();
+    }
+
+    resetCopyables() {
+        const cpbPGN = document.getElementById('PGN') as HTMLTextAreaElement;
+        const cpbFEN = document.getElementById('FEN') as HTMLInputElement;
+
+        console.log(cpbFEN, cpbPGN);
+        if(!cpbPGN) return;
+        if(!cpbFEN) return;
+
+        cpbPGN.value = '';
+
+        cpbFEN.value = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'; //starting FEN
     }
 
     public getMoveCount() {
