@@ -1,2 +1,0 @@
-bro, you have to REVAMP the game, make everything more cleaner,
-there's also a bug to the castle, if a piece is blocking the king's path making it impossible to castle, your rook will still move when you make another move

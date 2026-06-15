@@ -85,7 +85,6 @@ public class ProfileService {
             else
                 resultString.append('L');
         }
-
         return resultString.toString();
     }
 

@@ -45,3 +45,6 @@ uploads/*
 
 ### mmdb database for countries, access google docs for that
 geodb-lite/*
+
+### todos list
+TODOS.md
