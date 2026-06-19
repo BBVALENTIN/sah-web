@@ -95,7 +95,7 @@ public class ChessBoard {
 
         if (castling != null && canCastle == true) {
             Pieces castleCopy = castling;
-            makeRocada(castling);
+            makeCastle(castling);
             castleNotation = getRocadaType(castleCopy);
         } else if(castling != null && canCastle == false)
         {
@@ -120,7 +120,7 @@ public class ChessBoard {
         }
         getAllPieces();
 
-        if(esteRegeleMeuInSah())
+        if(isMyKingInCheck())
         {
             rollBack(targetRow, targetCol, fromRow, fromCol, selectedPiece);
             return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
@@ -130,10 +130,10 @@ public class ChessBoard {
 
         Pieces opponentKing = getKing(false);
 
-        boolean isCheck = esteRegeInSah(opponentKing);
+        boolean isCheck = isKingInCheck(opponentKing);
 
         if (isCheck) {
-            isCheckMate = esteSahMat(opponentKing);
+            isCheckMate = isCheckmate(opponentKing);
         }
         increaseHalfMove(selectedPiece, isCapture);
         MoveDataNotationDTO dto = new MoveDataNotationDTO(selectedPiece, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, currentColor, castleNotation, oldList);
@@ -198,7 +198,7 @@ public class ChessBoard {
         }
     }
 
-    private void makeRocada(Pieces castling) {
+    private void makeCastle(Pieces castling) {
         int rookOldRow = castling.row;
         int rookOldCol = castling.col;
         int rookNewCol = (castling.col == 7) ? 5 : 3;
@@ -276,15 +276,15 @@ public class ChessBoard {
     }
 
 
-    private boolean esteRegeleMeuInSah() {
-        Pieces rege = getKing(false);
-        return rege != null && esteRegeInSah(rege);
+    private boolean isMyKingInCheck() {
+        Pieces king = getKing(false);
+        return king != null && isKingInCheck(king);
     }
 
-    public boolean esteRegeInSah(Pieces rege) {
+    public boolean isKingInCheck(Pieces king) {
         for (Pieces piece : piecesList) {
-            if (piece.color != rege.color) {
-                if (piece.move(rege.row, rege.col)) {
+            if (piece.color != king.color) {
+                if (piece.move(king.row, king.col)) {
                     checkingPiece = piece;
                     return true;
                 }
@@ -331,63 +331,63 @@ public class ChessBoard {
         return dto;
     }
 
-    private boolean esteSahMat(Pieces rege)
+    private boolean isCheckmate(Pieces king)
     {
-        if(!esteRegeInSah(rege))
+        if(!isKingInCheck(king))
             return false;
-        if(moveRege(rege))
+        if(moveKing(king))
             return false;
-        if(canSaveRege(rege))
+        if(canSaveking(king))
             return false;
         return true;
     }
 
-    private boolean moveRege(Pieces rege){
-        if(isValidMoveRege(rege, -1, -1)) return true;
-        if(isValidMoveRege(rege, -1, -0)) return true;
-        if(isValidMoveRege(rege, -1, 1)) return true;
-        if(isValidMoveRege(rege, 0, -1)) return true;
-        if(isValidMoveRege(rege, 0, 1)) return true;
-        if(isValidMoveRege(rege, 1, -1)) return true;
-        if(isValidMoveRege(rege, 1, 0)) return true;
-        if(isValidMoveRege(rege, 1, 1)) return true;
+    private boolean moveKing(Pieces king){
+        if(isValidMoveking(king, -1, -1)) return true;
+        if(isValidMoveking(king, -1, -0)) return true;
+        if(isValidMoveking(king, -1, 1)) return true;
+        if(isValidMoveking(king, 0, -1)) return true;
+        if(isValidMoveking(king, 0, 1)) return true;
+        if(isValidMoveking(king, 1, -1)) return true;
+        if(isValidMoveking(king, 1, 0)) return true;
+        if(isValidMoveking(king, 1, 1)) return true;
 
         return false;
     }
-    private boolean isValidMoveRege(Pieces rege, int rowSafe, int colSafe)
+    private boolean isValidMoveking(Pieces king, int rowSafe, int colSafe)
     {
-        int newRow = rege.row + rowSafe;
-        int newCol = rege.col + colSafe;
+        int newRow = king.row + rowSafe;
+        int newCol = king.col + colSafe;
 
-        if(!rege.onTable(newRow, newCol)) return false;
+        if(!king.onTable(newRow, newCol)) return false;
 
-        Pieces lovita = board[newRow][newCol];
+        Pieces hitted = board[newRow][newCol];
 
-        if(lovita != null && lovita.color == rege.color)
+        if(hitted != null && hitted.color == king.color)
             return false;
 
-        board[rege.row][rege.col] = null;
-        board[newRow][newCol] = rege;
+        board[king.row][king.col] = null;
+        board[newRow][newCol] = king;
 
-        int oldRow = rege.row;
-        int oldCol = rege.col;
-        rege.row = newRow;
-        rege.col = newCol;
+        int oldRow = king.row;
+        int oldCol = king.col;
+        king.row = newRow;
+        king.col = newCol;
 
-        boolean inSah = esteRegeInSah(rege);
+        boolean inSah = isKingInCheck(king);
 
-        rege.row = oldRow;
-        rege.col = oldCol;
-        board[oldRow][oldCol] = rege;
-        board[newRow][newCol] = lovita;
+        king.row = oldRow;
+        king.col = oldCol;
+        board[oldRow][oldCol] = king;
+        board[newRow][newCol] = hitted;
 
         return !inSah;
     }
 
-    private boolean canSaveRege(Pieces rege)
+    private boolean canSaveking(Pieces king)
     {
         for(Pieces piece : piecesList) {
-            if (piece.color != rege.color)
+            if (piece.color != king.color)
                 continue;
 
             if(piece.type == Type.KING)
@@ -409,7 +409,7 @@ public class ChessBoard {
                     piece.row = r;
                     piece.col = c;
 
-                    boolean inSah = esteRegeInSah(rege);
+                    boolean inSah = isKingInCheck(king);
 
                     piece.row = oldRow;
                     piece.col = oldCol;
