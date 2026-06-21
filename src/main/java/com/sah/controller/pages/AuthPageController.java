@@ -44,7 +44,7 @@ public class AuthPageController {
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
-            model.addAttribute("loginError", "Numele de utilizator sau parola sunt incorecte.");
+            model.addAttribute("loginError", "Username or password are incorrect.");
         }
         return "registration/login";
     }

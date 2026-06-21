@@ -43,7 +43,7 @@ public class UsersService {
             throw new RuntimeException("Username is invalid, it should contain at least one letter and consist of at least 3 characters.");
         }
 
-        Roles userRole = rolesRepo.findByName(RoleType.ROLE_USER).orElseThrow(() -> new RuntimeException("ROLE_user nu exista"));
+        Roles userRole = rolesRepo.findByName(RoleType.ROLE_USER).orElseThrow(() -> new RuntimeException("ROLE_user doesn't exist"));
 
         Users user = new Users();
         user.setUsername(request.getUsername());

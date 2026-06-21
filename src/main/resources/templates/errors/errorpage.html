@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${error.pageTitle}"></title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body>
+    <div class="container not-found-container">
+        <h1 class="error-title" th:text="${error.errorTitle}"></h1>
+        <div class="error-description-container">
+            <p class="error-reason" th:text="${error.errorDescription}"></p>
+            <div class="error what-to-do">
+                <p>* Return to our homepage.<br />
+                    * Send us an e-mail about this error and try later.</p>
+            </div>
+        </div>
+        <a href="/" class="link">Home Page</a>
+    </div>
+</body>
+</html>

@@ -27,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Users user = userRepo.findByUsername(username);
 
         if(user == null)
-            throw new UsernameNotFoundException("Nu exista acest utilizator");
+            throw new UsernameNotFoundException("User doesn't exist");
 
         return new User(user.getUsername(), user.getPassword(), user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).toList());
     }
