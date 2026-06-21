@@ -17,11 +17,12 @@ public class BotGames {
     @Id
     private String gameId;
 
-    @Column(nullable = false)
-    private String playerUsername;
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "username")
+    private Users player;
 
     @Column(nullable = false)
-    private Sides botSide; // 'w' sau 'b' sau sides
+    private Sides botSide;
 
     @Column(nullable = false)
     private int stockfishDepth;

@@ -8,6 +8,7 @@ import com.sah.dto.misc.ProfileInfoDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.Users;
+import com.sah.enums.LobbyType;
 import com.sah.enums.ResultType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
@@ -55,8 +56,9 @@ public class ProfileService {
     }
 
     private List<MatchHistoryDTO> loadProfileGames(String username) {
-        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findByPlayerBlack(username));
-        allLobbies.addAll(lobbyRepo.findByPlayerWhite(username));
+        Users user = userRepo.findByUsername(username);
+        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findByPlayerBlackAndLobbyType(user, LobbyType.AVAILABLE));
+        allLobbies.addAll(lobbyRepo.findByPlayerWhiteAndLobbyType(user, LobbyType.AVAILABLE));
 
         if(allLobbies.isEmpty())
            return new ArrayList<>();
@@ -68,19 +70,19 @@ public class ProfileService {
                 continue;
             }
 
-            matchHistoryDTOList.add(new MatchHistoryDTO(getOpponent(lobby, username), lobby.getFormat(), game.getNumberOfMoves(), getOutcome(lobby, username)));
+            matchHistoryDTOList.add(new MatchHistoryDTO(getOpponent(lobby, username), lobby.getFormat(), game.getNumberOfMoves(), getOutcome(lobby, user)));
         }
 
         return matchHistoryDTOList;
     }
 
     public String getLastGamesOutcome(Principal principal) {
-        String currentUsername = principal.getName();
-        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findTop15ByPlayerBlackOrPlayerWhiteOrderByCreatedAtDesc(currentUsername, currentUsername));
+        Users currentUser = userRepo.findByUsername(principal.getName());
+        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findTop15ByPlayerBlackAndLobbyTypeOrPlayerWhiteAndLobbyTypeOrderByCreatedAtDesc(currentUser, LobbyType.FINISHED,currentUser, LobbyType.FINISHED));
         StringBuilder resultString = new StringBuilder();
         for(ChessLobbies lobby : allLobbies)
         {
-            if(getOutcome(lobby, currentUsername))
+            if(getOutcome(lobby, currentUser))
                 resultString.append('W');
             else
                 resultString.append('L');
@@ -90,23 +92,23 @@ public class ProfileService {
 
     private String getOpponent(ChessLobbies lobby, String username) {
         if(Objects.equals(lobby.getPlayerBlack(), username)) {
-            return lobby.getPlayerWhite();
+            return lobby.getPlayerWhite().getUsername();
         }
         else if(Objects.equals(lobby.getPlayerWhite(), username)) {
-            return lobby.getPlayerBlack();
+            return lobby.getPlayerBlack().getUsername();
         }
 
         throw new RuntimeException("Found a lobby with the other player being null");
     }
 
-    private boolean getOutcome(ChessLobbies lobby, String username) { // MODIFY FOR DRAWS
+    private boolean getOutcome(ChessLobbies lobby, Users currentUser) { // MODIFY FOR DRAWS
         ChessGames game = gameRepo.findByLobby(lobby);
 
         if (game == null || game.getResult() == null) {
             return false;
         }
 
-        return (Objects.equals(lobby.getPlayerBlack(), username) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite(), username) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
+        return (Objects.equals(lobby.getPlayerBlack(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
     }
 
     public String changeDescription(String description, Principal principal) {

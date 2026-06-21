@@ -77,14 +77,13 @@ async function loadBoard(lobbyId: string):Promise<void>
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
         const minimalState: minimalState = await response.json();
         const piecesData = minimalState.Pieces;
-        // setCuloareCurenta(minimalState.currentColor);
         if(minimalState.currentPGN != null )
             moveList.addWholePGN(minimalState.currentPGN);
         board.setPiecesFromServer(piecesData);
         board.redraw();
     }
     catch (e) {
-        console.error("Eroare la incarcare de date - loadboard");
+        console.error("There was an error loading the data");
     }
 }
 initializeApp();

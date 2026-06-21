@@ -4,6 +4,7 @@ import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChats;
+import com.sah.entity.Users;
 import com.sah.enums.FormatType;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
@@ -57,29 +58,28 @@ public class ChessLobbyService {
     }
 
     public List<LobbyDTO> getAllDesiredLobbies(LobbyType typeOfLobby) {
-        if(typeOfLobby == LobbyType.AVAILABLE) {
-            return lobbyRepository.findByLobbyType(typeOfLobby).stream().map(lobby -> new LobbyDTO(
-                    lobby.getLobbyId(),
-                    lobby.getLobbyType(),
-                    lobby.getPlayerWhite(),
-                    lobby.getPlayerBlack()
-            )).toList();
+        if (typeOfLobby == LobbyType.AVAILABLE) {
+            return lobbyRepository.findByLobbyType(typeOfLobby).stream()
+                    .map(this::convertLobbyDTO)
+                    .toList();
         }
         return null;
     }
 
     public LobbyDTO getLobbyDTO(String lobbyId) {
         ChessLobbies lobby = getLobbyFromId(lobbyId);
-        return new LobbyDTO(lobbyId, lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
+        return convertLobbyDTO(lobby);
     }
 
     public String createLobby(String username) {
+        Users user = userRepository.findByUsername(username);
+
         ChessLobbies lobby = new ChessLobbies();
         String randomLobbyId = assignLobbyId();
         lobby.setLobbyId(randomLobbyId);
         lobby.setLobbyType(LobbyType.AVAILABLE);
         lobby.setFormat(FormatType.CLASSICAL);
-        assignLobbyPlayer(lobby, username);
+        assignLobbyPlayer(lobby, user);
 
         ChessLobbyChats chat = new ChessLobbyChats();
         lobby.setChat(chat);
@@ -93,8 +93,9 @@ public class ChessLobbyService {
 
     public void joinLobby(String lobbyId, String username) {
         ChessLobbies lobby = getLobbyFromId(lobbyId);
+        Users user = userRepository.findByUsername(username);
         if(isAlreadyAssigned(lobby, username) == false) {
-            assignLobbyPlayer(lobby, username);
+            assignLobbyPlayer(lobby, user);
             if(isLobbyFull(lobby)) {
                 lobby.setLobbyType(LobbyType.ONGOING);
                 LobbyDTO lobbyDTO = convertLobbyDTO(lobby);
@@ -116,27 +117,29 @@ public class ChessLobbyService {
     }
 
     public LobbyDTO convertLobbyDTO(ChessLobbies lobby) {
-        LobbyDTO lobbyDTO = new LobbyDTO(lobby.getLobbyId(), lobby.getLobbyType(), lobby.getPlayerWhite(), lobby.getPlayerBlack());
-        return lobbyDTO;
+        String playerWhiteUsername = lobby.getPlayerWhite() != null ? lobby.getPlayerWhite().getUsername() : null;
+        String playerBlackUsername = lobby.getPlayerBlack() != null ? lobby.getPlayerBlack().getUsername() : null;
+
+        return new LobbyDTO(lobby.getLobbyId(), lobby.getLobbyType(), playerWhiteUsername, playerBlackUsername);
     }
 
-    public void assignLobbyPlayer(ChessLobbies lobby, String username) {
+    public void assignLobbyPlayer(ChessLobbies lobby, Users user) {
         if(isLobbyFull(lobby)) {
             throw new RuntimeException("Lobby is full or player is already assigned");
         }
         if(lobby.getPlayerWhite() == null && lobby.getPlayerBlack() == null) {
             if(ThreadLocalRandom.current().nextInt(1, 10) > 5) {
-                lobby.setPlayerWhite(username);
+                lobby.setPlayerWhite(user);
             }
             else {
-                lobby.setPlayerBlack(username);
+                lobby.setPlayerBlack(user);
             }
         }
         else {
             if (lobby.getPlayerBlack() == null) {
-                lobby.setPlayerBlack(username);
+                lobby.setPlayerBlack(user);
             } else {
-                lobby.setPlayerWhite(username);
+                lobby.setPlayerWhite(user);
             }
         }
     }

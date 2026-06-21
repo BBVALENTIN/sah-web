@@ -83,7 +83,8 @@ public class WebSocketEventListener {
         ChessBoard board = gameService.getBoard(lobby.getLobbyId());
 
         if(board != null && board.movesPlayed > 2) {
-            if (username != null && username.equals(lobby.getPlayerWhite())) {
+            if (username != null && lobby.getPlayerWhite() != null
+                    && username.equals(lobby.getPlayerWhite().getUsername())) {
                 board.setWinner(Sides.BLACK);
             } else {
                 board.setWinner(Sides.WHITE);
@@ -100,9 +101,11 @@ public class WebSocketEventListener {
             return;
         }
 
-        if (username != null && username.equals(lobby.getPlayerWhite())) {
+        if (username != null && lobby.getPlayerWhite() != null
+                && username.equals(lobby.getPlayerWhite().getUsername())) {
             lobby.setPlayerWhite(null);
-        } else if (username != null && username.equals(lobby.getPlayerBlack())) {
+        } else if (username != null && lobby.getPlayerBlack() != null
+                && username.equals(lobby.getPlayerBlack().getUsername())) {
             lobby.setPlayerBlack(null);
         }
 

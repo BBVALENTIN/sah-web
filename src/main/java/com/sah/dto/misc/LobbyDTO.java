@@ -1,5 +1,6 @@
 package com.sah.dto.misc;
 
+import com.sah.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

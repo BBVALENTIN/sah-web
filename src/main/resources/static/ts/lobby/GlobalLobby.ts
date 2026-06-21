@@ -146,6 +146,7 @@ function handleCreate() {
     const createButton = document.getElementById('createLobbyButton');
     createButton?.addEventListener('click', async () => {
         const res = await fetch('/api/lobby/create');
-        window.location.href = await res.text();
+        const lobbyId = await res.text();
+        window.location.href = `/play=${lobbyId}`
     })
 }

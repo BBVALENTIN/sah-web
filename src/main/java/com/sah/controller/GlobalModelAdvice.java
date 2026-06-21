@@ -34,8 +34,10 @@ public class GlobalModelAdvice {
         if (principal != null) {
             loggedUser user = customUserDetailsService.loadInfo(principal);
 
-            model.addAttribute("avatar", user.getAvatar());
-            model.addAttribute("username", user.getUsername());
+            if(user != null) {
+                model.addAttribute("avatar", user.getAvatar());
+                model.addAttribute("username", user.getUsername());
+            }
         }
     }
 }

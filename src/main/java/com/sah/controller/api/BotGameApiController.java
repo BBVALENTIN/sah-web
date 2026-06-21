@@ -3,9 +3,12 @@ package com.sah.controller.api;
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
 import com.sah.dto.responses.MoveResultDTO;
+import com.sah.entity.Users;
 import com.sah.enums.Sides;
 import com.sah.game.ChessBoard;
+import com.sah.repository.UserRepository;
 import com.sah.service.BotGameService;
+import com.sah.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ public class BotGameApiController {
     private final BotGameService botGameService;
 
     @Autowired
-    public BotGameApiController(ChessBoard chessBoard, BotGameService botGameService)
+    public BotGameApiController(ChessBoard chessBoard, BotGameService botGameService, UserRepository userRepository)
     {
         this.chessBoard = chessBoard;
         this.botGameService = botGameService;

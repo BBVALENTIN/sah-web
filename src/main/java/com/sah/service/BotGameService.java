@@ -5,12 +5,14 @@ import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
 import com.sah.dto.responses.MoveResultDTO;
 import com.sah.entity.BotGames;
+import com.sah.entity.Users;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.repository.BotGameRepository;
+import com.sah.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,14 +27,16 @@ public class BotGameService {
     private record BotGameSession(ChessBoard board, String username, Sides botSide) {}
     private final Map<String, BotGameSession> botBoards = new ConcurrentHashMap<>();
     private final BotGameRepository botGameRepository;
+    private final UserRepository userRepository;
 
     private static final String gameIdIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     private static final SecureRandom random = new SecureRandom();
     private static final int length = 5;
 
-    public BotGameService(BotGameRepository botGameRepository)
+    public BotGameService(BotGameRepository botGameRepository, UserRepository userRepository)
     {
         this.botGameRepository = botGameRepository;
+        this.userRepository = userRepository;
     }
 
     private String GenerateRandomGameId() {
@@ -98,13 +102,14 @@ public class BotGameService {
     public void saveGame(String gameId, boolean resignation, String playerName) {
         ChessBoard board = getBoard(gameId);
         BotGameSession session = getSession(gameId);
+        Users player = userRepository.findByUsername(playerName);
 
         if(session == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sesiunea nu exista!");
 
         WinType winType = resignation ? WinType.RESIGNATION : WinType.CHECKMATE;
         ResultType result = board.convertToResult();
-        BotGames botGame = new BotGames(gameId, playerName, session.botSide(), 18, result, winType, board.getMovesPlayed(), board.getAllPGN(), LocalDateTime.now());
+        BotGames botGame = new BotGames(gameId, player, session.botSide(), 18, result, winType, board.getMovesPlayed(), board.getAllPGN(), LocalDateTime.now());
         botGameRepository.save(botGame);
         botBoards.remove(gameId);
     }

@@ -27,7 +27,7 @@ public class Users {
     private boolean confirmed_account = false;
     @Column(nullable = true)
     private String description;
-    @Column(nullable = true)
+    @Column(nullable = true) // should be changed
     private String country; // Temporariliy - maybe will change to CountryId and make a country table
     @Column(nullable = false)
     private String avatar = "default.jpg";
