@@ -58,10 +58,11 @@ public class King extends Pieces {
             if(p.color == currentColor) continue;
             if(p.type == Type.KING) continue;
             if(p.move(targetRow, square1) || p.move(targetRow, square2)) {
-                game.canCastle = true;
+                game.canCastle = false;
                 return false;
             }
         }
+        game.canCastle = true;
         return true;
     }
 

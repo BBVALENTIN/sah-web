@@ -96,7 +96,7 @@ public class ChessBoard {
         if (castling != null && canCastle == true) {
             Pieces castleCopy = castling;
             makeCastle(castling);
-            castleNotation = getRocadaType(castleCopy);
+            castleNotation = getCastlingType(castleCopy);
         } else if(castling != null && canCastle == false)
         {
             return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
@@ -210,8 +210,8 @@ public class ChessBoard {
         this.castling = null;
     }
 
-    private CastlingNotation getRocadaType(Pieces castling) {
-        if(castling.col == 7)
+    private CastlingNotation getCastlingType(Pieces castling) {
+        if(castling.precol == 0)
             return CastlingNotation.BIG;
         else
             return CastlingNotation.SMALL;
