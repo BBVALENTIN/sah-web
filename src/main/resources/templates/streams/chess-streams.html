@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<!--THIS IS A SAMPLE HTML PAGE*-->
     <title>Chess Twitch Streams</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -31,6 +30,6 @@
     </div>
 
 </div>
-<script src="/js/script.js"></script>
+<script type="module" th:src="@{/ts-transpiled/main.js}"></script>
 </body>
 </html>
