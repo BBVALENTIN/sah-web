@@ -1,13 +1,13 @@
-import {initCanvas, initBoard, onButtonClick} from "../tools/initApp.js";
+import {initCanvas, initBoard, onButtonClick, AppCore} from "../tools/initApp.js";
 import {Sides, SidesExplicit} from "../tools/Enums.js";
 import {MouseBot} from "./MouseBot.js";
-import {minimalState} from "../tools/Types.js";
+import {minimalState, PieceDTO} from "../tools/Types.js";
 
-export const { board, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
-
-document.addEventListener('DOMContentLoaded', async () => {
-    await initBoard(board);
-});
+export let engineCore: AppCore;
+interface botResponse {
+    gameId: string;
+    pieces: PieceDTO[];
+}
 
 const startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 let botGameId: string;
@@ -28,12 +28,16 @@ stockfish.onmessage = async function(event) {
     if (line.startsWith('bestmove')) {
         const bestMove = line.split(' ')[1];
         if (bestMove && bestMove !== '(none)')
-            await mouseBot.aplicaMutareBot(bestMove);
+            await mouseBot.applyBotMove(bestMove);
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+
     const savedGameId = sessionStorage.getItem('botGameId');
+    engineCore = initCanvas('chessCanvas', 'move-list');
+    await initBoard(engineCore.board);
+
     if (savedGameId) {
         botGameId = savedGameId;
         document.getElementById('side-select-overlay')?.remove();
@@ -52,36 +56,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             const state = await response.json();
             if (state.currentPGN != null)
-                moveList.addWholePGN(state.currentPGN);
-            board.setPiecesFromServer(state.pieces);
-            board.redraw();
+                engineCore.moveList.addWholePGN(state.currentPGN);
+            engineCore.board.setPiecesFromServer(state.pieces);
+            engineCore.board.redraw();
 
             const botSide = state.botSide as SidesExplicit;
             mouseBot = new MouseBot(
-                canvas, board, gameId, moveList,
+                engineCore.canvas, engineCore.board, gameId, engineCore.moveList,
                 botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
             );
             mouseBot.onEngineRequest = (fen: string) => requestStockfishMove(fen);
-            board.setOrientation(botSide === SidesExplicit.WHITE);
+            engineCore.board.setOrientation(botSide === SidesExplicit.WHITE);
         } catch(e) {
-            console.error('Eroare resume:', e);
+            console.error('Resuming error:', e);
         }
     }
 
     async function startBotGame(botSide: SidesExplicit) {
         document.getElementById('side-select-overlay')?.remove();
-
+        engineCore.board.setOrientation(botSide === SidesExplicit.WHITE);
         const response = await fetch(`/api/bot/start?botSide=${botSide}`, { method: 'POST' });
-        const data = await response.json();
+        const data: botResponse = await response.json();
         botGameId = data.gameId;
+        console.log(data);
+        engineCore.board.setPiecesFromServer(data.pieces);
+        engineCore.board.redraw(); // will make a function for this
         sessionStorage.setItem('botGameId', botGameId);
 
         mouseBot = new MouseBot(
-            canvas, board, botGameId, moveList,
+            engineCore.canvas, engineCore.board, botGameId, engineCore.moveList,
             botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
         );
         mouseBot.onEngineRequest = (fen: string) => requestStockfishMove(fen);
-        board.setOrientation(botSide === SidesExplicit.WHITE);
 
         if (botSide === SidesExplicit.WHITE)
             requestStockfishMove(startingFEN);

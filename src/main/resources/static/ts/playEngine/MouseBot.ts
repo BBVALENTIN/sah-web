@@ -41,7 +41,7 @@ export class MouseBot extends MousePractice {
         return respMutare.json();
     }
 
-    async aplicaMutareBot(mutare: string): Promise<void> {
+    async applyBotMove(mutare: string): Promise<void> {
         const fromCol = mutare.charCodeAt(0) - 97;
         const fromRow = 8 - parseInt(mutare.charAt(1));
         const targetCol = mutare.charCodeAt(2) - 97;

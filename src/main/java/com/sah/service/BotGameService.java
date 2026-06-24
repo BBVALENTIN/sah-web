@@ -63,7 +63,7 @@ public class BotGameService {
         board.initializeBoard();
         botBoards.put(gameId, new BotGameSession(board, username, botSide));
 
-        return new BotStartResponseDTO(gameId, board);
+        return new BotStartResponseDTO(gameId, board.getAllPiecesDTO());
     }
 
     public ChessBoard getBoard(String gameId)
@@ -97,6 +97,14 @@ public class BotGameService {
             return ColorType.WHITE;
         else
             return ColorType.BLACK;
+    }
+
+    public void handleEndEarly(String gameId, String playerName) {
+        ChessBoard board = getBoard(gameId);
+        if(board.getMovesPlayed() >= 2)
+            saveGame(gameId, true, playerName);
+        else
+            botBoards.remove(gameId);
     }
 
     public void saveGame(String gameId, boolean resignation, String playerName) {

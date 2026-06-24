@@ -64,7 +64,7 @@ public class BotGameApiController {
     @PostMapping("/end/{gameId}")
     public ResponseEntity<?> endGame(@PathVariable String gameId, Principal principal) // resign endpoint
     {
-        botGameService.saveGame(gameId, true, principal.getName());
+        botGameService.handleEndEarly(gameId, principal.getName());
         return ResponseEntity.ok().build();
     }
 

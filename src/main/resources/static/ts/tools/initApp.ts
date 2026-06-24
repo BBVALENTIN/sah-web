@@ -6,7 +6,7 @@ export interface AppCore {
     moveList: MoveList,
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D
-};
+}
 
 export function initCanvas(canvasId: string, moveListId: string): AppCore {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
