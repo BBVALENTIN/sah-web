@@ -47,10 +47,10 @@ public class GameService {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
 
         if(culoarePiesa == ColorType.WHITE) {
-            return username.equals(lobby.getPlayerWhite());
+            return username.equals(lobby.getPlayerWhite().getUsername());
         }
         else {
-            return username.equals(lobby.getPlayerBlack());
+            return username.equals(lobby.getPlayerBlack().getUsername());
         }
     }
 
@@ -86,14 +86,13 @@ public class GameService {
         lobbyRepository.save(lobby);
     }
 
-    private Sides abortGame(ChessLobbies lobby) {
+    private void abortGame(ChessLobbies lobby) {
         lobby.setLobbyType(LobbyType.ABORTED);
-        return Sides.NONE;
     }
 
     public Sides resignGame(ChessLobbies lobby, ChessBoard board, Principal principal) {
         board.setResignation(true);
-        if(lobby.getPlayerWhite().equals(principal.getName()))
+        if(lobby.getPlayerWhite().getUsername().equals(principal.getName()))
             board.setWinner(Sides.BLACK);
         else
             board.setWinner(Sides.WHITE);
@@ -105,7 +104,7 @@ public class GameService {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(request.lobbyId);
         if(lobby == null)
             return false;
-        return lobby.getPlayerBlack().equals(request.principal.getName()) || lobby.getPlayerWhite().equals(request.principal.getName());
+        return lobby.getPlayerBlack().getUsername().equals(request.principal.getName()) || lobby.getPlayerWhite().getUsername().equals(request.principal.getName());
     }
 
     // To implement further logic here

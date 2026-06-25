@@ -91,10 +91,10 @@ public class ProfileService {
     }
 
     private String getOpponent(ChessLobbies lobby, String username) {
-        if(Objects.equals(lobby.getPlayerBlack(), username)) {
+        if(Objects.equals(lobby.getPlayerBlack().getUsername(), username)) {
             return lobby.getPlayerWhite().getUsername();
         }
-        else if(Objects.equals(lobby.getPlayerWhite(), username)) {
+        else if(Objects.equals(lobby.getPlayerWhite().getUsername(), username)) {
             return lobby.getPlayerBlack().getUsername();
         }
 
@@ -108,7 +108,7 @@ public class ProfileService {
             return false;
         }
 
-        return (Objects.equals(lobby.getPlayerBlack(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
+        return (Objects.equals(lobby.getPlayerBlack().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
     }
 
     public String changeDescription(String description, Principal principal) {
