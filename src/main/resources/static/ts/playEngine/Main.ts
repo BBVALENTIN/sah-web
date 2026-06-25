@@ -1,7 +1,7 @@
-import {initCanvas, initBoard, onButtonClick, AppCore} from "../tools/initApp.js";
-import {Sides, SidesExplicit} from "../tools/Enums.js";
+import {AppCore, getLoggedUsername, initBoard, initCanvas, onButtonClick} from "../tools/initApp.js";
+import {SidesExplicit} from "../tools/Enums.js";
 import {MouseBot} from "./MouseBot.js";
-import {minimalState, PieceDTO} from "../tools/Types.js";
+import {PieceDTO} from "../tools/Types.js";
 
 export let engineCore: AppCore;
 interface botResponse {
@@ -72,13 +72,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    function setText(id: string, text: string) {
+        const el = document.getElementById(id);
+        if(el) el.innerText = text;
+    }
+
     async function startBotGame(botSide: SidesExplicit) {
         document.getElementById('side-select-overlay')?.remove();
-        engineCore.board.setOrientation(botSide === SidesExplicit.WHITE);
+        const isPlayerPlayingBlack: boolean = botSide === SidesExplicit.WHITE;
+        engineCore.board.setOrientation(isPlayerPlayingBlack);
+        const username = await getLoggedUsername();
+        const playerBlack = isPlayerPlayingBlack ? username : 'Stockfish';
+        const playerWhite = isPlayerPlayingBlack ? 'Stockfish' : username;
+        setText('player-black', playerBlack);
+        setText('player-white', playerWhite);
         const response = await fetch(`/api/bot/start?botSide=${botSide}`, { method: 'POST' });
         const data: botResponse = await response.json();
         botGameId = data.gameId;
-        console.log(data);
         engineCore.board.setPiecesFromServer(data.pieces);
         engineCore.board.redraw(); // will make a function for this
         sessionStorage.setItem('botGameId', botGameId);
