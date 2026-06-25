@@ -8,13 +8,17 @@ import com.sah.dto.requests.GameEndRequest;
 import com.sah.dto.requests.MoveRequestDTO;
 import com.sah.dto.responses.MoveResultDTO;
 import com.sah.entity.ChessLobbyChatMessages;
+import com.sah.entity.ChessLobbyChats;
+import com.sah.entity.Users;
 import com.sah.enums.MessageType;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.pieces.Pieces;
+import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
+import com.sah.repository.UserRepository;
 import com.sah.service.ChessLobbyChatService;
 import com.sah.service.ChessLobbyService;
 import com.sah.service.GameService;
@@ -38,20 +42,19 @@ public class ChessApiController {
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChessBoard chessBoard;
-    private final ChessLobbyService  chessLobbyService;
     private final ChessLobbyChatService chessLobbyChatService;
-    private final GameRepository gameRepository;
-    private final LobbyRepository lobbyRepository;
+    private final ChessLobbyChatRepository chessLobbyChatRepository;
+    private final UserRepository userRepository;
+
 
     @Autowired
-    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard, ChessLobbyChatService chessLobbyChatService, GameRepository gameRepository, ChessLobbyService chessLobbyService, LobbyRepository lobbyRepository) {
+    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard, ChessLobbyChatService chessLobbyChatService,ChessLobbyChatRepository chessLobbyChatRepository, UserRepository userRepository) {
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
         this.chessBoard = chessBoard;
         this.chessLobbyChatService = chessLobbyChatService;
-        this.gameRepository = gameRepository;
-        this.chessLobbyService = chessLobbyService;
-        this.lobbyRepository = lobbyRepository;
+        this.chessLobbyChatRepository = chessLobbyChatRepository;
+        this.userRepository = userRepository;
     }
 
 
@@ -131,15 +134,18 @@ public class ChessApiController {
                                       @DestinationVariable String lobbyId,
                                       Principal principal) {
 
+        ChessLobbyChats chat = chessLobbyChatRepository.findByLobby_LobbyId(lobbyId);
+        Users user = userRepository.findByUsername(principal.getName());
+
         ChessLobbyChatMessages savedMessage =
                 chessLobbyChatService.sendMessage(
-                        lobbyId,
-                        principal.getName(),
+                        chat,
+                        user,
                         chatMessageDTO.getContent()
                 );
 
         return new ChatMessageDTO(
-                savedMessage.getSenderName(),
+                savedMessage.getSender().getUsername(),
                 savedMessage.getContent(),
                 MessageType.CHAT
         );
@@ -149,12 +155,13 @@ public class ChessApiController {
     @MessageMapping("/chat.addUser/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
     public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId, SimpMessageHeaderAccessor headerAccessor) {
+        Users sender = userRepository.findByUsername(chatMessageDTO.getSender());
         if(headerAccessor.getSessionAttributes() != null) {
             headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
             headerAccessor.getSessionAttributes().put("lobbyId", lobbyId);
         }
         WebSocketEventListener.userReturned(chatMessageDTO.getSender());
-        return chessLobbyChatService.addUser(chatMessageDTO.getSender(), lobbyId);
+        return chessLobbyChatService.addUser(sender,chessLobbyChatRepository.findByLobby_LobbyId(lobbyId));
     }
 
     private void sendError(String username, String message) {

@@ -3,11 +3,13 @@ package com.sah.service;
 import com.sah.dto.misc.ChatMessageDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
+import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
 import com.sah.enums.MessageType;
 import com.sah.repository.LobbyChatMessagesRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -15,47 +17,33 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class ChessLobbyChatService {
 
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private LobbyRepository lobbyRepository;
-
     private SimpMessagingTemplate simpMessagingTemplate;
-    @Autowired
     private LobbyChatMessagesRepository lobbyChatMessagesService;
 
 
-    public ChessLobbyChatMessages sendMessage(String lobbyId,
-                                              String sender,
+    public ChessLobbyChatMessages sendMessage(ChessLobbyChats chat,
+                                              Users sender,
                                               String content) {
 
-        Users user = userRepository.findByUsername(sender);
-
-        ChessLobbyChatMessages message = new ChessLobbyChatMessages();
-
-        message.setSenderId(user.getUserId());
-        message.setSenderName(sender);
-        message.setContent(content);
-        message.setSendDate(LocalDateTime.now());
+        ChessLobbyChatMessages message = ChessLobbyChatMessages.builder()
+                .chat(chat)
+                .sender(sender)
+                .content(content)
+                .sendDate(LocalDateTime.now())
+                .build();
 
         return lobbyChatMessagesService.save(message);
     }
 
-    public ChatMessageDTO addUser(String sender, String lobbyId) {
-        ChessLobbyChatMessages message = new ChessLobbyChatMessages();
-        ChessLobbies lobby = lobbyRepository.findById(lobbyId)
-                .orElseThrow();
-        Users user = userRepository.findByUsername(sender);
-
-        message.setSenderId(user.getUserId());
-        message.setSenderName(sender);
-        message.setContent(MessageType.JOIN.toString());
-        message.setSendDate(LocalDateTime.now());
-
+    public ChatMessageDTO addUser(Users sender, ChessLobbyChats chat) {
+        ChessLobbyChatMessages message = ChessLobbyChatMessages.builder()
+                        .chat(chat).sender(sender).content(MessageType.JOIN.toString()).sendDate(LocalDateTime.now()).build();
         lobbyChatMessagesService.save(message);
-        return new ChatMessageDTO(sender, "", MessageType.JOIN);
+        return new ChatMessageDTO(sender.getUsername(), "", MessageType.JOIN);
     }
 }

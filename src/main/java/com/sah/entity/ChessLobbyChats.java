@@ -21,6 +21,7 @@ import java.util.List;
 public class ChessLobbyChats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="chat_id")
     private Long chatId;
 
 
