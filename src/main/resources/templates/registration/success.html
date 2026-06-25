@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Inregistrare reusita</title>
+    <title>Loging successful</title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
 </head>
 <body>
-    <h1>Ai fost inregistrat cu success</h1>
-    <a th:href="@{login}">Logheaza-te aici</a>
+<div class="container not-found-container">
+    <h1 class="error-title">Login Successful</h1>
+    <div class="error-description-container">
+        <p class="error-reason">You created a new account.</p>
+        <div class="error what-to-do">
+            <p>Now you can log in. Get out of here . . .</p>
+        </div>
+    </div>
+    <a th:href="@{/login}" class="link">Log in here</a>
+</div>
 </body>
 </html>
