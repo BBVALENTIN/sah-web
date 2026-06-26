@@ -76,18 +76,17 @@ public class PostsService {
     {
         Posts post = postsRepository.findByPostId(postId);
         Users currentUser = checkUser(principal);
-        PostDTO postDTO = PostDTO.builder()
+
+        return PostDTO.builder()
                 .postId(postId)
                 .liked(postsLikesRepository.existsByPostAndUser(post, currentUser))
                 .commentNumber(getCommentNumber(post))
                 .createdAt(post.getCreatedAt().format(formatter))
                 .username(post.getCreator().getUsername())
-                .userAvatar(currentUser.getAvatar())
+                .userAvatar(post.getCreator().getAvatar())
                 .likeNumber(postsLikesRepository.countByPost(post))
                 .content(post.getContent())
                 .build();
-
-        return postDTO;
     }
 
     public void deletePost(Long postId, Principal principal) {

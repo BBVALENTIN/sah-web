@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +24,7 @@ public class Posts {
     private Users creator;
 
     @Column(nullable = false, length = 2000)
+    @Nationalized
     private String content;
 
     @Column(nullable = false)
