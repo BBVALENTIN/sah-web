@@ -8,64 +8,65 @@
 </head>
 <body>
 <div th:replace="fragments/navbar :: navbar"></div>
-
-<div class="post-item post-selected">
-    <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" />
-    <div class="post-item-content">
-        <div class="post-item-header">
-            <span class="post-username" th:text="${post.username}"></span>
-            <span class="post-time" th:text="${post.createdAt}"></span>
-        </div>
-        <p class="post-text" th:text="${post.content}"></p>
-        <div class="post-buttons">
-            <button id="selected-post-like-button" class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
-                <i class="ti ti-heart"></i>
-                <i class="ti ti-heart-filled"></i>
-                <span class="like-count" th:text="${post.likeNumber}"></span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<div class="separator"></div>
-
-<div class="post-body">
-    <div class="post-editable">
-        <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userMiscInfo.avatar}}" />
-        <div id="post-content">
-            <textarea required id="comment-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
-            <p class="p-info" id="char-count"></p>
-        </div>
-    </div>
-    <div class="post-buttons">
-        <button class="submit-button" id="submit-comment-button" th:data-post-id="${post.postId}">Post</button>
-    </div>
-</div>
-
-<div class="posts-container">
-
-    <div class="post-item" th:each="comment : ${comments}">
-        <img class="mini-profile-picture" th:src="@{'/uploads/' + ${comment.creatorAvatar}}" alt="avatar"/>
-
+<div class="post-wrapper">
+    <div class="post-item post-selected">
+        <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${post.userAvatar}}" />
         <div class="post-item-content">
             <div class="post-item-header">
-                <span class="post-username" th:text="${comment.creatorName}">username</span>
-                <span class="post-time" th:text="${comment.createdAt}">2m</span>
-                <button class="delete-button" th:if="${comment.creatorName == userMiscInfo.username}" th:data-comment-id="${comment.commentId}">
-                    <i class="ti ti-trash"></i>
-                </button>
+                <span class="post-username" th:text="${post.username}"></span>
+                <span class="post-time" th:text="${post.createdAt}"></span>
             </div>
-
-            <p class="post-text" th:text="${comment.content}">Text...</p>
-
+            <p class="post-text" th:text="${post.content}"></p>
             <div class="post-buttons">
-                <button class="action-btn like-comments" th:data-comment-id="${comment.commentId}" th:classappend="${comment.liked} ? ' liked' : ''">
+                <button id="selected-post-like-button" class="action-btn like-button" th:data-post-id="${post.postId}" th:classappend="${post.liked} ? ' liked' : ''">
                     <i class="ti ti-heart"></i>
                     <i class="ti ti-heart-filled"></i>
-                    <span class="like-count" th:text="${comment.likeNumber}"></span>
+                    <span class="like-count" th:text="${post.likeNumber}"></span>
                 </button>
             </div>
+        </div>
+    </div>
 
+    <div class="separator"></div>
+
+    <div class="post-body">
+        <div class="post-editable">
+            <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userMiscInfo.avatar}}" />
+            <div id="post-content">
+                <textarea required id="comment-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
+                <p class="p-info" id="char-count"></p>
+            </div>
+        </div>
+        <div class="post-buttons">
+            <button class="submit-button" id="submit-comment-button" th:data-post-id="${post.postId}">Post</button>
+        </div>
+    </div>
+
+    <div class="posts-container">
+
+        <div class="post-item" th:each="comment : ${comments}">
+            <img class="mini-profile-picture" th:src="@{'/uploads/' + ${comment.creatorAvatar}}" alt="avatar"/>
+
+            <div class="post-item-content">
+                <div class="post-item-header">
+                    <span class="post-username" th:text="${comment.creatorName}">username</span>
+                    <span class="post-time" th:text="${comment.createdAt}">2m</span>
+                    <button class="delete-button" th:if="${comment.creatorName == userMiscInfo.username}" th:data-comment-id="${comment.commentId}">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </div>
+
+                <p class="post-text" th:text="${comment.content}">Text...</p>
+
+                <div class="post-buttons">
+                    <button class="action-btn like-comments" th:data-comment-id="${comment.commentId}" th:classappend="${comment.liked} ? ' liked' : ''">
+                        <i class="ti ti-heart"></i>
+                        <i class="ti ti-heart-filled"></i>
+                        <span class="like-count" th:text="${comment.likeNumber}"></span>
+                    </button>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

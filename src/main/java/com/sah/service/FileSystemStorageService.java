@@ -41,7 +41,7 @@ public class FileSystemStorageService implements StorageService {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
 
-            String filename = java.util.UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String filename = java.util.UUID.randomUUID().toString();
 
             Path destinationFile = this.rootLocation.resolve(
                     Paths.get(filename))

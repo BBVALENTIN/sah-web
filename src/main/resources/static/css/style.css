@@ -873,6 +873,8 @@ input:checked + .slider:before {
     margin: 0 auto;
     padding: 12px 16px;
     border-bottom: 1px solid #2f3336;
+    border-left: 1px solid var(--c-separator-gray);
+    border-right: 1px solid var(--c-separator-gray);
 }
 
 .post-editable {
@@ -1078,8 +1080,16 @@ textarea {
 .post-selected {
     display: flex;
     max-width: var(--pBodyWidth);
+    max-height: var(--post-height-big) !important;
     align-items: flex-start;
     margin: 0 auto;
+    border-left: 1px solid var(--c-separator-gray);
+    border-right: 1px solid var(--c-separator-gray);
+}
+
+.post-wrapper {
+    border-left: 1px solid var(--c-separator-gray);
+    border-right: 1px solid var(--c-separator-gray);
 }
 
 .separator {
