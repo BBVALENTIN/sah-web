@@ -7,9 +7,11 @@ import com.sah.dto.misc.ChatMessageDTO;
 import com.sah.dto.requests.GameEndRequest;
 import com.sah.dto.requests.MoveRequestDTO;
 import com.sah.dto.responses.MoveResultDTO;
+import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
+import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
@@ -22,6 +24,7 @@ import com.sah.repository.UserRepository;
 import com.sah.service.ChessLobbyChatService;
 import com.sah.service.ChessLobbyService;
 import com.sah.service.GameService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -38,24 +41,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/chess")
+@AllArgsConstructor
 public class ChessApiController {
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChessBoard chessBoard;
+    private final ChessLobbyService lobbyService;
+    private final LobbyRepository lobbyRepository;
     private final ChessLobbyChatService chessLobbyChatService;
     private final ChessLobbyChatRepository chessLobbyChatRepository;
     private final UserRepository userRepository;
 
-
-    @Autowired
-    public ChessApiController(GameService gameService, SimpMessagingTemplate messagingTemplate, ChessBoard chessBoard, ChessLobbyChatService chessLobbyChatService,ChessLobbyChatRepository chessLobbyChatRepository, UserRepository userRepository) {
-        this.gameService = gameService;
-        this.messagingTemplate = messagingTemplate;
-        this.chessBoard = chessBoard;
-        this.chessLobbyChatService = chessLobbyChatService;
-        this.chessLobbyChatRepository = chessLobbyChatRepository;
-        this.userRepository = userRepository;
-    }
 
 
     @PostMapping("/move")
@@ -114,6 +110,9 @@ public class ChessApiController {
         if(result.getErrorCodes() == null) {
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
             if(result.isCheckmate() == true) {
+                ChessLobbies lobby = lobbyRepository.findByLobbyId(request.getLobbyId());
+                lobby.setLobbyType(LobbyType.FINISHED);
+                lobbyRepository.save(lobby);
                 gameService.saveClassicGame(request.getLobbyId(), WinType.CHECKMATE);
             }
         }

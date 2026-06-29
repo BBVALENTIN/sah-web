@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>înregistrează-te</title>
+    <title>Register</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <div id="registerContent">
         <form class="registerForm" th:action ="@{/register}" method="post">
-            <h2>Creeaza-ti un cont</h2>
+            <h2>Create an account</h2>
 
 
             <label class="form-label">Email</label>
-            <input class="form-input" type="email" name="email" placeholder="Introdu emailul" required>
+            <input class="form-input" type="email" name="email" placeholder="Enter email" required>
             <label class="form-label">Username</label>
-            <input class="form-input" type="text" name="username" placeholder="Introdu numele" required>
-            <label class="form-label">Parola</label>
-            <input class="form-input" type = "password" name = "password" placeholder="Introdu parola" required>
+            <input class="form-input" type="text" name="username" placeholder="Enter username" required>
+            <label class="form-label">Password</label>
+            <input class="form-input" type = "password" name = "password" placeholder="Enter password" required>
 
             <p th:if="${error}" th:text="${error}" style="color:red;"></p>
             <button type="submit">Register</button>
-            <a th:href="@{/login}">Dacă ai cont, logheaza-te aici</a>
+            <a th:href="@{/login}">If you already have an account, log in here</a>
         </form>
     </div>
 </body>
