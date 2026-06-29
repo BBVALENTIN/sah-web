@@ -57,8 +57,8 @@ public class ProfileService {
 
     private List<MatchHistoryDTO> loadProfileGames(String username) {
         Users user = userRepo.findByUsername(username);
-        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findByPlayerBlackAndLobbyType(user, LobbyType.AVAILABLE));
-        allLobbies.addAll(lobbyRepo.findByPlayerWhiteAndLobbyType(user, LobbyType.AVAILABLE));
+        List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findByPlayerBlackAndLobbyType(user, LobbyType.FINISHED));
+        allLobbies.addAll(lobbyRepo.findByPlayerWhiteAndLobbyType(user, LobbyType.FINISHED));
 
         if(allLobbies.isEmpty())
            return new ArrayList<>();
