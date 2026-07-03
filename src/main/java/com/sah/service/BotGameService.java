@@ -113,7 +113,7 @@ public class BotGameService {
         Users player = userRepository.findByUsername(playerName);
 
         if(session == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sesiunea nu exista!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
 
         WinType winType = resignation ? WinType.RESIGNATION : WinType.CHECKMATE;
         ResultType result = board.convertToResult();
@@ -125,12 +125,12 @@ public class BotGameService {
     public BotMinimalStateDTO getMinimalStateDTO(String gameId) {
         BotGameSession session = getSession(gameId);
         if (session == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sesiunea nu exista!");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
 
         ChessBoard board = session.board();
         return new BotMinimalStateDTO(
                 board.getAllPiecesDTO(),
-                board.getCuloareCurenta(),
+                board.getCurrentColor(),
                 board.getAllPGN(),
                 session.botSide(),
                 board.getCurrentFen()

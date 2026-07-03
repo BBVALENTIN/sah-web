@@ -70,9 +70,9 @@ public class ChessApiController {
     }
 
     @GetMapping("/turn")
-    public ColorType getCuloareCurenta()
+    public ColorType getCurrentColor()
     {
-        return chessBoard.getCuloareCurenta();
+        return chessBoard.getCurrentColor();
     }
 
 

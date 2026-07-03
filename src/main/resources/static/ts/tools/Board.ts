@@ -49,8 +49,8 @@ export class Board {
     }
 
     async loadImages(): Promise<void> {
-        const tipuri = Object.values(TipPiesa);
-        const culori = [ "white", "black"];
+        const tipuri: TipPiesa[] = Object.values(TipPiesa);
+        const culori: string[] = [ "white", "black"];
         const promises: Promise<void>[] = [];
 
         culori.forEach(culoare => {

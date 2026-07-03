@@ -6,11 +6,13 @@ import com.sah.dto.chess.LastMove;
 import com.sah.dto.chess.PieceDTO;
 import com.sah.game.GameEnums.ColorType;
 import com.sah.game.GameEnums.ErrorCodes;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class MoveResultDTO {
     private List<PieceDTO> updatedPieces;
     private boolean isCheck, isCheckmate;
