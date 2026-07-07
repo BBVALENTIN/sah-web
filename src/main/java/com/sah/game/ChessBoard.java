@@ -20,7 +20,7 @@ public class ChessBoard {
     public Pieces checkingPiece, selectedPiece, capturedPiece;
     public List<Pieces> piecesList = new ArrayList<>();
     public short movesPlayed, halfMove;
-    public boolean promoted, isCheckMate, resignation, canCastle;
+    public boolean promoted, isCheck, isCheckMate, resignation, canCastle;
     public CastlingInfoDTO castlingInfo;
     private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
@@ -165,7 +165,7 @@ public class ChessBoard {
         short tc = moveCoords.getTargetCol();
         short fromR = moveCoords.getFromRow();
         short fromC = moveCoords.getFromCol();
-        selectedPiece = board[tr][tc];
+        selectedPiece = board[fromR][fromC];
         if(selectedPiece == null)
         {
              throw new InvalidMoveException(ErrorCodes.UNDETECTED_PIECE);
@@ -184,7 +184,7 @@ public class ChessBoard {
             }
         }
 
-        if(selectedPiece.move(moveCoords.getTargetRow(), moveCoords.getFromCol()) && enPassant == false)
+        if(selectedPiece.move(tr, tc) == false && enPassant == false)
         {
             throw new InvalidMoveException(ErrorCodes.ILLEGAL_MOVE);
         }
@@ -228,11 +228,33 @@ public class ChessBoard {
             isCheckMate = isCheckmate(opponentKing);
         }
 
-        MoveDataNotationDTO dto = MoveDataNotationDTO.builder()
-                .fromRow(fromR)
-                .fromCol(fromC)
-                .targetRow(tr)
-                .targetCol(tc)
+        MoveDataNotationDTO dto = assembleNotationDTO(moveCoords, oldList, castlingNotation, isCapture);
+
+        String currentPGN = moveNotation.formatMove(dto);
+        String currentFEN = moveNotation.generateFEN(new FENRequestDTO(board, currentColor, halfMove, castlingInfo)); // good enough
+
+        promoted = false;
+        if(isCheckMate) {
+            winner = (currentColor == ColorType.WHITE) ? Sides.BLACK : Sides.WHITE;
+        }
+
+        return OMoveResult.builder()
+                .fen(currentFEN)
+                .pgn(currentPGN)
+                .capturedPieceList(OCapturedPieces)
+                .lastMoveCoords(moveCoords)
+                .isCheck(isCheck)
+                .isCheckMate(isCheckMate)
+                .currentColor(currentColor)
+                .build();
+    }
+
+    private MoveDataNotationDTO assembleNotationDTO(MoveCoords moveCoords, List<Pieces> oldList, CastlingNotation castlingNotation, boolean isCapture) {
+        return MoveDataNotationDTO.builder()
+                .fromRow(moveCoords.getFromRow())
+                .fromCol(moveCoords.getFromCol())
+                .targetRow(moveCoords.getTargetRow())
+                .targetCol(moveCoords.getTargetCol())
                 .oldPieces(oldList)
                 .piece(selectedPiece) // should optimize to be only the types, no need for more
                 .isCheck(isCheck)
@@ -242,23 +264,6 @@ public class ChessBoard {
                 .promoted(promoted)
                 .isCapture(isCapture)
                 .build();
-
-        String currentFormattedMove = moveNotation.formatMove(dto);
-        String currentFEN = moveNotation.generateFEN(new FENRequestDTO(board, currentColor, halfMove, castlingInfo)); // good enough
-
-        promoted = false;
-        if(isCheckMate) {
-            winner = (currentColor == ColorType.WHITE) ? Sides.BLACK : Sides.WHITE;
-            return assembleCheckmateResponse();
-        }
-        return assembleMoveResponse();
-    }
-
-    private OMoveResult assembleMoveResponse(){
-        return new OMoveResult();
-    }
-    private OMoveResult assembleCheckmateResponse() {
-        return new OMoveResult();
     }
 
     public synchronized List<Pieces> getAllPieces() {

@@ -94,6 +94,13 @@ public class ChessApiController {
         return dto;
     }
 
+    @PostMapping("/omove")
+    public ResponseEntity<?> optimisedMove(@RequestBody MoveCoords moveCoords) throws InvalidMoveException {
+        OMoveResult res = chessBoard.makeOptimisedMove(moveCoords);
+
+        return ResponseEntity.ok(res);
+    }
+
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request) {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
