@@ -1,6 +1,6 @@
 import {MousePractice} from "../practice/MousePractice.js";
 import {Board} from "../tools/Board";
-import {Mutare_Reusita} from "../tools/Types.js";
+import {Mutare_Reusita, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 import {SidesExplicit} from "../tools/Enums.js";
 
@@ -13,10 +13,10 @@ export class MouseBot extends MousePractice {
         this.currentColor = playerSide;
     }
 
-    protected afterMove(result: Mutare_Reusita): void {
+    protected afterMove(result: OptimisedMove): void {
     }
 
-    async handleMutareAPI(e: any): Promise<Mutare_Reusita> {
+    async handleMutareAPI(e: any): Promise<OptimisedMove> {
         const { col, row } = this.getSquareFromMouse(e);
         const moveData = {
             gameId: this.gameId,
@@ -62,8 +62,8 @@ export class MouseBot extends MousePractice {
         });
 
         if (response.ok) {
-            const result: Mutare_Reusita = await response.json();
-            this.board.setPiecesFromServer(result.updatedPieces);
+            const result: OptimisedMove = await response.json();
+            this.board.setPiecesFromFEN(result.fen);
             this.board.redraw();
             this.moveList.addMove(result.pgn);
             this.addMoveToCopyable(result.pgn);

@@ -1,8 +1,8 @@
 import {Board} from "../tools/Board.js";
-import { SidesExplicit, TipPiesa} from "../tools/Enums.js";
+import {PieceType, SidesExplicit} from "../tools/Enums.js";
 
 export class Piece {
-    readonly tip: TipPiesa | undefined;
+    readonly tip: PieceType | undefined;
     color: SidesExplicit;
     row:number;
     col: number;

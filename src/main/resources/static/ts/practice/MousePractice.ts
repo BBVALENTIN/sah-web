@@ -2,7 +2,7 @@ import {Board} from "../tools/Board.js";
 import {Piece} from "../pieces/Piece.js";
 import {SoundManager} from "../audio/soundManager.js";
 import {SidesExplicit, moveSounds} from "../tools/Enums.js";
-import {Mutare_Reusita} from "../tools/Types.js";
+import {Mutare_Reusita, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 
 const fenOutput = document.getElementById('FEN') as HTMLInputElement;
@@ -35,23 +35,34 @@ export class MousePractice {
         this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
-    async handleMutareAPI(e: any):Promise<Mutare_Reusita> {
+    async handleMutareAPI(e: any):Promise<OptimisedMove> {
         const { col, row, x, y} = this.getSquareFromMouse(e);
-        let mutare: Promise<Mutare_Reusita>;
+        let mutare: Promise<OptimisedMove>;
         let errorText: any;
         const moveData = {
             fromRow: this.selectedPiece!.row,
             fromCol: this.selectedPiece!.col,
-            toRow: row,
-            toCol: col
+            targetRow: row,
+            targetCol: col
         };
-        const res: Response = await fetch(`/api/chess/move?fromRow=${moveData.fromRow}&fromCol=${moveData.fromCol}&toRow=${moveData.toRow}&toCol=${moveData.toCol}`, {method: "POST"});
+        console.log(moveData);
+        const res: Response = await fetch(`/api/chess/omove`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(moveData)
+            });
+
+
         if(!res.ok) {
             const errorText = await res.text();
             this.reset();
             throw new Error(errorText);
         }
         mutare = await res.json();
+        console.log(mutare);
         return mutare;
     }
 
@@ -110,14 +121,15 @@ export class MousePractice {
         this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
         try {
-            const result:Mutare_Reusita | undefined = await this.handleMutareAPI(e);
+            const result:OptimisedMove | undefined = await this.handleMutareAPI(e);
             console.log(result);
             if(result === undefined)
                 return;
+
             this.playSound(result);
 
             this.moveList.addMove(result.pgn);
-            this.board.setPiecesFromServer(result.updatedPieces);
+            this.board.setPiecesFromFEN(result.fen); // function to set pieces from FEN
             this.afterMove(result);
             FEN = result.fen;
             if(this.onEngineRequest)
@@ -125,7 +137,7 @@ export class MousePractice {
             fenOutput.value = FEN;
             this.addMoveToCopyable(result.pgn);
         } catch(err){
-            console.log("eroare cine stie de ce");
+            console.error("Error regarding the API: ", err);
         } finally {
             this.reset();
         }
@@ -160,17 +172,17 @@ export class MousePractice {
         pgnOutput.value += this.currentMove;
     }
 
-    playSound(result: Mutare_Reusita): void {
-        if(result.checkmate){
+    playSound(result: OptimisedMove): void {
+        if(result.isCheckMate){
             this.soundManager.play("checkmate");
             this.soundManager.play("end")
         }
-        else if(result.check) { this.soundManager.play("check");}
-        else if(result.captures) {this.soundManager.play("capture");}
+        else if(result.isCheck) { this.soundManager.play("check");}
+        else if(result.pgn.includes('x')) {this.soundManager.play("capture");}
         else {this.soundManager.play("move"); }
     }
 
-    protected afterMove(result: Mutare_Reusita): void {
+    protected afterMove(result: OptimisedMove): void {
         this.currentColor = result.currentColor;
     }
 

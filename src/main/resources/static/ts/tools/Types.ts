@@ -1,4 +1,4 @@
-import {MessageType, LobbyType, Formats, Sides, SidesExplicit} from "./Enums.js";
+import {MessageType, LobbyType, Formats, Sides, SidesExplicit, PieceType} from "./Enums.js";
 
 export interface PieceDTO {
     Type: String;
@@ -18,6 +18,21 @@ export interface Mutare_Reusita {
     lastMove: LastMove;
     fen: string;
     capturedPieces: PieceDTO[];
+}
+
+export interface OptimisedMove {
+    fen: string;
+    pgn: string;
+    moveCoords: LastMove;
+    isCheck: boolean;
+    isCheckMate: boolean;
+    capturedPieces: minPiece;
+    currentColor: SidesExplicit;
+}
+
+interface minPiece {
+    type: string;
+    color: Sides;
 }
 
 interface LastMove {

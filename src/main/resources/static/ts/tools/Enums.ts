@@ -1,4 +1,4 @@
-export enum TipPiesa {
+export enum PieceType {
     PAWN = 'PAWN',
     ROOK = 'ROOK',
     KNIGHT = 'KNIGHT',
