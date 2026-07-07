@@ -16,6 +16,9 @@ import com.sah.enums.MessageType;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.game.GameEnums.ColorType;
+import com.sah.game.InvalidMoveException;
+import com.sah.game.MoveCoords;
+import com.sah.game.OMoveResult;
 import com.sah.game.pieces.Pieces;
 import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.GameRepository;
@@ -57,10 +60,10 @@ public class ChessApiController {
     @PostMapping("/move")
     public ResponseEntity<?> move(@RequestParam int fromRow,
                            @RequestParam int fromCol,
-                           @RequestParam int toRow,
-                           @RequestParam int toCol
+                           @RequestParam int targetRow,
+                           @RequestParam int targetCol
     ) {
-        MoveResultDTO result =  chessBoard.makeMove(fromRow, fromCol, toRow, toCol);
+        MoveResultDTO result =  chessBoard.makeMove(fromRow, fromCol, targetRow, targetCol);
 
         if(result.getErrorCodes() != null) {
             return ResponseEntity.badRequest().body(result.getErrorCodes());
