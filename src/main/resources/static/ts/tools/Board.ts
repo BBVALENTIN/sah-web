@@ -68,7 +68,7 @@ export class Board {
                         resolve();
                     };
                     img.onerror = () => {
-                        console.error(`Nu am putut incarca imaginea la: ${img.src}`);
+                        console.error(`We couldn't load the images: ${img.src}`);
                         resolve();
                     };
                 });
