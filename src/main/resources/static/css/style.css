@@ -566,6 +566,11 @@ input:checked + .slider:before {
     cursor: pointer;
 }
 
+.nav-links-right .dropdown-content {
+    left: auto;
+    right: 0;
+}
+
 .dropdown-content a,
 .dropdown-content button {
     color: #ccc;
