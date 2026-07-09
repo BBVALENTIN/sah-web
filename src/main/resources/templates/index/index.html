@@ -13,7 +13,7 @@
 
         <div class="content-main-left">
 
-            <h1>Bun venit, <span sec:authentication="name">utilizator</span>!</h1>
+            <h1>Welcome, <span sec:authentication="name">utilizator</span>!</h1>
 
             <div th:if="${stream != null}" class="main-stream">
                 <a class="stream-card" th:href="'https://www.twitch.tv/' + ${stream.userName}" target="_blank">
