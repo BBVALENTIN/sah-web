@@ -85,7 +85,7 @@ public class BotGameService {
         ColorType pieceColor = board.board[req.getFromRow()][req.getFromCol()].color;
 
         if (pieceColor != SideToColorConversion(playerSide)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Nu poti muta piesele botului!");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't move the chess engine's pieces");
         }
 
         return board.makeMove(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
