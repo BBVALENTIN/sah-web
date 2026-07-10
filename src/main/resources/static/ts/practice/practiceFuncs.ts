@@ -1,8 +1,6 @@
 import {minimalState, PieceDTO} from "../tools/Types.js";
-import {Board} from "../tools/Board";
 import {FEN, MousePractice} from "./MousePractice.js";
 import {initCanvas, initBoard, onButtonClick} from "../tools/initApp.js";
-import {Piece} from "../pieces/Piece";
 
 type stockfishLine = {
     rank: number;
@@ -63,16 +61,6 @@ export function cereMutareDeLaStockfish(fenCurent: string) {
     stockfish.postMessage(`position fen ${fenCurent}`);
     stockfish.postMessage("setoption name MultiPV value 3");
     stockfish.postMessage('go movetime 8000'); // wait 8 seconds
-}
-
-// to implement
-function applyMove(mutare: string) {
-
-    const fromCol = mutare.charCodeAt(0) - 97;
-    const fromRow = 8 - parseInt(mutare.charAt(1));
-
-    const targetCol = mutare.charCodeAt(2) - 97;
-    const targetRow = 8 - parseInt(mutare.charAt(3));
 }
 
 stockfish.postMessage('uci');

@@ -203,11 +203,11 @@ public class ChessBoard {
             throw new InvalidMoveException(ErrorCodes.ILLEGAL_MOVE);
         }
 
-        OCapturedPiece oCapturedPiece = getOCapturedPiece(tr, tc);
+        capturedPiece = getCapturedPiece(tr, tc);
         boolean isCapture = false;
-        if(oCapturedPiece != null) {
+        if(capturedPiece != null) {
             isCapture = true;
-            OCapturedPieces.add(oCapturedPiece);
+            OCapturedPieces.add(toOCapturedPiece(capturedPiece));
         }
 
         List<Pieces> oldList = new ArrayList<>(piecesList);
@@ -268,6 +268,10 @@ public class ChessBoard {
                 .promoted(promoted)
                 .isCapture(isCapture)
                 .build();
+    }
+
+    private OCapturedPiece toOCapturedPiece(Pieces piece) {
+        return new OCapturedPiece(piece.type, piece.color);
     }
 
     public synchronized List<Pieces> getAllPieces() {
