@@ -1,4 +1,4 @@
-import {AppCore, getLoggedUsername, initBoard, initCanvas, onButtonClick} from "../tools/initApp.js";
+import {AppCore, getLoggedUsername, initBoard, initCanvas, onButtonClick} from "../tools/chess-utils.js";
 import {SidesExplicit} from "../tools/Enums.js";
 import {MouseBot} from "./MouseBot.js";
 import {PieceDTO} from "../tools/Types.js";

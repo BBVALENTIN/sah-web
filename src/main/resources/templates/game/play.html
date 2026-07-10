@@ -5,7 +5,7 @@
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div th:insert="fragments/navbar :: navbar"></div>
+    <div th:insert="~{fragments/navbar :: navbar}"></div>
 
     <div class="content-play-online">
 
@@ -37,6 +37,9 @@
                 </div>
             </div>
         </div>
+
+        <div th:insert="~{fragments/copyables :: copyables}"></div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>

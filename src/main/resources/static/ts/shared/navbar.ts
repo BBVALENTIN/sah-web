@@ -1,6 +1,5 @@
 function navbarQuickPlay() {
-    const quickPlayNav = document.getElementById('quickPlayNav');
-
+    const quickPlayNav = document.getElementById('quickPlayNav') as HTMLAnchorElement;
     if(quickPlayNav) {
         quickPlayNav.addEventListener('click', async () => {
             const res = await fetch('/api/lobby/createQuick');

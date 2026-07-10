@@ -4,7 +4,7 @@ import {Sides} from "./Enums.js";
 export class MoveList {
     private container: HTMLElement;
     private rows: MoveRow[] = [];
-    private moveCount: number = 0; // contor pentru alb/negru
+    private moveCount: number = 0;
     private lastPGN: string = "";
 
     constructor(containerId: string) {

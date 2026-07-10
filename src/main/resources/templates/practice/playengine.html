@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <div th:insert="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="content-play">
 
@@ -39,18 +39,8 @@
             </div>
         </div>
 
-        <div class = "copyables">
+        <div th:insert="~{fragments/copyables :: copyables}"></div>
 
-            <div class="pair">
-                <label class="name">FEN</label>
-                <input id="FEN" class="copyable" spellcheck="false" enterkeyhint="done" readonly>
-            </div>
-
-            <div class="pair">
-                <label class="name">PGN</label>
-                <textarea id="PGN" class="copyable" spellcheck="false" readonly></textarea>
-            </div>
-        </div>
     </div>
 
     <script type="module" th:src="@{/ts-transpiled/playEngine/Main.js}"></script>

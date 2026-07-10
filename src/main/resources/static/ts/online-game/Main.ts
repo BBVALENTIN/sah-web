@@ -1,7 +1,7 @@
 import {Board} from '../tools/Board.js';
 import {Mouse} from "./Mouse.js";
 import {MoveList} from "../tools/MoveList.js";
-import {connect, culoareCurenta, sendMessage, setCuloareCurenta, state} from "./WebSockets.js"
+import {connect, sendMessage, state} from "./WebSockets.js"
 import {getInfoLobby} from "../misc/APIs.js";
 import {minimalState} from "../tools/Types.js";
 
@@ -11,7 +11,7 @@ const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
 let loggedUsername = "";
 if(!lobbyId) {
-    console.log("nu avem lobbyId");
+    console.log("Lobby ID not found");
 }
 try{
     const response = await fetch('/info/user');
@@ -110,6 +110,6 @@ resignBtn.addEventListener("click", async () => {
         }
     }catch (e) {
         resignBtn.disabled = false;
-        console.error("Eroare - contacteaza un dev!")
+        console.error("Error regarding the resign button!")
     }
 });

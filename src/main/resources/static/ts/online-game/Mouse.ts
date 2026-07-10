@@ -2,7 +2,7 @@
     import { SoundManager } from "../audio/soundManager.js";
     import { Piece } from "../pieces/Piece.js";
     import {lobbyInfo} from "../tools/Types.js";
-    import {state, culoareCurenta} from "./WebSockets.js";
+    import {state, currentColor} from "./WebSockets.js";
     import {loggedUsername, getInfoLobby} from "../misc/APIs.js";
 
 
@@ -50,7 +50,7 @@
         public onMouseDown(e:any):void {
             const { col, row, x, y} = this.getSquareFromMouse(e);
             const piece = this.board.getPiece(row, col);
-            if (piece && piece.color === culoareCurenta) {
+            if (piece && piece.color === currentColor) {
                 this.selectedPiece = piece;
                 this.selectedPiece.isDragging = true;
 
@@ -66,7 +66,7 @@
         public async MouseMove(e:any):Promise<void> {
             const { col, row, x, y} = this.getSquareFromMouse(e);
             const piece = this.board.getPiece(row, col);
-            if(piece && piece.color == culoareCurenta)
+            if(piece && piece.color == currentColor)
                 this.canvas.style.cursor = "grab";
             else
                 this.canvas.style.cursor = "default";
