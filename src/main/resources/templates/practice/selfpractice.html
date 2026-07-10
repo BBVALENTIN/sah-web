@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div id="chess-stuff" class="content-play">
 
         <div class="chess-main">
@@ -85,10 +85,8 @@
                 </button>
             </div>
         </div>
-
     </div>
 
     <script type="module" th:src="@{/ts-transpiled/practice/index.js}"></script>
-    <script type="module" th:src="@{/ts-transpiled/main.js}"></script>
 </body>
 </html>

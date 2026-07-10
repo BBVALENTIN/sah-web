@@ -17,20 +17,18 @@ await initBoard(board);
 await loadBoard();
 const mousePractice = new MousePractice(canvas, board, moveList);
 mousePractice.onEngineRequest = (fen: string) => {
-    if(engineOn) cereMutareDeLaStockfish(fen);
+    if(engineOn) requestStockfishMove(fen);
 };
-onButtonClick('flipBoard', handleFlip);
-onButtonClick('resetBoard', handleReset);
 
 const stockfish = new Worker('/libs/stockfish/stockfish.js');
 stockfishTrigger.addEventListener('change', () => {
     if(stockfishTrigger.checked) {
         engineOn = true;
-        cereMutareDeLaStockfish(FEN);
+        requestStockfishMove(FEN);
     }
     else {
         engineOn = false;
-        stockfish.postMessage('stop');
+        uciCmd('stop');
     }
 });
 
@@ -57,14 +55,11 @@ stockfish.onmessage = function(event) {
     }
 };
 
-export function cereMutareDeLaStockfish(fenCurent: string) {
-    stockfish.postMessage(`position fen ${fenCurent}`);
-    stockfish.postMessage("setoption name MultiPV value 3");
-    stockfish.postMessage('go movetime 8000'); // wait 8 seconds
+export function requestStockfishMove(fenCurent: string) {
+    uciCmd(`position fen ${fenCurent}`);
+    uciCmd("setoption name MultiPV value 3");
+    uciCmd('go movetime 8000'); // wait 8 seconds
 }
-
-stockfish.postMessage('uci');
-stockfish.postMessage('isready');
 
 async function loadBoard() {
     try {
@@ -82,8 +77,6 @@ async function loadBoard() {
         console.error('Error: ', e);
     }
 }
-
-loadBoard();
 
 function handleFlip() {
     board.getOrientation() ? board.setOrientation(false) : board.setOrientation(true);
@@ -120,6 +113,10 @@ function formatEvaluation(type: string, value: string, isBlackToMove: boolean): 
     return '0.00';
 }
 
+function uciCmd(msg: string) {
+    stockfish.postMessage(msg);
+}
+
 function renderStockfishLines(lines: stockfishLine[]) {
     const container = document.getElementById('stockfish-lines');
 
@@ -137,4 +134,13 @@ function renderStockfishLines(lines: stockfishLine[]) {
      `;
         container.appendChild(lineElement);
     });
+}
+
+export async function initPractice() {
+    await initBoard(board);
+    await loadBoard();
+    onButtonClick('flipBoard', handleFlip);
+    onButtonClick('resetBoard', handleReset);
+    uciCmd('uci');
+    uciCmd('isready');
 }
