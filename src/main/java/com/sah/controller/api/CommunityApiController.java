@@ -3,9 +3,7 @@ package com.sah.controller.api;
 import com.sah.dto.misc.CommentRequestDTO;
 import com.sah.dto.misc.PostDTO;
 import com.sah.dto.requests.PostRequestDTO;
-import com.sah.entity.Posts;
-import com.sah.service.PostsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sah.service.community.PostsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

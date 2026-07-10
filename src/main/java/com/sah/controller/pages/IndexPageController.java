@@ -1,9 +1,8 @@
 package com.sah.controller.pages;
 
-import com.sah.dto.misc.ProfileInfoDTO;
-import com.sah.service.PostsService;
-import com.sah.service.ProfileService;
-import com.sah.service.TwitchService;
+import com.sah.service.community.PostsService;
+import com.sah.service.user.ProfileService;
+import com.sah.service.misc.TwitchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.chess;
 
 import com.sah.dto.requests.GameEndRequest;
 import com.sah.entity.ChessGames;
@@ -7,7 +7,7 @@ import com.sah.enums.LobbyType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
-import com.sah.game.GameEnums.ColorType;
+import com.sah.game.gameenums.ColorType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;

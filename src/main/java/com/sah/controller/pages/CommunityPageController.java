@@ -1,7 +1,7 @@
 package com.sah.controller.pages;
 
-import com.sah.service.PostsService;
-import com.sah.service.ProfileService;
+import com.sah.service.community.PostsService;
+import com.sah.service.user.ProfileService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.engine;
 
 import com.sah.dto.chess.MinimalStateDTO;
 import com.sah.game.ChessBoard;

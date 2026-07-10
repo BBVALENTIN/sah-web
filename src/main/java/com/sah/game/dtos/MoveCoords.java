@@ -1,4 +1,4 @@
-package com.sah.game;
+package com.sah.game.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

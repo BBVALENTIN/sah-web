@@ -1,4 +1,4 @@
-package com.sah.controller;
+package com.sah.controller.api;
 
 import com.sah.FileUpload.StorageFileNotFoundException;
 import com.sah.FileUpload.StorageService;

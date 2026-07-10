@@ -3,9 +3,9 @@ package com.sah.game;
 import com.sah.dto.chess.CastlingInfoDTO;
 import com.sah.dto.chess.FENRequestDTO;
 import com.sah.dto.chess.MoveDataNotationDTO;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.CastlingNotation;
-import com.sah.game.GameEnums.Type;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.CastlingNotation;
+import com.sah.game.gameenums.Type;
 import com.sah.game.pieces.Pieces;
 
 import java.util.ArrayList;

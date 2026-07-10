@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.lobby;
 
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessGames;

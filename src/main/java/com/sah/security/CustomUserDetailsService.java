@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.security;
 
 import com.sah.dto.misc.loggedUser;
 import com.sah.entity.Users;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

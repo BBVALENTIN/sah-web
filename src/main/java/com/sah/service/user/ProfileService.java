@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.user;
 
 import com.sah.dto.info.GameOverviewInfo;
 import com.sah.dto.info.UserMiscInfo;

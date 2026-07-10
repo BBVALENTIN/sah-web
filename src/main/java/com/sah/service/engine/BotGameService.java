@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.engine;
 
 import com.sah.dto.chess.BotMinimalStateDTO;
 import com.sah.dto.requests.BotMoveRequestDTO;
@@ -10,7 +10,7 @@ import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
-import com.sah.game.GameEnums.ColorType;
+import com.sah.game.gameenums.ColorType;
 import com.sah.repository.BotGameRepository;
 import com.sah.repository.UserRepository;
 import org.springframework.http.HttpStatus;

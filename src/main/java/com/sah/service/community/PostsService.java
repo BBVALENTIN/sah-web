@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.community;
 
 import com.sah.dto.misc.CommentsDTO;
 import com.sah.dto.misc.PostDTO;

@@ -1,7 +1,6 @@
-package com.sah.service;
+package com.sah.service.lobby;
 
 import com.sah.dto.misc.ChatMessageDTO;
-import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
@@ -10,7 +9,6 @@ import com.sah.repository.LobbyChatMessagesRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 

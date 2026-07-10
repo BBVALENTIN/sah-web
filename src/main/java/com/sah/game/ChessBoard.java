@@ -4,10 +4,14 @@ import com.sah.dto.chess.*;
 import com.sah.dto.responses.MoveResultDTO;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.ErrorCodes;
-import com.sah.game.GameEnums.CastlingNotation;
-import com.sah.game.GameEnums.Type;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.ErrorCodes;
+import com.sah.game.gameenums.CastlingNotation;
+import com.sah.game.gameenums.Type;
+import com.sah.game.dtos.MoveCoords;
+import com.sah.game.dtos.OCapturedPiece;
+import com.sah.game.dtos.OMoveResult;
+import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.game.pieces.*;
 import org.springframework.stereotype.Service;
 

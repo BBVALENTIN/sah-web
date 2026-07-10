@@ -1,7 +1,7 @@
 package com.sah.controller.pages;
 
 import com.sah.dto.requests.RegisterRequestDTO;
-import com.sah.service.UsersService;
+import com.sah.service.user.UsersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

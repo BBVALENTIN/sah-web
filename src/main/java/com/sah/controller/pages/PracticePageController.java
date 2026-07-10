@@ -1,7 +1,7 @@
 package com.sah.controller.pages;
 
 import com.sah.dto.chess.MinimalStateDTO;
-import com.sah.service.PracticeService;
+import com.sah.service.engine.PracticeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

@@ -1,7 +1,6 @@
-package com.sah.game;
+package com.sah.game.exceptions;
 
-import com.sah.game.GameEnums.ErrorCodes;
-import lombok.AllArgsConstructor;
+import com.sah.game.gameenums.ErrorCodes;
 import lombok.Getter;
 
 @Getter

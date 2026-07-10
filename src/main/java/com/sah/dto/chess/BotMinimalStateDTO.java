@@ -1,7 +1,7 @@
 package com.sah.dto.chess;
 
 import com.sah.enums.Sides;
-import com.sah.game.GameEnums.ColorType;
+import com.sah.game.gameenums.ColorType;
 import lombok.*;
 
 import java.util.List;

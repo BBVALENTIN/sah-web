@@ -1,6 +1,6 @@
-package com.sah.game;
+package com.sah.game.dtos;
 
-import com.sah.game.GameEnums.ColorType;
+import com.sah.game.gameenums.ColorType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

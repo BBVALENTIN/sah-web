@@ -1,11 +1,9 @@
 package com.sah.controller.api;
 
-import com.sah.dto.misc.CreateLobbyRequest;
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessLobbies;
-import com.sah.entity.Users;
 import com.sah.enums.LobbyType;
-import com.sah.service.ChessLobbyService;
+import com.sah.service.lobby.ChessLobbyService;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 

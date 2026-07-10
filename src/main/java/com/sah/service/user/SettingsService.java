@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.user;
 
 import com.sah.entity.Users;
 import com.sah.repository.UserRepository;

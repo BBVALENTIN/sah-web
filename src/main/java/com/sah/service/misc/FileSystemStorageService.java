@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.misc;
 
 import com.sah.FileUpload.StorageException;
 import com.sah.FileUpload.StorageFileNotFoundException;

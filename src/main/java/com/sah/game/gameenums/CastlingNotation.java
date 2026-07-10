@@ -1,4 +1,4 @@
-package com.sah.game.GameEnums;
+package com.sah.game.gameenums;
 
 public enum CastlingNotation {
     BIG, SMALL;

@@ -1,8 +1,8 @@
 package com.sah.game.pieces;
 
 import com.sah.game.ChessBoard;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Type;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.Type;
 
 public class Knight extends Pieces {
     public Knight(ColorType color, int row, int col, ChessBoard game)

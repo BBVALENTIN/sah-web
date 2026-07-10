@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.sah.dto.chess.LastMove;
 import com.sah.dto.chess.PieceDTO;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.ErrorCodes;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.ErrorCodes;
 import lombok.*;
 
 @Getter

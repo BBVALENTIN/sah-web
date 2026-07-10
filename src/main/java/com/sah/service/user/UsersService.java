@@ -1,4 +1,4 @@
-package com.sah.service;
+package com.sah.service.user;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CountryResponse;
