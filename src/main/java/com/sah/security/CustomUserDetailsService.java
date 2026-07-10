@@ -30,9 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(user == null)
             throw new UsernameNotFoundException("User doesn't exist");
 
-        return new User(user.getUsername(), user.getPassword(), user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().name())).toList());
+        return new CustomUserDetails(user);
     }
 
+    public UserDetails loadUserById(Long id) throws IdentificatorNotFoundException {
+        Users u = userRepo.findById(id).orElseThrow(() -> new IdentificatorNotFoundException("User doesn't exist"));
+
+        return new CustomUserDetails(u);
+    }
 
     public loggedUser loadInfo(Principal principal) {
         Users loggedUserAllInfo = userRepo.findByUsername(principal.getName());
