@@ -24,14 +24,14 @@ public class King extends Pieces {
 
         if(moved == false)
         {
-           if(!checkCastle(color, row, precol))
+           if(!checkCastle(color, row, col))
                return false;
 
            if(targetCol == col + 2 && targetRow == row && pieceInFront(targetRow, targetCol) == false)
            {
                if(!checkSmallCastle(color, row, precol+1, precol+2))
                    return false;
-               if(board[prerow][precol+3].moved == false) {
+               if(board[row][col+3].moved == false) {
                    game.castling = board[prerow][precol + 3];
                    setAllCastleFalse();
                    return true;
@@ -43,7 +43,7 @@ public class King extends Pieces {
                if(!checkBigCastle(color, row, precol-1, precol-2)) {
                    return false;
                }
-               if(board[prerow][precol-4].moved == false){
+               if(board[row][col-4].moved == false){
                    game.castling = board[prerow][precol-4];
                    setAllCastleFalse();
                    return true;
