@@ -7,6 +7,8 @@ import com.sah.entity.*;
 import com.sah.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -53,13 +55,15 @@ public class PostsService {
                 .stream().limit(limit).collect(Collectors.toList());
     }
 
-//    private List<Posts> returnCleanPostsByDateNewestAndUser() {
-//
-//    }
-
     private List<Posts> returnCleanPostsByDateNewest() {
         return postsRepository.findPostsByDeletedOrderByCreatedAtDesc(active)
                 .stream().limit(limit).toList();
+    }
+
+    // work on this
+    private List<Posts> getPostsPage(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return postsRepository.findByDeletedOrderByCreatedAtDesc(active, pageable).getContent();
     }
 
     public List<PostDTO> returnPosts(Principal principal) {
