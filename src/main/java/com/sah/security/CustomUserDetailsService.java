@@ -3,15 +3,12 @@ package com.sah.security;
 import com.sah.dto.misc.loggedUser;
 import com.sah.entity.Users;
 import com.sah.repository.UserRepository;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.Optional;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

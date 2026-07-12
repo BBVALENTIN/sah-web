@@ -22,6 +22,9 @@ public class UsersService {
     private final UserRepository userRepo;
     private final RoleRepository rolesRepo;
     private final PasswordEncoder passwordEncoder;
+    /*
+    * This requires you to have some kind of database regarding IP allocation of countries, for instance, I use the GeoLite2 as mentioned in the README.md
+    * */
     private DatabaseReader reader = new DatabaseReader.Builder(new File("geodb-lite/GeoLite2-Country.mmdb")).build();
     private final String usernameRegex = "^(?=.*[a-zA-Z])[a-zA-Z0-9]{3,20}$";
 
