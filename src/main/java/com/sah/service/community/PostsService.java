@@ -126,7 +126,7 @@ public class PostsService {
         Users currentUser = currentUserProvider.get();
         PostsComments comment = postsCommentsRepository.findByCommentId(commentId);
         if(comment.getUser() != currentUser) {
-            throw new RuntimeException("You didn't make the comment, hence you can't delete it");
+            throw new RuntimeException("You didn't make the comment, so why should I let you delete it?");
         }
         comment.setDeleted(deleted);
         postsCommentsRepository.save(comment);
