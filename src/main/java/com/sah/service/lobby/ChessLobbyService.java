@@ -1,5 +1,6 @@
 package com.sah.service.lobby;
 
+import com.sah.config.AppConstants;
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
@@ -31,7 +32,6 @@ public class ChessLobbyService {
 
     private static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     private static final SecureRandom random = new SecureRandom();
-    private static final int length = 5;
 
     public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatRepository chessLobbyChatRepository, UserRepository userRepository) {
         this.lobbyRepository = lobbyRepository;
@@ -42,7 +42,7 @@ public class ChessLobbyService {
 
     private String GenerateRandomLobbyId() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < length; i++) {
+        for(int i = 0; i < AppConstants.LOBBY_CHARACTER_LIMIT; i++) {
             int index = random.nextInt(lobbyIdPossibleCharacters.length());
             sb.append(lobbyIdPossibleCharacters.charAt(index));
         }

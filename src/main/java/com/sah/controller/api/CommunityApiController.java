@@ -1,5 +1,6 @@
 package com.sah.controller.api;
 
+import com.sah.config.AppConstants;
 import com.sah.dto.misc.CommentRequestDTO;
 import com.sah.dto.misc.PostDTO;
 import com.sah.dto.requests.PostRequestDTO;
@@ -29,28 +30,28 @@ public class CommunityApiController {
 
     @GetMapping("/getPosts")
     public List<PostDTO> getPosts(Principal principal) {
-        return postsService.returnPosts(principal);
+        return postsService.returnPostsPage(AppConstants.DEFAULT_PAGE, AppConstants.POSTS_PER_PAGE);
     }
 
     @PostMapping("/likePost/{postId}")
     public void likePost(@PathVariable Long postId, Principal principal) {
-        postsService.likePost(postId, principal);
+        postsService.likePost(postId);
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<?> comment(@RequestBody CommentRequestDTO req, Principal principal) {
-        postsService.publishComment(req.getPostId(), req.getContent(), principal);
+    public ResponseEntity<?> comment(@RequestBody CommentRequestDTO req) {
+        postsService.publishComment(req.getPostId(), req.getContent());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/deletePost/{postId}")
-    public void deletePost(@PathVariable Long postId, Principal principal) {
-        postsService.deletePost(postId, principal);
+    public void deletePost(@PathVariable Long postId) {
+        postsService.deletePost(postId);
     }
 
     @PostMapping("/deleteComment/{commentId}")
-    public void deleteComment(@PathVariable Long commentId, Principal principal) {
-        postsService.deleteComment(commentId, principal);
+    public void deleteComment(@PathVariable Long commentId) {
+        postsService.deleteComment(commentId);
     }
 
     @PostMapping("/likeComment/{commentId}")

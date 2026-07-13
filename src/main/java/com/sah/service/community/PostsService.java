@@ -5,6 +5,7 @@ import com.sah.dto.misc.PostDTO;
 import com.sah.dto.requests.PostRequestDTO;
 import com.sah.entity.*;
 import com.sah.repository.*;
+import com.sah.security.CurrentUserProvider;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// change all the principals here to current user provider get()
 @Service
 public class PostsService {
     private final PostsRepository postsRepository;
@@ -24,6 +26,7 @@ public class PostsService {
     private final PostsLikesRepository postsLikesRepository;
     private final PostsCommentsRepository postsCommentsRepository;
     private final CommentsLikesRepository commentsLikesRepository;
+    private final CurrentUserProvider currentUserProvider;
     private final int limit = 30;
     private final boolean active = false, deleted = true;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -34,17 +37,20 @@ public class PostsService {
             UserRepository userRepository,
             PostsLikesRepository postsLikesRepository,
             PostsCommentsRepository postsCommentsRepository,
-            CommentsLikesRepository commentsLikesRepository)
+            CommentsLikesRepository commentsLikesRepository,
+            CurrentUserProvider currentUserProvider
+    )
     {
         this.postsRepository = postsRepository;
         this.userRepository = userRepository;
         this.postsLikesRepository = postsLikesRepository;
         this.postsCommentsRepository = postsCommentsRepository;
         this.commentsLikesRepository = commentsLikesRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public Posts savePost(PostRequestDTO dto, Principal principal) {
-        Users currentUser = checkUser(principal);
+        Users currentUser = currentUserProvider.get();
 
         Posts posts = new Posts(dto.getContent(), currentUser);
         return postsRepository.save(posts);
@@ -66,20 +72,32 @@ public class PostsService {
         return postsRepository.findByDeletedOrderByCreatedAtDesc(active, pageable).getContent();
     }
 
-    public List<PostDTO> returnPosts(Principal principal) {
+    public List<PostDTO> returnPostsPage(int pageNumber, int pageSize) {
+        Users currentUser = currentUserProvider.get();
+        List<Posts> posts = getPostsPage(pageNumber, pageSize);
         List<PostDTO> postDTOs = new ArrayList<>();
-        List<Posts> posts = returnCleanPostsByDateNewest();
-        for(Posts post : posts) {
-            PostDTO dto = returnPost(post.getPostId(), principal);
+
+        for (Posts p : posts) {
+            PostDTO dto = PostDTO.builder()
+                    .postId(p.getPostId())
+                    .liked(postsLikesRepository.existsByPostAndUser(p, currentUser))
+                    .commentNumber(getCommentNumber(p))
+                    .createdAt(p.getCreatedAt().format(formatter))
+                    .username(p.getCreator().getUsername())
+                    .userAvatar(p.getCreator().getAvatar())
+                    .likeNumber(p.getLikesNumber())
+                    .content(p.getContent())
+                    .build();
             postDTOs.add(dto);
         }
+
         return postDTOs;
     }
 
-    public PostDTO returnPost(Long postId,Principal principal)
+    public PostDTO returnPost(Long postId)
     {
         Posts post = postsRepository.findByPostId(postId);
-        Users currentUser = checkUser(principal);
+        Users currentUser = currentUserProvider.get();
 
         return PostDTO.builder()
                 .postId(postId)
@@ -93,8 +111,8 @@ public class PostsService {
                 .build();
     }
 
-    public void deletePost(Long postId, Principal principal) {
-        Users currentUser = checkUser(principal);
+    public void deletePost(Long postId) {
+        Users currentUser = currentUserProvider.get();
         Posts post = postsRepository.findByPostId(postId);
         if(post.getCreator() != currentUser) {
             throw new RuntimeException("You didn't make the post, hence you can't delete it");
@@ -103,9 +121,9 @@ public class PostsService {
         postsRepository.save(post);
     }
 
-    public void deleteComment(Long commentId, Principal principal)
+    public void deleteComment(Long commentId)
     {
-        Users currentUser = checkUser(principal);
+        Users currentUser = currentUserProvider.get();
         PostsComments comment = postsCommentsRepository.findByCommentId(commentId);
         if(comment.getUser() != currentUser) {
             throw new RuntimeException("You didn't make the comment, hence you can't delete it");
@@ -114,16 +132,10 @@ public class PostsService {
         postsCommentsRepository.save(comment);
     }
 
-    private Users checkUser(Principal principal){
-        Users currentUser = userRepository.findByUsername(principal.getName());
-        if(currentUser == null) throw new RuntimeException("Current user is null! You can't post unless you're logged in");
-
-        return currentUser;
-    }
 
     @Transactional
-    public void likePost(Long postId, Principal principal) {
-        Users currentUser = checkUser(principal);
+    public void likePost(Long postId) {
+        Users currentUser = currentUserProvider.get();
         Posts post = postsRepository.findByPostId(postId);
         if(postsLikesRepository.existsByPostAndUser(post, currentUser))
         {
@@ -140,7 +152,7 @@ public class PostsService {
     @Transactional
     public void likeComment(Long commentId, Principal principal)
     {
-        Users currentUser = checkUser(principal);
+        Users currentUser = currentUserProvider.get();
         PostsComments comment = postsCommentsRepository.findByCommentId(commentId);
         if(commentsLikesRepository.existsByCommentAndUser(comment, currentUser))
         {
@@ -158,17 +170,17 @@ public class PostsService {
     }
     private long getCommentNumber(Posts post) { return postsCommentsRepository.countByPost(post); }
 
-    public void publishComment(Long postId,String content, Principal principal)
+    public void publishComment(Long postId,String content)
     {
-        Users currentUser = checkUser(principal);
+        Users currentUser = currentUserProvider.get();
         Posts post = postsRepository.findByPostId(postId);
         PostsComments comment = new PostsComments(currentUser, post, content);
         postsCommentsRepository.save(comment);
     }
 
-    public List<CommentsDTO> getComments(Long postId, Principal principal)
+    public List<CommentsDTO> getComments(Long postId)
     {
-        Users currentUser = checkUser(principal);
+        Users currentUser = currentUserProvider.get();
         Posts post = postsRepository.findByPostId(postId);
         List<PostsComments> comments = postsCommentsRepository.findByPostAndDeleted(post, active);
         List<CommentsDTO> commentsDTO = new ArrayList<>();

@@ -14,6 +14,8 @@ import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.RoleRepository;
 import com.sah.repository.UserRepository;
+import com.sah.security.CurrentUserProvider;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -22,18 +24,13 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class ProfileService {
     private UserRepository userRepo;
-    private RoleRepository rolesRepo;
     private GameRepository gameRepo;
     private LobbyRepository lobbyRepo;
+    private CurrentUserProvider currentUserProvider;
 
-    public ProfileService(UserRepository userRepo, RoleRepository rolesRepo, GameRepository gameRepo,  LobbyRepository lobbyRepo) {
-        this.userRepo = userRepo;
-        this.rolesRepo = rolesRepo;
-        this.gameRepo = gameRepo;
-        this.lobbyRepo = lobbyRepo;
-    }
 
     public ProfileInfoDTO loadProfileInfo(String username) {
        List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>(loadProfileGames(username));
@@ -50,9 +47,9 @@ public class ProfileService {
        return null;
     }
 
-    public UserMiscInfo returnMiscInfo(String username) {
-        Users user = userRepo.findByUsername(username);
-        return new UserMiscInfo(username, user.getAvatar());
+    public UserMiscInfo returnMiscInfo() {
+        Users user = currentUserProvider.get();
+        return new UserMiscInfo(user.getUsername(), user.getAvatar());
     }
 
     private List<MatchHistoryDTO> loadProfileGames(String username) {

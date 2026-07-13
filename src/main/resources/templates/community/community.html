@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 
 </head>
-<body>
+<body th:data-username="${username}" th:data-avatar="${avatar}">
     <div th:replace="~{fragments/navbar :: navbar}"></div>
     <div class="post-body">
         <div class="post-editable">
-            <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${userMiscInfo.avatar}}" />
+            <img class="mini-profile-picture" alt="profile-picture" th:src="@{'/uploads/' + ${avatar}}" />
             <div id="post-content">
                 <textarea required id="post-input" class="post-message" type="text" placeholder="Share your opinion?" maxlength="250"></textarea>
                 <p class="p-info" id="char-count"></p>
@@ -29,7 +29,7 @@
                 <div class="post-item-header">
                     <span class="post-username" th:text="${post.username}">username</span>
                     <span class="post-time" th:text="${post.createdAt}">2m</span>
-                    <button class="delete-button" th:if="${post.username == userMiscInfo.username}" th:data-post-id="${post.postId}">
+                    <button class="delete-button" th:if="${post.username == username}" th:data-post-id="${post.postId}">
                         <i class="ti ti-trash"></i>
                     </button>
                 </div>
