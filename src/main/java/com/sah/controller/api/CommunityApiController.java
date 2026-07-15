@@ -29,12 +29,12 @@ public class CommunityApiController {
     }
 
     @GetMapping("/getPosts")
-    public List<PostDTO> getPosts(Principal principal) {
+    public List<PostDTO> getPosts() {
         return postsService.returnPostsPage(AppConstants.DEFAULT_PAGE, AppConstants.POSTS_PER_PAGE);
     }
 
     @PostMapping("/likePost/{postId}")
-    public void likePost(@PathVariable Long postId, Principal principal) {
+    public void likePost(@PathVariable Long postId) {
         postsService.likePost(postId);
     }
 
@@ -55,5 +55,5 @@ public class CommunityApiController {
     }
 
     @PostMapping("/likeComment/{commentId}")
-    public void likeComment(@PathVariable Long commentId, Principal principal) { postsService.likeComment(commentId, principal);}
+    public void likeComment(@PathVariable Long commentId) { postsService.likeComment(commentId);}
 }

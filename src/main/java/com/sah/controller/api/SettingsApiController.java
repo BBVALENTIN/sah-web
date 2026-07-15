@@ -20,12 +20,12 @@ public class SettingsApiController {
 
     @PutMapping("/changeDescription")
     public String changeDescription(@RequestBody DescriptionDTO req, Principal principal) {
-        return profileService.changeDescription(req.getDescription(), principal);
+        return profileService.changeDescription(req.getDescription());
     }
 
     @PutMapping("/changeCountry")
-    public ResponseEntity<?> changeCountry(@RequestParam String countryISOCode, Principal principal) {
-        profileService.changeCountry(countryISOCode, principal);
+    public ResponseEntity<?> changeCountry(@RequestParam String countryISOCode) {
+        profileService.changeCountry(countryISOCode);
         return ResponseEntity.ok().build();
     }
 }

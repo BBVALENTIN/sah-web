@@ -18,7 +18,6 @@ import com.sah.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -73,8 +72,8 @@ public class ProfileService {
         return matchHistoryDTOList;
     }
 
-    public String getLastGamesOutcome(Principal principal) {
-        Users currentUser = userRepo.findByUsername(principal.getName());
+    public String getLastGamesOutcome() {
+        Users currentUser = currentUserProvider.get();
         List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findTop15ByPlayerBlackAndLobbyTypeOrPlayerWhiteAndLobbyTypeOrderByCreatedAtDesc(currentUser, LobbyType.FINISHED,currentUser, LobbyType.FINISHED));
         StringBuilder resultString = new StringBuilder();
         for(ChessLobbies lobby : allLobbies)
@@ -108,19 +107,19 @@ public class ProfileService {
         return (Objects.equals(lobby.getPlayerBlack().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
     }
 
-    public String changeDescription(String description, Principal principal) {
+    public String changeDescription(String description) {
         if(description.length() >= 50)
             return "Your description is too long";
 
-        Users currentUser = userRepo.findByUsername(principal.getName());
+        Users currentUser = currentUserProvider.get();
         currentUser.setDescription(description);
         userRepo.save(currentUser);
         return "Description saved successfully";
     }
 
-    public String changeCountry(String countryCode, Principal principal) // expects ISO code
+    public String changeCountry(String countryCode) // expects ISO code
     {
-        Users currentUser = userRepo.findByUsername(principal.getName());
+        Users currentUser = currentUserProvider.get();
         currentUser.setCountry(countryCode.toLowerCase());
         return "Country changed successful";
     }

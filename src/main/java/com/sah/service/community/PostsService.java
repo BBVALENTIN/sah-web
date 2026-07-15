@@ -12,17 +12,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// change all the principals here to current user provider get()
 @Service
 public class PostsService {
     private final PostsRepository postsRepository;
-    private final UserRepository userRepository;
     private final PostsLikesRepository postsLikesRepository;
     private final PostsCommentsRepository postsCommentsRepository;
     private final CommentsLikesRepository commentsLikesRepository;
@@ -34,7 +31,6 @@ public class PostsService {
     @Autowired
     public PostsService(
             PostsRepository postsRepository,
-            UserRepository userRepository,
             PostsLikesRepository postsLikesRepository,
             PostsCommentsRepository postsCommentsRepository,
             CommentsLikesRepository commentsLikesRepository,
@@ -42,7 +38,6 @@ public class PostsService {
     )
     {
         this.postsRepository = postsRepository;
-        this.userRepository = userRepository;
         this.postsLikesRepository = postsLikesRepository;
         this.postsCommentsRepository = postsCommentsRepository;
         this.commentsLikesRepository = commentsLikesRepository;
@@ -149,7 +144,7 @@ public class PostsService {
     }
 
     @Transactional
-    public void likeComment(Long commentId, Principal principal)
+    public void likeComment(Long commentId)
     {
         Users currentUser = currentUserProvider.get();
         PostsComments comment = postsCommentsRepository.findByCommentId(commentId);

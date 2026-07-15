@@ -7,4 +7,7 @@ public class AppConstants {
     public static final int POSTS_PER_PAGE = 30;
 
     public static final int LOBBY_CHARACTER_LIMIT = 5;
+
+    public static final boolean NOT_RESIGNATION = false;
+    public static final boolean RESIGNATION = true;
 }

@@ -1,5 +1,6 @@
 package com.sah.service.engine;
 
+import com.sah.config.AppConstants;
 import com.sah.dto.chess.BotMinimalStateDTO;
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
@@ -13,6 +14,7 @@ import com.sah.game.ChessBoard;
 import com.sah.game.gameenums.ColorType;
 import com.sah.repository.BotGameRepository;
 import com.sah.repository.UserRepository;
+import com.sah.security.CurrentUserProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,15 +30,17 @@ public class BotGameService {
     private final Map<String, BotGameSession> botBoards = new ConcurrentHashMap<>();
     private final BotGameRepository botGameRepository;
     private final UserRepository userRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     private static final String gameIdIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     private static final SecureRandom random = new SecureRandom();
     private static final int length = 5;
 
-    public BotGameService(BotGameRepository botGameRepository, UserRepository userRepository)
+    public BotGameService(BotGameRepository botGameRepository, UserRepository userRepository, CurrentUserProvider currentUserProvider)
     {
         this.botGameRepository = botGameRepository;
         this.userRepository = userRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     private String GenerateRandomGameId() {
@@ -56,12 +60,13 @@ public class BotGameService {
         } while (botGameRepository.findByGameId(gameId) != null);
         return gameId;
     }
-    public BotStartResponseDTO createBoard(String username, Sides botSide)
+    public BotStartResponseDTO createBoard(Sides botSide)
     {
         String gameId = "B_"+assignGameId();
         ChessBoard board = new ChessBoard();
+        Users currentUser = currentUserProvider.get();
         board.initializeBoard();
-        botBoards.put(gameId, new BotGameSession(board, username, botSide));
+        botBoards.put(gameId, new BotGameSession(board, currentUser.getUsername(), botSide));
 
         return new BotStartResponseDTO(gameId, board.getAllPiecesDTO());
     }
@@ -81,6 +86,7 @@ public class BotGameService {
         ChessBoard board = getBoard(req.getGameId());
         BotGameSession session = getSession(req.getGameId());
 
+
         Sides playerSide = session.botSide().equals(Sides.WHITE) ? Sides.BLACK : Sides.WHITE;
         ColorType pieceColor = board.board[req.getFromRow()][req.getFromCol()].color;
 
@@ -99,25 +105,36 @@ public class BotGameService {
             return ColorType.BLACK;
     }
 
-    public void handleEndEarly(String gameId, String playerName) {
+    public void handleEndEarly(String gameId) {
         ChessBoard board = getBoard(gameId);
         if(board.getMovesPlayed() >= 2)
-            saveGame(gameId, true, playerName);
+            saveGame(gameId, AppConstants.RESIGNATION);
         else
             botBoards.remove(gameId);
     }
 
-    public void saveGame(String gameId, boolean resignation, String playerName) {
+    public void saveGame(String gameId, boolean resignation) {
         ChessBoard board = getBoard(gameId);
         BotGameSession session = getSession(gameId);
-        Users player = userRepository.findByUsername(playerName);
+        Users player = currentUserProvider.get();
 
         if(session == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
 
         WinType winType = resignation ? WinType.RESIGNATION : WinType.CHECKMATE;
         ResultType result = board.convertToResult();
-        BotGames botGame = new BotGames(gameId, player, session.botSide(), 18, result, winType, board.getMovesPlayed(), board.getAllPGN(), LocalDateTime.now());
+
+        BotGames botGame = BotGames.builder()
+                .gameId(gameId)
+                .player(player)
+                .botSide(session.botSide)
+                .stockfishDepth(18) // change this
+                .result(result)
+                .winReason(winType)
+                .numberOfMoves(board.getMovesPlayed())
+                .PGN(board.getAllPGN())
+                .playedAt(LocalDateTime.now())
+                .build();
         botGameRepository.save(botGame);
         botBoards.remove(gameId);
     }

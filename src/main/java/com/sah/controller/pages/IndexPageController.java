@@ -24,12 +24,12 @@ public class IndexPageController {
     }
 
     @GetMapping("/")
-    public String showIndex(Model model, Principal principal)
+    public String showIndex(Model model)
     {
         model.addAttribute("stream", twitchService.getMostPopularChessStream());
         model.addAttribute("userMiscInfo", profileService.returnMiscInfo());
         model.addAttribute("posts", postsService.returnPostsPage(AppConstants.DEFAULT_PAGE, AppConstants.POSTS_PER_PAGE));
-        model.addAttribute("resultString", profileService.getLastGamesOutcome(principal));
+        model.addAttribute("resultString", profileService.getLastGamesOutcome());
         return "index/index";
     }
 }

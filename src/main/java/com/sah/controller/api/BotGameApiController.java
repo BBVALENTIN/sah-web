@@ -1,5 +1,6 @@
 package com.sah.controller.api;
 
+import com.sah.config.AppConstants;
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
 import com.sah.dto.responses.MoveResultDTO;
@@ -40,29 +41,29 @@ public class BotGameApiController {
     }
 
     @PostMapping("/bot-move")
-    public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req, Principal principal) {
+    public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req) {
         ChessBoard board = botGameService.getBoard(req.getGameId());
         if (board == null) return ResponseEntity.notFound().build();
 
         MoveResultDTO result = board.makeMove(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
         if(result.isCheckmate())
         {
-            botGameService.saveGame(req.getGameId(), false, principal.getName());
+            botGameService.saveGame(req.getGameId(), AppConstants.NOT_RESIGNATION);
         }
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/start")
-    public ResponseEntity<?> startGame(@RequestParam Sides botSide, Principal principal)
+    public ResponseEntity<?> startGame(@RequestParam Sides botSide)
     {
-        BotStartResponseDTO response = botGameService.createBoard(principal.getName(), botSide);
+        BotStartResponseDTO response = botGameService.createBoard(botSide);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/end/{gameId}")
-    public ResponseEntity<?> endGame(@PathVariable String gameId, Principal principal) // resign endpoint
+    public ResponseEntity<?> endGame(@PathVariable String gameId) // resign endpoint
     {
-        botGameService.handleEndEarly(gameId, principal.getName());
+        botGameService.handleEndEarly(gameId);
         return ResponseEntity.ok().build();
     }
 

@@ -37,7 +37,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.List;
 
@@ -140,11 +139,10 @@ public class ChessApiController {
     @MessageMapping("/chat.sendMessage/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
     public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO,
-                                      @DestinationVariable String lobbyId,
-                                      Principal principal) {
+                                      @DestinationVariable String lobbyId) {
 
         ChessLobbyChats chat = chessLobbyChatRepository.findByLobby_LobbyId(lobbyId);
-        Users user = userRepository.findByUsername(principal.getName());
+        Users user = currentUserProvider.get();
 
         ChessLobbyChatMessages savedMessage =
                 chessLobbyChatService.sendMessage(
