@@ -21,11 +21,11 @@ public class CommunityApiController {
     }
 
     @PostMapping("/post")
-    public void post(@RequestBody PostRequestDTO request, Principal principal) {
+    public void post(@RequestBody PostRequestDTO request) {
         if(request.getContent().isBlank() || request.getContent() == null) {
             throw new RuntimeException("The post should contain at least one character");
         }
-        postsService.savePost(request, principal);
+        postsService.savePost(request);
     }
 
     @GetMapping("/getPosts")
