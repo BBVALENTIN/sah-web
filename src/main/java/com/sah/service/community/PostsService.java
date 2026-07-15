@@ -49,14 +49,14 @@ public class PostsService {
         this.currentUserProvider = currentUserProvider;
     }
 
-    public Posts savePost(PostRequestDTO dto, Principal principal) {
+    public Posts savePost(PostRequestDTO dto) {
         Users currentUser = currentUserProvider.get();
 
         Posts posts = new Posts(dto.getContent(), currentUser);
         return postsRepository.save(posts);
     }
 
-    private List<Posts> returnCleanPostsByLikes(Principal principal) {
+    private List<Posts> returnCleanPostsByLikes() {
         return postsRepository.findPostsByDeletedOrderByLikesNumberDesc(active)
                 .stream().limit(limit).collect(Collectors.toList());
     }
@@ -66,7 +66,6 @@ public class PostsService {
                 .stream().limit(limit).toList();
     }
 
-    // work on this
     private List<Posts> getPostsPage(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return postsRepository.findByDeletedOrderByCreatedAtDesc(active, pageable).getContent();

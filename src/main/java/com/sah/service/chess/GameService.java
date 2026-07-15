@@ -3,6 +3,7 @@ package com.sah.service.chess;
 import com.sah.dto.requests.GameEndRequest;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
+import com.sah.entity.Users;
 import com.sah.enums.LobbyType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
@@ -43,10 +44,10 @@ public class GameService {
         return activeLobbies.get(lobbyId);
     }
 
-    public boolean isValidMoveForPlayer(String lobbyId, String username, ColorType culoarePiesa) {
+    public boolean isValidMoveForPlayer(String lobbyId, String username, ColorType pieceColor) {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
 
-        if(culoarePiesa == ColorType.WHITE) {
+        if(pieceColor == ColorType.WHITE) {
             return username.equals(lobby.getPlayerWhite().getUsername());
         }
         else {
@@ -81,7 +82,7 @@ public class GameService {
         if(game.movesPlayed < 2)
             abortGame(lobby);
         else
-            winner = resignGame(lobby, game, request.principal);
+            winner = resignGame(lobby, game, request.currentUser);
         messageTemplate.convertAndSend("/topic/resign-lobby/" +lobby.getLobbyId(), winner);
         lobbyRepository.save(lobby);
     }
@@ -90,9 +91,9 @@ public class GameService {
         lobby.setLobbyType(LobbyType.ABORTED);
     }
 
-    public Sides resignGame(ChessLobbies lobby, ChessBoard board, Principal principal) {
+    public Sides resignGame(ChessLobbies lobby, ChessBoard board, Users currentUser) {
         board.setResignation(true);
-        if(lobby.getPlayerWhite().getUsername().equals(principal.getName()))
+        if(lobby.getPlayerWhite().getUsername().equals(currentUser.getUsername()))
             board.setWinner(Sides.BLACK);
         else
             board.setWinner(Sides.WHITE);
@@ -104,7 +105,7 @@ public class GameService {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(request.lobbyId);
         if(lobby == null)
             return false;
-        return lobby.getPlayerBlack().getUsername().equals(request.principal.getName()) || lobby.getPlayerWhite().getUsername().equals(request.principal.getName());
+        return lobby.getPlayerBlack().getUsername().equals(request.currentUser.getUsername()) || lobby.getPlayerWhite().getUsername().equals(request.currentUser.getUsername());
     }
 
     // To implement further logic here
