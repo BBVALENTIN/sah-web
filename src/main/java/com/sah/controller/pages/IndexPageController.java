@@ -1,5 +1,6 @@
 package com.sah.controller.pages;
 
+import com.sah.config.AppConstants;
 import com.sah.service.community.PostsService;
 import com.sah.service.user.ProfileService;
 import com.sah.service.misc.TwitchService;
@@ -23,12 +24,12 @@ public class IndexPageController {
     }
 
     @GetMapping("/")
-    public String showIndex(Model model, Principal principal)
+    public String showIndex(Model model)
     {
         model.addAttribute("stream", twitchService.getMostPopularChessStream());
-        model.addAttribute("userMiscInfo", profileService.returnMiscInfo(principal.getName()));
-        model.addAttribute("posts", postsService.returnPosts(principal));
-        model.addAttribute("resultString", profileService.getLastGamesOutcome(principal));
+        model.addAttribute("userMiscInfo", profileService.returnMiscInfo());
+        model.addAttribute("posts", postsService.returnPostsPage(AppConstants.DEFAULT_PAGE, AppConstants.POSTS_PER_PAGE));
+        model.addAttribute("resultString", profileService.getLastGamesOutcome());
         return "index/index";
     }
 }

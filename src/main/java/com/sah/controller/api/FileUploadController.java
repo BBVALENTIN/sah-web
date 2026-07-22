@@ -4,6 +4,7 @@ import com.sah.FileUpload.StorageFileNotFoundException;
 import com.sah.FileUpload.StorageService;
 import com.sah.entity.Users;
 import com.sah.repository.UserRepository;
+import com.sah.security.CurrentUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
 import java.util.stream.Collectors;
 
 @Controller
@@ -23,11 +23,13 @@ public class FileUploadController {
 
     private final StorageService storageService;
     private final UserRepository userRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     @Autowired
-    public FileUploadController(StorageService storageService,  UserRepository userRepository) {
+    public FileUploadController(StorageService storageService, UserRepository userRepository, CurrentUserProvider currentUserProvider) {
         this.storageService = storageService;
         this.userRepository = userRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     @GetMapping("/allUploads")
@@ -55,17 +57,17 @@ public class FileUploadController {
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes, Principal principal) {
+                                   RedirectAttributes redirectAttributes) {
 
         String filename = storageService.store(file);
 
-        Users user = userRepository.findByUsername(principal.getName());
+        Users user = currentUserProvider.get();
         user.setAvatar(filename);
         userRepository.save(user);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        return "redirect:/profile/" + principal.getName();
+        return "redirect:/profile/" + user.getUsername();
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

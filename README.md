@@ -1,3 +1,5 @@
+-- Soon to be added
+
 ## Assets / External resources
 
 This project uses audio files from Lichess (https://lichess.org) for in-game sound effects.

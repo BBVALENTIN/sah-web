@@ -1,5 +1,6 @@
 package com.sah.service.lobby;
 
+import com.sah.config.AppConstants;
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
@@ -10,6 +11,7 @@ import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
 import com.sah.repository.UserRepository;
+import com.sah.security.CurrentUserProvider;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -31,18 +33,19 @@ public class ChessLobbyService {
 
     private static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     private static final SecureRandom random = new SecureRandom();
-    private static final int length = 5;
+    private final CurrentUserProvider currentUserProvider;
 
-    public ChessLobbyService(LobbyRepository lobbyRepository,  SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatRepository chessLobbyChatRepository, UserRepository userRepository) {
+    public ChessLobbyService(LobbyRepository lobbyRepository, SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatRepository chessLobbyChatRepository, UserRepository userRepository, CurrentUserProvider currentUserProvider) {
         this.lobbyRepository = lobbyRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.chessLobbyChatRepository = chessLobbyChatRepository;
         this.userRepository = userRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     private String GenerateRandomLobbyId() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < length; i++) {
+        for(int i = 0; i < AppConstants.LOBBY_CHARACTER_LIMIT; i++) {
             int index = random.nextInt(lobbyIdPossibleCharacters.length());
             sb.append(lobbyIdPossibleCharacters.charAt(index));
         }
@@ -72,8 +75,8 @@ public class ChessLobbyService {
         return convertLobbyDTO(lobby);
     }
 
-    public String createLobby(String username) {
-        Users user = userRepository.findByUsername(username);
+    public String createLobby() {
+        Users user = currentUserProvider.get();
 
         ChessLobbies lobby = new ChessLobbies();
         String randomLobbyId = assignLobbyId();
@@ -93,10 +96,10 @@ public class ChessLobbyService {
         return lobby.getLobbyId();
     }
 
-    public void joinLobby(String lobbyId, String username) {
+    public void joinLobby(String lobbyId) {
         ChessLobbies lobby = getLobbyFromId(lobbyId);
-        Users user = userRepository.findByUsername(username);
-        if(isAlreadyAssigned(lobby, username) == false) {
+        Users user = currentUserProvider.get();
+        if(isAlreadyAssigned(lobby, user.getUsername()) == false) {
             assignLobbyPlayer(lobby, user);
             if(isLobbyFull(lobby)) {
                 lobby.setLobbyType(LobbyType.ONGOING);

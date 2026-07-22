@@ -23,6 +23,7 @@ import com.sah.game.pieces.Pieces;
 import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
+import com.sah.security.CurrentUserProvider;
 import com.sah.service.lobby.ChessLobbyChatService;
 import com.sah.service.lobby.ChessLobbyService;
 import com.sah.service.chess.GameService;
@@ -36,7 +37,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.List;
 
@@ -52,6 +52,7 @@ public class ChessApiController {
     private final ChessLobbyChatService chessLobbyChatService;
     private final ChessLobbyChatRepository chessLobbyChatRepository;
     private final UserRepository userRepository;
+    private final CurrentUserProvider currentUserProvider;
 
 
 
@@ -138,11 +139,10 @@ public class ChessApiController {
     @MessageMapping("/chat.sendMessage/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
     public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO,
-                                      @DestinationVariable String lobbyId,
-                                      Principal principal) {
+                                      @DestinationVariable String lobbyId) {
 
         ChessLobbyChats chat = chessLobbyChatRepository.findByLobby_LobbyId(lobbyId);
-        Users user = userRepository.findByUsername(principal.getName());
+        Users user = currentUserProvider.get();
 
         ChessLobbyChatMessages savedMessage =
                 chessLobbyChatService.sendMessage(
@@ -180,9 +180,9 @@ public class ChessApiController {
 
 
     @PostMapping("/EndGameEarly/{lobbyId}")
-    public void ResignOrAbort(@PathVariable String lobbyId, Principal principal)
+    public void ResignOrAbort(@PathVariable String lobbyId)
     {
-        GameEndRequest request = new GameEndRequest(lobbyId, principal);
+        GameEndRequest request = new GameEndRequest(lobbyId, currentUserProvider.get());
         gameService.endGameEarly(request);
     }
 }

@@ -1,6 +1,5 @@
-
 export async function communityFuncs() {
-    const info: LoggedUser = await fetchUserInfo();
+    const info: LoggedUser = getUserInfo();
     handlePostNavigation();
     handlePost(info);
     handleComment(info);
@@ -13,17 +12,13 @@ interface LoggedUser {
     avatar: string;
 }
 
-async function fetchUserInfo(): Promise<LoggedUser> {
-    const responseUserInfo = await fetch('/info/user');
-    let userInfoJSON = null;
-    if(responseUserInfo.ok) {
-        userInfoJSON = await responseUserInfo.json();
-        return {
-            username: userInfoJSON.username,
-            avatar: userInfoJSON.avatar
-        };
-    }
-    return { username: '', avatar: '' };
+function getUserInfo(): LoggedUser {
+    const username = document.body.dataset.username;
+    const avatar = document.body.dataset.avatar;
+    if(!username || !avatar)
+        return { username: '', avatar: '' };
+
+    return {username, avatar};
 }
 
 function setupTextArea(textAreaId: string, buttonId: string): HTMLTextAreaElement | null {

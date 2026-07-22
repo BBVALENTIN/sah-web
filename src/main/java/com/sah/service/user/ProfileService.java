@@ -14,26 +14,22 @@ import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.RoleRepository;
 import com.sah.repository.UserRepository;
+import com.sah.security.CurrentUserProvider;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class ProfileService {
     private UserRepository userRepo;
-    private RoleRepository rolesRepo;
     private GameRepository gameRepo;
     private LobbyRepository lobbyRepo;
+    private CurrentUserProvider currentUserProvider;
 
-    public ProfileService(UserRepository userRepo, RoleRepository rolesRepo, GameRepository gameRepo,  LobbyRepository lobbyRepo) {
-        this.userRepo = userRepo;
-        this.rolesRepo = rolesRepo;
-        this.gameRepo = gameRepo;
-        this.lobbyRepo = lobbyRepo;
-    }
 
     public ProfileInfoDTO loadProfileInfo(String username) {
        List<MatchHistoryDTO> matchHistoryDTOList = new ArrayList<>(loadProfileGames(username));
@@ -50,9 +46,9 @@ public class ProfileService {
        return null;
     }
 
-    public UserMiscInfo returnMiscInfo(String username) {
-        Users user = userRepo.findByUsername(username);
-        return new UserMiscInfo(username, user.getAvatar());
+    public UserMiscInfo returnMiscInfo() {
+        Users user = currentUserProvider.get();
+        return new UserMiscInfo(user.getUsername(), user.getAvatar());
     }
 
     private List<MatchHistoryDTO> loadProfileGames(String username) {
@@ -76,8 +72,8 @@ public class ProfileService {
         return matchHistoryDTOList;
     }
 
-    public String getLastGamesOutcome(Principal principal) {
-        Users currentUser = userRepo.findByUsername(principal.getName());
+    public String getLastGamesOutcome() {
+        Users currentUser = currentUserProvider.get();
         List<ChessLobbies> allLobbies = new ArrayList<>(lobbyRepo.findTop15ByPlayerBlackAndLobbyTypeOrPlayerWhiteAndLobbyTypeOrderByCreatedAtDesc(currentUser, LobbyType.FINISHED,currentUser, LobbyType.FINISHED));
         StringBuilder resultString = new StringBuilder();
         for(ChessLobbies lobby : allLobbies)
@@ -111,19 +107,19 @@ public class ProfileService {
         return (Objects.equals(lobby.getPlayerBlack().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
     }
 
-    public String changeDescription(String description, Principal principal) {
+    public String changeDescription(String description) {
         if(description.length() >= 50)
             return "Your description is too long";
 
-        Users currentUser = userRepo.findByUsername(principal.getName());
+        Users currentUser = currentUserProvider.get();
         currentUser.setDescription(description);
         userRepo.save(currentUser);
         return "Description saved successfully";
     }
 
-    public String changeCountry(String countryCode, Principal principal) // expects ISO code
+    public String changeCountry(String countryCode) // expects ISO code
     {
-        Users currentUser = userRepo.findByUsername(principal.getName());
+        Users currentUser = currentUserProvider.get();
         currentUser.setCountry(countryCode.toLowerCase());
         return "Country changed successful";
     }
