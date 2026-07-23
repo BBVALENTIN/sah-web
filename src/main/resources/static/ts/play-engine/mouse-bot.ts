@@ -18,12 +18,14 @@ export class MouseBot extends MousePractice {
 
     async handleMutareAPI(e: any): Promise<OptimisedMove> {
         const { col, row } = this.getSquareFromMouse(e);
+        const fromRow = this.selectedPiece!.row;
+        const fromCol= this.selectedPiece!.col;
+        const targetRow= row;
+        const targetCol= col;
+
         const moveData = {
             gameId: this.gameId,
-            fromRow: this.selectedPiece!.row,
-            fromCol: this.selectedPiece!.col,
-            toRow: row,
-            toCol: col
+            moveCoords: { fromRow, fromCol, targetRow, targetCol },
         };
 
         const respMutare = await fetch('/api/bot/move', {
@@ -49,10 +51,7 @@ export class MouseBot extends MousePractice {
 
         const moveData = {
             gameId: this.gameId,
-            fromRow,
-            fromCol,
-            toRow: targetRow,
-            toCol: targetCol
+            moveCoords: {fromRow, fromCol, targetRow, targetCol}
         };
 
         const response = await fetch('/api/bot/bot-move', {

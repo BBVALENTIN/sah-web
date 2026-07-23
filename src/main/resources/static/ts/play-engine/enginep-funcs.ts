@@ -32,7 +32,7 @@ stockfish.onmessage = async function(event) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+export async function initEngineApp() {
 
     const savedGameId = sessionStorage.getItem('botGameId');
     engineCore = initCanvas('chessCanvas', 'move-list');
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const resignCall = await fetch(`/api/bot/end/${botGameId}`, { method: 'POST' });
             if (resignCall.ok) {
                 sessionStorage.removeItem('botGameId');
-                //add resign
+                mouseBot.moveList.addMove(await resignCall.text());
             }
         } catch(e) {
             resignBtn.disabled = false;
@@ -120,4 +120,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('playAsWhite')?.addEventListener('click', () => startBotGame(SidesExplicit.BLACK));
     document.getElementById('playAsBlack')?.addEventListener('click', () => startBotGame(SidesExplicit.WHITE));
     onButtonClick('resign-button', handleResign);
-});
+}

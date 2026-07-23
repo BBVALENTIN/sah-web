@@ -35,7 +35,7 @@ interface minPiece {
     color: Sides;
 }
 
-interface LastMove {
+export interface LastMove {
     fromRow: number;
     fromCol: number;
     toRow: number;

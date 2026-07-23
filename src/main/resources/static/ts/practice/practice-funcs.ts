@@ -1,5 +1,5 @@
 import {minimalState, PieceDTO} from "../tools/Types.js";
-import {FEN, MousePractice} from "./MousePractice.js";
+import {FEN, MousePractice} from "./mouse-practice.js";
 import {initCanvas, initBoard, onButtonClick} from "../tools/chess-utils.js";
 
 type stockfishLine = {
