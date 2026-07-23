@@ -5,7 +5,10 @@ import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
 import com.sah.dto.responses.MoveResultDTO;
 import com.sah.enums.Sides;
+import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
+import com.sah.game.dtos.OMoveResult;
+import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.repository.UserRepository;
 import com.sah.service.engine.BotGameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,30 +30,37 @@ public class BotGameApiController {
         this.botGameService = botGameService;
     }
 
-    @PostMapping("/move")
-    public ResponseEntity<?> move(@RequestBody BotMoveRequestDTO req) {
+    @PostMapping("/move") // the endpoint user calls when playing a bot game, maybe redundant
+    public ResponseEntity<?> move(@RequestBody BotMoveRequestDTO req) throws InvalidMoveException {
         ChessBoard board = botGameService.getBoard(req.getGameId());
         if(board == null) return ResponseEntity.notFound().build();
 
-        MoveResultDTO result = botGameService.makeMove(req);
-        if(result.getErrorCodes() != null) {
-            return ResponseEntity.badRequest().body(result.getErrorCodes());
+        try {
+            OMoveResult result = botGameService.makeMove(req);
+            return ResponseEntity.ok(result);
         }
-
-        return ResponseEntity.ok(result);
+        catch(InvalidMoveException ex)
+        {
+            return ResponseEntity.badRequest().body(ex.getErrorCodes());
+        }
     }
 
-    @PostMapping("/bot-move")
-    public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req) {
+    @PostMapping("/bot-move") // The endpoint stockfish calls
+    public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req) throws InvalidMoveException {
         ChessBoard board = botGameService.getBoard(req.getGameId());
         if (board == null) return ResponseEntity.notFound().build();
 
-        MoveResultDTO result = board.makeMove(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
-        if(result.isCheckmate())
-        {
-            botGameService.saveGame(req.getGameId(), AppConstants.NOT_RESIGNATION);
+        try {
+            OMoveResult result = board.makeOptimisedMove(req.getMoveCoords());
+            if(result.isCheckMate())
+            {
+                botGameService.saveGame(req.getGameId(), WinType.CHECKMATE, board.convertToResult()); // maybe buggy here
+            }
+            return ResponseEntity.ok(result);
         }
-        return ResponseEntity.ok(result);
+        catch (InvalidMoveException ex) {
+            return ResponseEntity.badRequest().body(ex.getErrorCodes());
+        }
     }
 
     @PostMapping("/start")
@@ -63,8 +73,8 @@ public class BotGameApiController {
     @PostMapping("/end/{gameId}")
     public ResponseEntity<?> endGame(@PathVariable String gameId) // resign endpoint
     {
-        botGameService.handleEndEarly(gameId);
-        return ResponseEntity.ok().build();
+        String result = botGameService.handleEndEarly(gameId);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/state/{gameId}")

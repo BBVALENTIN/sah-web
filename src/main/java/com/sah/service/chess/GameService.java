@@ -82,7 +82,7 @@ public class GameService {
             abortGame(lobby);
         else
             winner = resignGame(lobby, game, request.currentUser);
-        messageTemplate.convertAndSend("/topic/resign-lobby/" +lobby.getLobbyId(), winner);
+        messageTemplate.convertAndSend("/topic/resign-lobby/" + lobby.getLobbyId(), winner);
         lobbyRepository.save(lobby);
     }
 

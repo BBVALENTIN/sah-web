@@ -95,9 +95,13 @@ public class ChessApiController {
 
     @PostMapping("/omove")
     public ResponseEntity<?> optimisedMove(@RequestBody MoveCoords moveCoords) throws InvalidMoveException {
-        OMoveResult res = chessBoard.makeOptimisedMove(moveCoords);
-
-        return ResponseEntity.ok(res);
+        try {
+            OMoveResult res = chessBoard.makeOptimisedMove(moveCoords);
+            return ResponseEntity.ok(res);
+        }
+        catch(InvalidMoveException ex) {
+            return ResponseEntity.badRequest().body(ex.getErrorCodes());
+        }
     }
 
     @MessageMapping("/chess.move")

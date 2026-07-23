@@ -4,16 +4,16 @@ import com.sah.config.AppConstants;
 import com.sah.dto.chess.BotMinimalStateDTO;
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
-import com.sah.dto.responses.MoveResultDTO;
 import com.sah.entity.BotGames;
 import com.sah.entity.Users;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
+import com.sah.game.dtos.OMoveResult;
+import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.game.gameenums.ColorType;
 import com.sah.repository.BotGameRepository;
-import com.sah.repository.UserRepository;
 import com.sah.security.CurrentUserProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,17 +29,15 @@ public class BotGameService {
     private record BotGameSession(ChessBoard board, String username, Sides botSide) {}
     private final Map<String, BotGameSession> botBoards = new ConcurrentHashMap<>();
     private final BotGameRepository botGameRepository;
-    private final UserRepository userRepository;
     private final CurrentUserProvider currentUserProvider;
 
     private static final String gameIdIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     private static final SecureRandom random = new SecureRandom();
     private static final int length = 5;
 
-    public BotGameService(BotGameRepository botGameRepository, UserRepository userRepository, CurrentUserProvider currentUserProvider)
+    public BotGameService(BotGameRepository botGameRepository, CurrentUserProvider currentUserProvider)
     {
         this.botGameRepository = botGameRepository;
-        this.userRepository = userRepository;
         this.currentUserProvider = currentUserProvider;
     }
 
@@ -78,23 +76,23 @@ public class BotGameService {
         return session.board();
     }
 
-    public BotGameSession getSession(String gameId) {
+    private BotGameSession getSession(String gameId) {
         return botBoards.get(gameId);
     }
 
-    public MoveResultDTO makeMove(BotMoveRequestDTO req) {
+    public OMoveResult makeMove(BotMoveRequestDTO req) throws InvalidMoveException {
         ChessBoard board = getBoard(req.getGameId());
         BotGameSession session = getSession(req.getGameId());
 
 
         Sides playerSide = session.botSide().equals(Sides.WHITE) ? Sides.BLACK : Sides.WHITE;
-        ColorType pieceColor = board.board[req.getFromRow()][req.getFromCol()].color;
+        ColorType pieceColor = board.board[req.getMoveCoords().getFromRow()][req.getMoveCoords().getFromCol()].color;
 
         if (pieceColor != SideToColorConversion(playerSide)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't move the chess engine's pieces");
         }
 
-        return board.makeMove(req.getFromRow(), req.getFromCol(), req.getToRow(), req.getToCol());
+        return board.makeOptimisedMove(req.getMoveCoords());
     }
 
     private ColorType SideToColorConversion(Sides side)
@@ -105,24 +103,62 @@ public class BotGameService {
             return ColorType.BLACK;
     }
 
-    public void handleEndEarly(String gameId) {
+    public String handleEndEarly(String gameId) {
         ChessBoard board = getBoard(gameId);
-        if(board.getMovesPlayed() >= 2)
-            saveGame(gameId, AppConstants.RESIGNATION);
-        else
-            botBoards.remove(gameId);
+
+        if(board == null)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found!");
+        }
+
+        if(board.getMovesPlayed() >= 2) {
+            return convertResultToWinString(resignGame(gameId));
+        }
+        else {
+            return convertResultToWinString(abortGame(gameId));
+        }
     }
 
-    public void saveGame(String gameId, boolean resignation) {
+    private String convertResultToWinString(ResultType resultType) {
+        return switch (resultType) {
+            case WHITE_WIN -> AppConstants.strWHITE_WIN;
+            case BLACK_WIN -> AppConstants.strBLACK_WIN;
+            case DRAW -> AppConstants.strDRAW;
+            case ABORTED -> AppConstants.strABORTED;
+        };
+    }
+
+    private ResultType resignGame(String gameId) {
+        BotGameSession session = getSession(gameId);
+
+        if(session == null)
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
+        }
+
+        if(session.botSide == Sides.WHITE)
+        {
+            saveGame(gameId, WinType.RESIGNATION, ResultType.WHITE_WIN);
+            return ResultType.WHITE_WIN;
+        }
+        else {
+            saveGame(gameId, WinType.RESIGNATION, ResultType.BLACK_WIN);
+            return ResultType.BLACK_WIN;
+        }
+    } // function made like this because the engine can't resign
+
+    private ResultType abortGame(String gameId) {
+        botBoards.remove(gameId);
+        return ResultType.ABORTED;
+    }
+
+    public void saveGame(String gameId, WinType winType, ResultType result) {
         ChessBoard board = getBoard(gameId);
         BotGameSession session = getSession(gameId);
         Users player = currentUserProvider.get();
 
         if(session == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
-
-        WinType winType = resignation ? WinType.RESIGNATION : WinType.CHECKMATE;
-        ResultType result = board.convertToResult();
 
         BotGames botGame = BotGames.builder()
                 .gameId(gameId)
@@ -135,6 +171,7 @@ public class BotGameService {
                 .PGN(board.getAllPGN())
                 .playedAt(LocalDateTime.now())
                 .build();
+
         botGameRepository.save(botGame);
         botBoards.remove(gameId);
     }
