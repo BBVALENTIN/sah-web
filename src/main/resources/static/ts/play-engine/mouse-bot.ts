@@ -1,6 +1,6 @@
-import {MousePractice} from "../practice/MousePractice.js";
-import {Board} from "../tools/Board";
-import {Mutare_Reusita, OptimisedMove} from "../tools/Types.js";
+import {MousePractice} from "../practice/mouse-practice.js";
+import {Board} from "../tools/Board.js";
+import {OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 import {SidesExplicit} from "../tools/Enums.js";
 

@@ -10,13 +10,8 @@ const state = {
 };
 let lobbyCount = 0;
 const lobbyInfo = document.getElementById('lobbiesCount') as HTMLDivElement;
-document.addEventListener("DOMContentLoaded", () => {
-    loadLobbies();
-    connectWS();
-    handleCreate();
-});
 
-function loadLobbies() {
+export function loadLobbies() {
     fetch(`/api/lobby/${LobbyType.AVAILABLE}`)
         .then(res => res.json())
         .then((lobbies: lobbyInfo[]) => {
@@ -26,7 +21,7 @@ function loadLobbies() {
         .catch(err => console.error("Loading error:", err));
 }
 
-function connectWS() {
+export function connectWS() {
     const socket = new SockJS('/ws');
     state.stompClient = Stomp.over(socket);
 
@@ -145,7 +140,7 @@ function handleJoin(event: any) {
         });
 }
 
-function handleCreate() {
+export function handleCreate() {
     const createButton = document.getElementById('createLobbyButton');
     createButton?.addEventListener('click', async () => {
         const res = await fetch('/api/lobby/create');

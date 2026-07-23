@@ -1,4 +1,4 @@
-import { initPractice } from "./practiceFuncs.js";
+import { initPractice } from "./practice-funcs.js";
 import { navbarFuncs } from "../shared/navbar.js";
 
 async function start() {
