@@ -19,8 +19,8 @@ public class Posts {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_POSTS_USERS"))
     private Users creator;
 
     @Column(nullable = false, length = 2000)

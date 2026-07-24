@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 </head>
 <body>
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="profile-container">
 
@@ -67,6 +67,6 @@
             </div>
         </div>
     </div>
-    <script type="module" th:src="@{/ts-transpiled/main.js}"></script>
+    <script type="module" th:src="@{/ts-transpiled/profile/profile-funcs.js}"></script>
 </body>
 </html>

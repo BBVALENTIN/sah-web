@@ -1,15 +1,12 @@
 package com.sah.controller.api;
 
-import com.sah.dto.misc.CreateLobbyRequest;
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.entity.ChessLobbies;
-import com.sah.entity.Users;
 import com.sah.enums.LobbyType;
-import com.sah.service.ChessLobbyService;
+import com.sah.service.lobby.ChessLobbyService;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -29,13 +26,13 @@ public class LobbyApiController {
     }
 
     @PostMapping("/{lobbyId}")
-    public String joinLobby(@PathVariable String lobbyId, Principal principal) {
+    public String joinLobby(@PathVariable String lobbyId) {
         ChessLobbies lobby = chessLobbyService.getLobbyFromId(lobbyId);
         if(chessLobbyService.isLobbyFull(lobby))
         {
             return "lobbyFull";
         }
-        chessLobbyService.joinLobby(lobbyId, principal.getName());
+        chessLobbyService.joinLobby(lobbyId);
         return "play="+lobbyId;
     }
 
@@ -46,12 +43,12 @@ public class LobbyApiController {
     }
 
     @GetMapping("/createQuick")
-    public String createQuickLobby(Principal principal) {
-        return chessLobbyService.createLobby(principal.getName());
+    public String createQuickLobby() {
+        return chessLobbyService.createLobby();
     }
 
     @GetMapping("/create")
-    public String createLobby(Principal principal) {
-        return chessLobbyService.createLobby(principal.getName());
+    public String createLobby() {
+        return chessLobbyService.createLobby();
     }
 }

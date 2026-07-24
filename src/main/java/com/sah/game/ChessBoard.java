@@ -1,13 +1,16 @@
 package com.sah.game;
 
 import com.sah.dto.chess.*;
-import com.sah.dto.responses.MoveResultDTO;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.ErrorCodes;
-import com.sah.game.GameEnums.CastlingNotation;
-import com.sah.game.GameEnums.Type;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.ErrorCodes;
+import com.sah.game.gameenums.CastlingNotation;
+import com.sah.game.gameenums.Type;
+import com.sah.game.dtos.MoveCoords;
+import com.sah.game.dtos.OCapturedPiece;
+import com.sah.game.dtos.OMoveResult;
+import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.game.pieces.*;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +23,12 @@ public class ChessBoard {
     public Pieces checkingPiece, selectedPiece, capturedPiece;
     public List<Pieces> piecesList = new ArrayList<>();
     public short movesPlayed, halfMove;
-    public boolean promoted, isCheckMate, resignation, canCastle;
+    public boolean promoted, isCheck, isCheckMate, resignation, canCastle;
     public CastlingInfoDTO castlingInfo;
     private LastMove lastMove;
     private MoveNotation moveNotation = new MoveNotation();
     private Sides winner;
-    private List<Pieces> capturedPieces = new ArrayList<>();
+    private List<OCapturedPiece> OCapturedPieces = new ArrayList<>();
 
     public ColorType currentColor = ColorType.WHITE;
 
@@ -67,97 +70,121 @@ public class ChessBoard {
         this.promoted = false;
         this.winner = null;
         this.movesPlayed = 1;
+        this.halfMove = 0;
         this.moveNotation = new MoveNotation();
         this.castlingInfo = new CastlingInfoDTO();
+        this.OCapturedPieces = new ArrayList<>();
     }
 
-    public synchronized MoveResultDTO makeMove(int fromRow, int fromCol, int targetRow, int targetCol) {
-        selectedPiece = board[fromRow][fromCol];
-        if (selectedPiece == null) {
-            return new MoveResultDTO(ErrorCodes.UNDETECTED_PIECE);
+    public OMoveResult makeOptimisedMove(MoveCoords moveCoords) throws InvalidMoveException {
+        short tr = moveCoords.getTargetRow();
+        short tc = moveCoords.getTargetCol();
+        short fromR = moveCoords.getFromRow();
+        short fromC = moveCoords.getFromCol();
+        selectedPiece = board[fromR][fromC];
+        if(selectedPiece == null)
+        {
+             throw new InvalidMoveException(ErrorCodes.UNDETECTED_PIECE);
+        }
+        if(selectedPiece.color != currentColor)
+        {
+            throw new InvalidMoveException(ErrorCodes.WRONG_TURN);
         }
 
-        if (selectedPiece.color != currentColor) {
-            return new MoveResultDTO(ErrorCodes.WRONG_ROW);
-        }
         boolean enPassant = false;
-        if(selectedPiece.type == Type.PAWN && this.lastMove != null) {
 
-            if(isEnPassant(selectedPiece, fromRow, fromCol, targetRow, targetCol) && canEnPassant(this.lastMove, selectedPiece, targetRow, targetCol)) {
-                applyEnPassant(selectedPiece, targetRow, targetCol);
+        if(selectedPiece.type == Type.PAWN && this.lastMove != null) {
+            if(isEnPassant(selectedPiece, fromR, fromC, tr, tc) && canEnPassant(this.lastMove, selectedPiece, tr, tc)) {
+                applyEnPassant(selectedPiece, tr, tc);
                 enPassant = true;
             }
         }
-        if (!selectedPiece.move(targetRow, targetCol) && enPassant == false) {
-            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
-        }
-        CastlingNotation castleNotation = null;
 
-        if (castling != null && canCastle == true) {
+        if(selectedPiece.move(tr, tc) == false && enPassant == false)
+        {
+            throw new InvalidMoveException(ErrorCodes.ILLEGAL_MOVE);
+        }
+
+        CastlingNotation castlingNotation = null;
+        if(castling != null && canCastle) { // get the type of castle before so you dont copy an object, just a string
             Pieces castleCopy = castling;
             makeCastle(castling);
-            castleNotation = getCastlingType(castleCopy);
-        } else if(castling != null && canCastle == false)
+            castlingNotation = getCastlingType(castleCopy);
+        } else if(castling != null && !canCastle)
         {
-            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
+            throw new InvalidMoveException(ErrorCodes.ILLEGAL_MOVE);
         }
 
-        capturedPiece = getCapturedPiece(targetRow, targetCol);
+        capturedPiece = getCapturedPiece(tr, tc);
         boolean isCapture = false;
         if(capturedPiece != null) {
             isCapture = true;
-            capturedPieces.add(capturedPiece);
+            OCapturedPieces.add(toOCapturedPiece(capturedPiece));
         }
 
         List<Pieces> oldList = new ArrayList<>(piecesList);
-        boolean wasMovedBefore = selectedPiece.moved; // temporary fix
 
-        moveSelectedPiece(fromRow, fromCol, targetRow, targetCol, selectedPiece);
-
+        moveSelectedPiece(fromR, fromC, tr, tc, selectedPiece);
+        increaseHalfMove(selectedPiece, isCapture);
         if(selectedPiece.type == Type.PAWN)
-        {
-            checkPromotion(selectedPiece, targetRow, targetCol);
-        }
-        getAllPieces();
+            checkPromotion(selectedPiece, tr, tc);
+        getAllPieces(); // maybe delete this
 
         if(isMyKingInCheck())
         {
-            rollBack(targetRow, targetCol, fromRow, fromCol, selectedPiece);
-            selectedPiece.moved = wasMovedBefore;
-            return new MoveResultDTO(ErrorCodes.ILLEGAL_MOVE);
+            rollBack(tr, tc, fromR, fromC, selectedPiece); // change params order
+            throw new InvalidMoveException(ErrorCodes.KING_IN_CHECK);
         }
-        lastMove = new LastMove(fromRow, fromCol, targetRow, targetCol, toDTO(selectedPiece, targetRow, targetCol));
+        lastMove = new LastMove(fromR, fromC, tr, tc, toDTO(selectedPiece, tr, tc)); //ugly as HELL
         switchTurn();
-
         Pieces opponentKing = getKing(false);
 
-        boolean isCheck = isKingInCheck(opponentKing);
+        this.isCheck = isKingInCheck(opponentKing);
 
-        if (isCheck) {
+        if(isCheck) {
             isCheckMate = isCheckmate(opponentKing);
         }
-        increaseHalfMove(selectedPiece, isCapture);
-        MoveDataNotationDTO dto = new MoveDataNotationDTO(selectedPiece, fromRow, fromCol, targetRow, targetCol, isCheck, isCheckMate, promoted, isCapture, currentColor, castleNotation, oldList);
-        String currentFormattedMove = moveNotation.formatMove(dto);
-        String currentFEN = moveNotation.generateFEN(new FENRequestDTO(board, currentColor, halfMove, castlingInfo));
+
+        MoveDataNotationDTO dto = assembleNotationDTO(moveCoords, oldList, castlingNotation, isCapture);
+
+        String currentPGN = moveNotation.formatMove(dto);
+        String currentFEN = moveNotation.generateFEN(new FENRequestDTO(board, currentColor, halfMove, castlingInfo)); // good enough
 
         promoted = false;
         if(isCheckMate) {
             winner = (currentColor == ColorType.WHITE) ? Sides.BLACK : Sides.WHITE;
-            return new MoveResultDTO(getAllPiecesDTO(), isCheck, isCheckMate, ColorType.OVER, currentFormattedMove, isCapture, lastMove, currentFEN, convertToPiecesDTO(capturedPieces));
         }
 
-        return new MoveResultDTO(
-                getAllPiecesDTO(),
-                isCheck,
-                isCheckMate,
-                currentColor,
-                currentFormattedMove,
-                isCapture,
-                lastMove,
-                currentFEN,
-                convertToPiecesDTO(capturedPieces)
-        );
+        return OMoveResult.builder()
+                .fen(currentFEN)
+                .pgn(currentPGN)
+                .capturedPieceList(OCapturedPieces)
+                .lastMoveCoords(moveCoords)
+                .isCheck(isCheck)
+                .isCheckMate(isCheckMate)
+                .currentColor(currentColor)
+                .build();
+    }
+
+    private MoveDataNotationDTO assembleNotationDTO(MoveCoords moveCoords, List<Pieces> oldList, CastlingNotation castlingNotation, boolean isCapture) {
+        return MoveDataNotationDTO.builder()
+                .fromRow(moveCoords.getFromRow())
+                .fromCol(moveCoords.getFromCol())
+                .targetRow(moveCoords.getTargetRow())
+                .targetCol(moveCoords.getTargetCol())
+                .oldPieces(oldList)
+                .piece(selectedPiece) // should optimize to be only the types, no need for more
+                .isCheck(isCheck)
+                .isCheckMate(isCheckMate)
+                .currentColor(currentColor)
+                .castlingNotation(castlingNotation)
+                .promoted(promoted)
+                .isCapture(isCapture)
+                .build();
+    }
+
+    private OCapturedPiece toOCapturedPiece(Pieces piece) {
+        return new OCapturedPiece(piece.type, piece.color);
     }
 
     public synchronized List<Pieces> getAllPieces() {
@@ -195,7 +222,7 @@ public class ChessBoard {
 
         if(capturedPawn != null && capturedPawn.type == Type.PAWN) {
             board[targetRow+dir][targetCol] = null;
-            capturedPieces.add(capturedPawn);
+            OCapturedPieces.add(toOCapturedPiece(capturedPawn));
         }
     }
     public Pieces getCapturedPiece(int targetRow, int targetCol) {
@@ -249,6 +276,7 @@ public class ChessBoard {
         }
         selectedPiece.setPosition(fromRow, fromCol);
     }
+
 
     private void switchTurn() {
         if(currentColor == ColorType.WHITE)
@@ -320,24 +348,13 @@ public class ChessBoard {
         return dto;
     }
 
-    private List<PieceDTO> convertToPiecesDTO(List<Pieces> list) {
-        List<PieceDTO> dto = new ArrayList<>();
-        if(list == null) {
-            return dto;
-        }
-        for(Pieces p : list) {
-            dto.add(toDTO(p, p.row, p.col));
-        }
-        return dto;
-    }
-
     private boolean isCheckmate(Pieces king)
     {
         if(!isKingInCheck(king))
             return false;
         if(moveKing(king))
             return false;
-        if(canSaveking(king))
+        if(canSaveKing(king))
             return false;
         return true;
     }
@@ -384,11 +401,9 @@ public class ChessBoard {
         return !inSah;
     }
 
-    private boolean canSaveking(Pieces king)
+    private boolean canSaveKing(Pieces king)
     {
-        List<Pieces> snapshot = new ArrayList<>(piecesList);
-
-        for(Pieces piece : snapshot) {
+        for(Pieces piece : piecesList) {
             if (piece.color != king.color)
                 continue;
 
@@ -401,7 +416,7 @@ public class ChessBoard {
                     if(!piece.move(r, c))
                         continue;
 
-                    Pieces hittedPiece = board[r][c];
+                    Pieces lovita = board[r][c];
 
                     board[piece.row][piece.col] = null;
                     board[r][c] = piece;
@@ -411,22 +426,12 @@ public class ChessBoard {
                     piece.row = r;
                     piece.col = c;
 
-                    boolean removed = false;
-                    if(hittedPiece != null)
-                    {
-                        removed = piecesList.remove(hittedPiece);
-                    }
-
                     boolean inSah = isKingInCheck(king);
 
                     piece.row = oldRow;
                     piece.col = oldCol;
                     board[oldRow][oldCol] = piece;
-                    board[r][c] = hittedPiece;
-
-                    if(removed) {
-                        piecesList.add(hittedPiece);
-                    }
+                    board[r][c] = lovita;
 
                     if (!inSah)
                         return true;

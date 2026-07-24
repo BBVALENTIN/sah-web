@@ -60,6 +60,14 @@ html, body {
     font-family: inherit;
 }
 
+.chess-main-online {
+    display: flex;
+    flex-wrap: wrap !important;
+    justify-content: center;
+    position: relative;
+}
+
+
 .icon {
     color: var(--c-font);
 }
@@ -129,7 +137,14 @@ html, body {
 
 .copyable {
     border-radius: 4px;
+    max-width: var(--gWidth);
     width: 100%;
+}
+/* only in online page for now*/
+.copyables-wrapper{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 input, textarea, select {

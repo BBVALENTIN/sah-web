@@ -20,11 +20,11 @@ public class PostsComments {
     private Long commentId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "FK_COMMENTS_USERS"))
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false, foreignKey = @ForeignKey(name ="FK_COMMENTS_POSTS"))
     private Posts post;
 
     @Column(nullable = false, length = 250)

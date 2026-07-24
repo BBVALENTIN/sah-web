@@ -2,8 +2,8 @@ package com.sah.controller.api;
 
 import com.sah.dto.misc.LobbyDTO;
 import com.sah.dto.misc.loggedUser;
-import com.sah.service.ChessLobbyService;
-import com.sah.service.CustomUserDetailsService;
+import com.sah.service.lobby.ChessLobbyService;
+import com.sah.security.CustomUserDetailsService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;

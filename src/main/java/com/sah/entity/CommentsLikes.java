@@ -17,11 +17,11 @@ public class CommentsLikes {
     private Long likeId;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "comment_id", foreignKey = @ForeignKey(name = "FK_COMMENTS_LIKES_POSTS_COMMENTS"))
     private PostsComments comment;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_COMMENTS_LIKES_USERS"))
     private Users user;
 
     public CommentsLikes(PostsComments comment, Users user)

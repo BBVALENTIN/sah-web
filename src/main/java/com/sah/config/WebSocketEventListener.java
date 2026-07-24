@@ -9,8 +9,8 @@ import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.ChessBoard;
 import com.sah.repository.LobbyRepository;
-import com.sah.service.ChessLobbyService;
-import com.sah.service.GameService;
+import com.sah.service.lobby.ChessLobbyService;
+import com.sah.service.chess.GameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -44,8 +44,6 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        System.out.println("User disconnected event! session: " + headerAccessor.getSessionId());
-        System.out.println("Session attributes: " + headerAccessor.getSessionAttributes());
         String sessionId = headerAccessor.getSessionId();
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         String lobbyId = (String) headerAccessor.getSessionAttributes().get("lobbyId");

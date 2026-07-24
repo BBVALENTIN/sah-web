@@ -2,8 +2,8 @@ package com.sah.game.pieces;
 
 import com.sah.dto.chess.LastMove;
 import com.sah.game.ChessBoard;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Type;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.Type;
 
 public class Pawn extends Pieces {
     public Pawn(ColorType color, int row, int col, ChessBoard game) {

@@ -1,9 +1,9 @@
 package com.sah.controller.pages;
 
-import com.sah.dto.misc.ProfileInfoDTO;
-import com.sah.service.PostsService;
-import com.sah.service.ProfileService;
-import com.sah.service.TwitchService;
+import com.sah.config.AppConstants;
+import com.sah.service.community.PostsService;
+import com.sah.service.user.ProfileService;
+import com.sah.service.misc.TwitchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +24,12 @@ public class IndexPageController {
     }
 
     @GetMapping("/")
-    public String showIndex(Model model, Principal principal)
+    public String showIndex(Model model)
     {
         model.addAttribute("stream", twitchService.getMostPopularChessStream());
-        model.addAttribute("userMiscInfo", profileService.returnMiscInfo(principal.getName()));
-        model.addAttribute("posts", postsService.returnPosts(principal));
-        model.addAttribute("resultString", profileService.getLastGamesOutcome(principal));
+        model.addAttribute("userMiscInfo", profileService.returnMiscInfo());
+        model.addAttribute("posts", postsService.returnPostsPage(AppConstants.DEFAULT_PAGE, AppConstants.POSTS_PER_PAGE));
+        model.addAttribute("resultString", profileService.getLastGamesOutcome());
         return "index/index";
     }
 }

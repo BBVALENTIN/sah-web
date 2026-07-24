@@ -23,7 +23,7 @@ public class ChessGames {
     private WinType WinReason;
 
     @OneToOne
-    @JoinColumn(name = "lobby_id", nullable = false, unique = true)
+    @JoinColumn(name = "lobby_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "FK_CHESS_GAMES_LOBBIES"))
     private ChessLobbies lobby;
 
 }

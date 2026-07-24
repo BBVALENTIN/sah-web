@@ -1,7 +1,7 @@
 package com.sah.dto.chess;
 
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.CastlingNotation;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.CastlingNotation;
 import com.sah.game.pieces.Pieces;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

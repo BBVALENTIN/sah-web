@@ -5,7 +5,7 @@ import {Knight} from "../pieces/Knight.js";
 import {Rook} from "../pieces/Rook.js";
 import {King} from "../pieces/King.js";
 import {Queen} from "../pieces/Queen.js";
-import {Sides, SidesExplicit, TipPiesa} from "./Enums.js";
+import {PieceType, SidesExplicit} from "./Enums.js";
 import {PieceDTO} from "./Types.js";
 
 export class Board {
@@ -49,7 +49,7 @@ export class Board {
     }
 
     async loadImages(): Promise<void> {
-        const tipuri: TipPiesa[] = Object.values(TipPiesa);
+        const tipuri: PieceType[] = Object.values(PieceType);
         const culori: string[] = [ "white", "black"];
         const promises: Promise<void>[] = [];
 
@@ -68,7 +68,7 @@ export class Board {
                         resolve();
                     };
                     img.onerror = () => {
-                        console.error(`Nu am putut incarca imaginea la: ${img.src}`);
+                        console.error(`We couldn't load the images: ${img.src}`);
                         resolve();
                     };
                 });
@@ -175,6 +175,57 @@ export class Board {
     setPiecesFromServer(piecesData: PieceDTO[]): void {
         this.pieces = piecesData.map((p:any) => this.createPieceFromData(p));
     }
+
+    setPiecesFromFEN(FEN: string) {
+        const piecePlacement = FEN.split(' ')[0];
+        const ranks = piecePlacement.split('/');
+
+        const pieceTypeMap: Record<string, PieceType> = {
+            p: PieceType.PAWN,
+            n: PieceType.KNIGHT,
+            b: PieceType.BISHOP,
+            r: PieceType.ROOK,
+            q: PieceType.QUEEN,
+            k: PieceType.KING
+        }
+
+        const newPieces: Piece[] = [];
+
+        ranks.forEach((rank, rowIndex) => {
+           let colIndex = 0;
+
+           for(const char of rank) {
+               if(/\d/.test(char)) {
+                   colIndex += parseInt(char, 10);
+               }
+               else {
+                   const isWhite = char === char.toUpperCase();
+                   const type = pieceTypeMap[char.toLowerCase()];
+
+                   if(!type) {
+                       console.error(`Unknown character in FEN: ${char}`);
+                       colIndex++;
+                       continue;
+                   }
+
+                   const color = isWhite ? SidesExplicit.WHITE : SidesExplicit.BLACK;
+
+                   const piece = this.createPieceFromData({
+                       type,
+                       color,
+                       row: rowIndex,
+                       col: colIndex
+                   });
+
+                   newPieces.push(piece);
+                   colIndex++;
+               }
+           }
+        });
+
+        this.pieces = newPieces;
+    }
+
 
     drawLastMove(ctx: CanvasRenderingContext2D) {
         const size = Board.squareSize;

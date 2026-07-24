@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Șah</title>
+  <title>Online Chess</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-<body>
-    <div th:insert="fragments/navbar :: navbar"></div>
+<body th:data-username="${currentUsername}">
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="content-play-online">
 
@@ -20,7 +20,7 @@
             </form>
         </div>
 
-        <div class="chess-main">
+        <div class="chess-main-online chess-main">
             <div class="chess-playground">
                 <div id="otherPlayer">Waiting . . .</div>
                 <canvas id="chessCanvas"></canvas>
@@ -37,11 +37,12 @@
                 </div>
             </div>
         </div>
-    </div>
+ </div>
+
+    <div class="copyables-wrapper" th:insert="~{fragments/copyables :: copyables}"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <script type="module" th:src="@{/ts-transpiled/online-game/Main.js}"></script>
-    <script type="module" th:src="@{/ts-transpiled/main.js}"></script>
+    <script type="module" th:src="@{/ts-transpiled/online-game/online-index.js}"></script>
 </body>
 </html>

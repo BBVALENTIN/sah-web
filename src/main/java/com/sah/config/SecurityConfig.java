@@ -1,7 +1,5 @@
 package com.sah.config;
 
-import com.sah.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -10,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -32,7 +29,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http.
-                    csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/play/**", "logout"))
+                    csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/play/**", "/logout"))
                     .authorizeHttpRequests(auth -> auth.requestMatchers("/login", "/register", "/css/**","/success", "/js/**").permitAll()
                             .anyRequest().authenticated()
                     )

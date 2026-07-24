@@ -1,5 +1,6 @@
 package com.sah.dto.requests;
 
+import com.sah.game.dtos.MoveCoords;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,9 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BotMoveRequestDTO {
-    private int fromRow;
-    private int fromCol;
-    private int toRow;
-    private int toCol;
+    private MoveCoords moveCoords;
     private String gameId;
 }

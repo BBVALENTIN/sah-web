@@ -1,12 +1,11 @@
 package com.sah.dto.requests;
 
 
+import com.sah.entity.Users;
 import lombok.AllArgsConstructor;
-
-import java.security.Principal;
 
 @AllArgsConstructor
 public class GameEndRequest {
     public String lobbyId;
-    public Principal principal;
+    public Users currentUser;
 }

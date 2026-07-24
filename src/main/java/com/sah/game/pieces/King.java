@@ -1,8 +1,8 @@
 package com.sah.game.pieces;
 
 import com.sah.game.ChessBoard;
-import com.sah.game.GameEnums.ColorType;
-import com.sah.game.GameEnums.Type;
+import com.sah.game.gameenums.ColorType;
+import com.sah.game.gameenums.Type;
 
 public class King extends Pieces {
     public King(ColorType color, int row, int col, ChessBoard game) {
@@ -24,14 +24,14 @@ public class King extends Pieces {
 
         if(moved == false)
         {
-           if(!checkCastle(color, row, col))
+           if(!checkCastle(color, row, precol))
                return false;
 
            if(targetCol == col + 2 && targetRow == row && pieceInFront(targetRow, targetCol) == false)
            {
                if(!checkSmallCastle(color, row, precol+1, precol+2))
                    return false;
-               if(board[row][col+3].moved == false) {
+               if(board[prerow][precol+3].moved == false) {
                    game.castling = board[prerow][precol + 3];
                    setAllCastleFalse();
                    return true;
@@ -43,7 +43,7 @@ public class King extends Pieces {
                if(!checkBigCastle(color, row, precol-1, precol-2)) {
                    return false;
                }
-               if(board[row][col-4].moved == false){
+               if(board[prerow][precol-4].moved == false){
                    game.castling = board[prerow][precol-4];
                    setAllCastleFalse();
                    return true;

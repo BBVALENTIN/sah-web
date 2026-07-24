@@ -23,11 +23,11 @@ public class PostsLikes {
     private Long likeId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_POSTS_LIKES_USERS"))
     private Users user;
 
     @ManyToOne
-    @JoinColumn(name="post_id")
+    @JoinColumn(name="post_id", foreignKey = @ForeignKey(name = "FK_POSTS_LIKES_POSTS"))
     private Posts post;
 
     public PostsLikes(Users users, Posts posts) {
