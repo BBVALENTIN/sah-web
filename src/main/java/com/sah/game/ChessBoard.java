@@ -70,8 +70,10 @@ public class ChessBoard {
         this.promoted = false;
         this.winner = null;
         this.movesPlayed = 1;
+        this.halfMove = 0;
         this.moveNotation = new MoveNotation();
         this.castlingInfo = new CastlingInfoDTO();
+        this.OCapturedPieces = new ArrayList<>();
     }
 
     public OMoveResult makeOptimisedMove(MoveCoords moveCoords) throws InvalidMoveException {
@@ -123,6 +125,7 @@ public class ChessBoard {
         List<Pieces> oldList = new ArrayList<>(piecesList);
 
         moveSelectedPiece(fromR, fromC, tr, tc, selectedPiece);
+        increaseHalfMove(selectedPiece, isCapture);
         if(selectedPiece.type == Type.PAWN)
             checkPromotion(selectedPiece, tr, tc);
         getAllPieces(); // maybe delete this
@@ -136,7 +139,7 @@ public class ChessBoard {
         switchTurn();
         Pieces opponentKing = getKing(false);
 
-        boolean isCheck = isKingInCheck(opponentKing);
+        this.isCheck = isKingInCheck(opponentKing);
 
         if(isCheck) {
             isCheckMate = isCheckmate(opponentKing);
@@ -351,7 +354,7 @@ public class ChessBoard {
             return false;
         if(moveKing(king))
             return false;
-        if(canSaveking(king))
+        if(canSaveKing(king))
             return false;
         return true;
     }
@@ -398,7 +401,7 @@ public class ChessBoard {
         return !inSah;
     }
 
-    private boolean canSaveking(Pieces king)
+    private boolean canSaveKing(Pieces king)
     {
         for(Pieces piece : piecesList) {
             if (piece.color != king.color)
