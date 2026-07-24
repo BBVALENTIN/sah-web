@@ -20,7 +20,7 @@ public class Posts {
     private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_POSTS_USERS"))
     private Users creator;
 
     @Column(nullable = false, length = 2000)

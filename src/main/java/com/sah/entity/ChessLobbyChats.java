@@ -29,7 +29,7 @@ public class ChessLobbyChats {
     private List<ChessLobbyChatMessages> messages = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "lobby_id", nullable = false, unique = true)
+    @JoinColumn(name = "lobby_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "FK_CHESS_LOBBY_CHATS_CHESS_LOBBIES"))
     private ChessLobbies lobby;
 
     @Column(nullable = false)

@@ -19,7 +19,7 @@ public class BotGames {
     private String gameId;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "username")
+    @JoinColumn(referencedColumnName = "username", foreignKey = @ForeignKey(name = "FK_BOTGAMES_USERS"))
     private Users player;
 
     @Column(nullable = false)

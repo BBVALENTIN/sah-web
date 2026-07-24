@@ -57,6 +57,31 @@ async function initializeApp() {
         event.preventDefault();
         sendMessage();
     });
+
+    resignBtn.addEventListener("click", async () => {
+        resignBtn.disabled = true;
+        try {
+
+            const responseResign: Response = await fetch(`/api/chess/EndGameEarly/${lobbyInfo?.lobbyId}`, {
+                method: 'POST',
+            });
+
+            if(responseResign.ok) {
+                if(state.stompClient && state.connected) {
+                    state.stompClient.disconnect(() => {
+                        console.log("Disconnected from server due to resignation/abort");
+                        state.connected = false
+                    });
+                }
+            }
+            else {
+                resignBtn.disabled = false;
+            }
+        }catch (e) {
+            resignBtn.disabled = false;
+            console.error("Error regarding the resign button!")
+        }
+    });
 }
 
 const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
@@ -89,27 +114,3 @@ async function loadBoard(lobbyId: string):Promise<void>
 initializeApp();
 
 
-resignBtn.addEventListener("click", async () => {
-    resignBtn.disabled = true;
-    try {
-
-        const responseResign: Response = await fetch(`/api/chess/EndGameEarly/${lobbyInfo?.lobbyId}`, {
-            method: 'POST',
-        });
-
-        if(responseResign.ok) {
-            if(state.stompClient && state.connected) {
-                state.stompClient.disconnect(() => {
-                    console.log("Disconnected from server due to resignation/abort");
-                    state.connected = false
-                });
-            }
-        }
-        else {
-            resignBtn.disabled = false;
-        }
-    }catch (e) {
-        resignBtn.disabled = false;
-        console.error("Error regarding the resign button!")
-    }
-});

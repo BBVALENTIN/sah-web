@@ -21,12 +21,12 @@ public class ChessLobbies {
 
     @Column(nullable = false)
     private FormatType format;
-    // to change from username to id
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "username", foreignKey = @ForeignKey(name="FK_USERS_LOBBY_PLAYERWHITE"))
+    @JoinColumn(referencedColumnName = "user_id", foreignKey = @ForeignKey(name="FK_USERS_LOBBY_PLAYERWHITE"))
     private Users playerWhite;
     @ManyToOne
-    @JoinColumn(referencedColumnName = "username", foreignKey = @ForeignKey(name="FK_USERS_LOBBY_PLAYERBLACK"))
+    @JoinColumn(referencedColumnName = "user_id", foreignKey = @ForeignKey(name="FK_USERS_LOBBY_PLAYERBLACK"))
     private Users playerBlack;
     @Column(nullable = false)
     private LobbyType lobbyType;
