@@ -2,15 +2,12 @@ package com.sah.service.lobby;
 
 import com.sah.config.AppConstants;
 import com.sah.dto.misc.LobbyDTO;
-import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
 import com.sah.enums.FormatType;
-import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.enums.LobbyType;
-import com.sah.repository.UserRepository;
 import com.sah.security.CurrentUserProvider;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -28,18 +25,14 @@ public class ChessLobbyService {
     private final LobbyRepository lobbyRepository;
     private final Map<String, String> sessionLobbyMap = new ConcurrentHashMap<>();
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final ChessLobbyChatRepository chessLobbyChatRepository;
-    private final UserRepository userRepository;
 
     private static final String lobbyIdPossibleCharacters = "123456789abcdefghijklmnopqrstuvwxyzABCDEFGHUJKLMNOPQRSTUVWXYZ+-";
     private static final SecureRandom random = new SecureRandom();
     private final CurrentUserProvider currentUserProvider;
 
-    public ChessLobbyService(LobbyRepository lobbyRepository, SimpMessagingTemplate simpMessagingTemplate, ChessLobbyChatRepository chessLobbyChatRepository, UserRepository userRepository, CurrentUserProvider currentUserProvider) {
+    public ChessLobbyService(LobbyRepository lobbyRepository, SimpMessagingTemplate simpMessagingTemplate, CurrentUserProvider currentUserProvider) {
         this.lobbyRepository = lobbyRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.chessLobbyChatRepository = chessLobbyChatRepository;
-        this.userRepository = userRepository;
         this.currentUserProvider = currentUserProvider;
     }
 
@@ -90,7 +83,6 @@ public class ChessLobbyService {
         chat.setLobby(lobby);
 
         lobbyRepository.save(lobby);
-        chessLobbyChatRepository.save(chat);
         LobbyDTO lobbyDTO = convertLobbyDTO(lobby);
         simpMessagingTemplate.convertAndSend("/topic/global-lobbies", lobbyDTO);
         return lobby.getLobbyId();
@@ -98,9 +90,9 @@ public class ChessLobbyService {
 
     public void joinLobby(String lobbyId) {
         ChessLobbies lobby = getLobbyFromId(lobbyId);
-        Users user = currentUserProvider.get();
-        if(isAlreadyAssigned(lobby, user.getUsername()) == false) {
-            assignLobbyPlayer(lobby, user);
+        Users currentUser = currentUserProvider.get();
+        if(isAlreadyAssigned(lobby, currentUser) == false) {
+            assignLobbyPlayer(lobby, currentUser);
             if(isLobbyFull(lobby)) {
                 lobby.setLobbyType(LobbyType.ONGOING);
                 LobbyDTO lobbyDTO = convertLobbyDTO(lobby);
@@ -114,11 +106,6 @@ public class ChessLobbyService {
     private void updatedLobbyNotify(String lobbyId) {
         LobbyDTO updatedLobbyDTO = getLobbyDTO(lobbyId);
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, updatedLobbyDTO);
-    }
-
-    public ChessGames createClassicalGame() {
-        ChessGames newClassicGame = new ChessGames();
-        return newClassicGame;
     }
 
     public LobbyDTO convertLobbyDTO(ChessLobbies lobby) {
@@ -149,8 +136,8 @@ public class ChessLobbyService {
         }
     }
 
-    private boolean isAlreadyAssigned(ChessLobbies lobby, String username) {
-        return Objects.equals(lobby.getPlayerBlack(), username) || Objects.equals(lobby.getPlayerWhite(), username);
+    private boolean isAlreadyAssigned(ChessLobbies lobby, Users user) {
+        return Objects.equals(lobby.getPlayerBlack(), user) || Objects.equals(lobby.getPlayerWhite(), user);
     }
 
     // to be used

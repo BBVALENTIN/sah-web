@@ -1,5 +1,6 @@
 package com.sah.dto.requests;
 
+import com.sah.game.dtos.MoveCoords;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MoveRequestDTO {
-    public int fromRow;
-    public int fromCol;
-    public int toRow;
-    public int toCol;
-    public String player;
+    public MoveCoords moveCoords;
     public String lobbyId;
 }

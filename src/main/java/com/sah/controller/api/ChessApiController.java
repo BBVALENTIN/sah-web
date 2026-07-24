@@ -24,8 +24,8 @@ import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
 import com.sah.security.CurrentUserProvider;
+import com.sah.security.CustomUserDetails;
 import com.sah.service.lobby.ChessLobbyChatService;
-import com.sah.service.lobby.ChessLobbyService;
 import com.sah.service.chess.GameService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,9 +34,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.List;
 
@@ -47,7 +49,6 @@ public class ChessApiController {
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
     private final ChessBoard chessBoard;
-    private final ChessLobbyService lobbyService;
     private final LobbyRepository lobbyRepository;
     private final ChessLobbyChatService chessLobbyChatService;
     private final ChessLobbyChatRepository chessLobbyChatRepository;
@@ -105,34 +106,37 @@ public class ChessApiController {
     }
 
     @MessageMapping("/chess.move")
-    public void moveOnline(MoveRequestDTO request) {
+    public void moveOnline(MoveRequestDTO request, Authentication auth) throws InvalidMoveException {
         ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
-        Pieces piece = lobbyBoard.board[request.getFromRow()][request.getFromCol()];
-
+        Pieces piece = lobbyBoard.board[request.moveCoords.getFromRow()][request.getMoveCoords().getFromCol()];
+        Users currentUser = resolveCurrentUser(auth);
         if (piece == null) {
-            sendError(request.getPlayer(), "Nu există nicio piesă acolo!");
+            sendError(currentUser, "No piece detected");
             return;
         }
 
-        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), request.getPlayer(), piece.color)) {
-            sendError(request.getPlayer(), "Nu poți muta piesele adversarului!");
+        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), currentUser, piece.color)) {
+            sendError(currentUser, "You can't move your opponent's pieces");
             return;
         }
-        MoveResultDTO result = lobbyBoard.makeMove(request.getFromRow(), request.getFromCol(), request.getToRow(), request.getToCol());
 
-        if(result.getErrorCodes() == null) {
+        try {
+            OMoveResult result = lobbyBoard.makeOptimisedMove(request.moveCoords);
+
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
-            if(result.isCheckmate() == true) {
+            if (result.isCheckMate() == true) {
                 ChessLobbies lobby = lobbyRepository.findByLobbyId(request.getLobbyId());
                 lobby.setLobbyType(LobbyType.FINISHED);
                 lobbyRepository.save(lobby);
                 gameService.saveClassicGame(request.getLobbyId(), WinType.CHECKMATE);
             }
         }
-        else {
-            messagingTemplate.convertAndSendToUser(request.getPlayer(), "/queue/errors", result.getErrorCodes());
+        catch (InvalidMoveException ex) {
+            sendError(currentUser, ex.getErrorCodes().toString());
         }
+
     }
+
 
     @GetMapping("/onlineState/{lobbyId}")
     public MinimalStateDTO getOnlineState(@PathVariable String lobbyId) {
@@ -175,11 +179,11 @@ public class ChessApiController {
         return chessLobbyChatService.addUser(sender,chessLobbyChatRepository.findByLobby_LobbyId(lobbyId));
     }
 
-    private void sendError(String username, String message) {
+    private void sendError(Users currentUser, String message) {
         Map<String, String> errorBody = new HashMap<>();
         errorBody.put("error", message);
 
-        messagingTemplate.convertAndSendToUser(username, "/queue/errors", errorBody);
+        messagingTemplate.convertAndSendToUser(currentUser.getUsername(), "/queue/errors", errorBody);
     }
 
 
@@ -188,6 +192,13 @@ public class ChessApiController {
     {
         GameEndRequest request = new GameEndRequest(lobbyId, currentUserProvider.get());
         gameService.endGameEarly(request);
+    }
+
+    private Users resolveCurrentUser(Authentication auth)
+    {
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        return userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new IllegalStateException("User authenticated but not found in the database"));
     }
 }
 

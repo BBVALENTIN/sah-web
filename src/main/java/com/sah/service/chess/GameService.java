@@ -43,14 +43,14 @@ public class GameService {
         return activeLobbies.get(lobbyId);
     }
 
-    public boolean isValidMoveForPlayer(String lobbyId, String username, ColorType pieceColor) {
+    public boolean isValidMoveForPlayer(String lobbyId, Users user, ColorType pieceColor) {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
 
         if(pieceColor == ColorType.WHITE) {
-            return username.equals(lobby.getPlayerWhite().getUsername());
+            return lobby.getPlayerWhite() != null && user.getUserId().equals(lobby.getPlayerWhite().getUserId());
         }
         else {
-            return username.equals(lobby.getPlayerBlack().getUsername());
+            return lobby.getPlayerBlack() != null && user.getUserId().equals(lobby.getPlayerBlack().getUserId());
         }
     }
 
@@ -66,6 +66,7 @@ public class GameService {
         game.setWinReason(winReason);
 
         gameRepository.save(game);
+        activeLobbies.remove(lobbyId);
     }
     
     public void endGameEarly(GameEndRequest request)

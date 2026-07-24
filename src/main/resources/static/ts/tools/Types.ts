@@ -15,7 +15,7 @@ export interface Mutare_Reusita {
     errorCodes: string;
     pgn: string;
     captures: boolean;
-    lastMove: LastMove;
+    lastMove: MoveCoords;
     fen: string;
     capturedPieces: PieceDTO[];
 }
@@ -23,7 +23,7 @@ export interface Mutare_Reusita {
 export interface OptimisedMove {
     fen: string;
     pgn: string;
-    moveCoords: LastMove;
+    lastMoveCoords: MoveCoords;
     isCheck: boolean;
     isCheckMate: boolean;
     capturedPieces: minPiece;
@@ -35,11 +35,11 @@ interface minPiece {
     color: Sides;
 }
 
-export interface LastMove {
+export interface MoveCoords {
     fromRow: number;
     fromCol: number;
-    toRow: number;
-    toCol: number;
+    targetRow: number;
+    targetCol: number;
 }
 
 export interface MoveRow {

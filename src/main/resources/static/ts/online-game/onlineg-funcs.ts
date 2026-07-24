@@ -9,27 +9,22 @@ const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElemen
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
 const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
-let loggedUsername = "";
+let loggedUsername = document.body.dataset.username;
 if(!lobbyId) {
     console.log("Lobby ID not found");
 }
-try{
-    const response = await fetch('/info/user');
-    if(response.ok) {
-        const data = await response.json();
-        loggedUsername = data.username;
-    }
-}
-catch (e) {
-    console.log(e);
-}
 
-async function initializeApp() {
+export async function initializeApp() {
     try {
         const lobbyInfo = await getInfoLobby();
         if (lobbyInfo) {
 
             const username = loggedUsername;
+            if(!username)
+            {
+                console.error("Username not found");
+                return;
+            }
             if(lobbyInfo &&lobbyInfo.playerWhite === username)
             {
                 currentPlayerSide.innerText = username;
@@ -111,6 +106,3 @@ async function loadBoard(lobbyId: string):Promise<void>
         console.error("There was an error loading the data");
     }
 }
-initializeApp();
-
-

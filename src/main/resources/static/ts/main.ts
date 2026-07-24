@@ -1,6 +1,6 @@
 import {navbarFuncs} from "./shared/navbar.js";
-import {communityFuncs} from "./community/community-funcs";
-import {profileFuncs} from "./profile/profile-funcs";
+import {communityFuncs} from "./community/community-funcs.js";
+import {profileFuncs} from "./profile/profile-funcs.js";
 
 addEventListener('DOMContentLoaded', async () => {
     navbarFuncs();

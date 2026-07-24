@@ -1,5 +1,5 @@
 import {communityFuncs} from "./community-funcs.js";
-import {navbarFuncs} from "../shared/navbar";
+import {navbarFuncs} from "../shared/navbar.js";
 
 export async function start() {
     await communityFuncs(); // should maybe separate community from post page for better understanding

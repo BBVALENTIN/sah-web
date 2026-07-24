@@ -1,6 +1,6 @@
-    import {lobbyInfo, Message, OptimisedMove} from "../tools/Types.js";
+import {lobbyInfo, Message, OptimisedMove} from "../tools/Types.js";
 import {MessageType, SidesExplicit} from "../tools/Enums.js";
-import {mouse, moveList, board} from "./Main.js";
+import {mouse, moveList, board} from "./onlineg-funcs.js";
 
 declare var SockJS: any;
 declare var Stomp: any;
@@ -127,8 +127,8 @@ function onMessageReceived(payload: any) {
 
 function onMoveReceived(payload: any) {
     const result: OptimisedMove = JSON.parse(payload.body);
-    if(result.moveCoords.fromRow !== undefined && result.moveCoords.toRow !== undefined) {
-        board.setLastMove(result.moveCoords.fromRow, result.moveCoords.fromCol, result.moveCoords.toRow, result.moveCoords.toCol);
+    if(result.lastMoveCoords.fromRow !== undefined && result.lastMoveCoords.targetRow !== undefined) {
+        board.setLastMove(result.lastMoveCoords.fromRow, result.lastMoveCoords.fromCol, result.lastMoveCoords.targetRow, result.lastMoveCoords.targetCol);
     }
     board.setPiecesFromFEN(result.fen);
     currentColor = result.currentColor;

@@ -88,16 +88,17 @@
             }
 
             this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
+            const fromRow = this.selectedPiece!.row;
+            const fromCol = this.selectedPiece!.col;
+            const targetRow = row;
+            const targetCol = col;
 
             try {
                 state.stompClient.send(
                     "/app/chess.move",
                     {},
                     JSON.stringify({
-                        fromRow: this.selectedPiece!.row,
-                        fromCol: this.selectedPiece!.col,
-                        toRow: row,
-                        toCol: col,
+                        moveCoords: {fromRow, fromCol, targetRow, targetCol},
                         player: loggedUsername,
                         lobbyId: currentLobbyId
                     })
