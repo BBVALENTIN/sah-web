@@ -55,23 +55,6 @@ public class ChessApiController {
     private final UserRepository userRepository;
     private final CurrentUserProvider currentUserProvider;
 
-
-
-    @PostMapping("/move")
-    public ResponseEntity<?> move(@RequestParam int fromRow,
-                           @RequestParam int fromCol,
-                           @RequestParam int targetRow,
-                           @RequestParam int targetCol
-    ) {
-        MoveResultDTO result =  chessBoard.makeMove(fromRow, fromCol, targetRow, targetCol);
-
-        if(result.getErrorCodes() != null) {
-            return ResponseEntity.badRequest().body(result.getErrorCodes());
-        }
-
-        return ResponseEntity.ok(result);
-    }
-
     @GetMapping("/turn")
     public ColorType getCurrentColor()
     {
@@ -100,8 +83,8 @@ public class ChessApiController {
             OMoveResult res = chessBoard.makeOptimisedMove(moveCoords);
             return ResponseEntity.ok(res);
         }
-        catch(InvalidMoveException ex) {
-            return ResponseEntity.badRequest().body(ex.getErrorCodes());
+        catch(InvalidMoveException ex) { // maybe remove this to play a sound if a move is wrong
+            throw new InvalidMoveException(ex.getErrorCodes());
         }
     }
 
