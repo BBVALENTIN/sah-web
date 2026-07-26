@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MoveCoords {
-    private short fromRow, fromCol, targetRow, targetCol;
+    private int fromRow, fromCol, targetRow, targetCol;
 }

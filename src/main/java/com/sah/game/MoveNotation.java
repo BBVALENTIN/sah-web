@@ -6,7 +6,6 @@ import com.sah.dto.chess.MoveDataNotationDTO;
 import com.sah.game.gameenums.ColorType;
 import com.sah.game.gameenums.CastlingNotation;
 import com.sah.game.gameenums.Type;
-import com.sah.game.pieces.Pieces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class MoveNotation {
         String disambiguation = "";
         if(dto.piece.type != Type.PAWN)
         {
-            for(Pieces p: dto.oldPieces)
+            for(Piece p: dto.oldPieces)
             {
                 if(p == dto.piece)
                     continue;
@@ -116,7 +115,7 @@ public class MoveNotation {
         for (int r = 0; r < 8; r++) {
             int emptySquares = 0;
             for (int c = 0; c < 8; c++) {
-                Pieces piese = req.board[r][c];
+                Piece piese = req.board[r][c];
                 if (piese == null) {
                     emptySquares++;
                 } else {

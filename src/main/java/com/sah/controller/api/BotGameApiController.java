@@ -1,12 +1,10 @@
 package com.sah.controller.api;
 
-import com.sah.config.AppConstants;
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
-import com.sah.dto.responses.MoveResultDTO;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
-import com.sah.game.ChessBoard;
+import com.sah.game.Game;
 import com.sah.game.dtos.OMoveResult;
 import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.repository.UserRepository;
@@ -15,24 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
 @RestController
 @RequestMapping("/api/bot")
 public class BotGameApiController {
-    private final ChessBoard chessBoard;
+    private final Game game;
     private final BotGameService botGameService;
 
     @Autowired
-    public BotGameApiController(ChessBoard chessBoard, BotGameService botGameService, UserRepository userRepository)
+    public BotGameApiController(Game game, BotGameService botGameService, UserRepository userRepository)
     {
-        this.chessBoard = chessBoard;
+        this.game = game;
         this.botGameService = botGameService;
     }
 
     @PostMapping("/move") // the endpoint user calls when playing a bot game, maybe redundant
     public ResponseEntity<?> move(@RequestBody BotMoveRequestDTO req) throws InvalidMoveException {
-        ChessBoard board = botGameService.getBoard(req.getGameId());
+        Game board = botGameService.getBoard(req.getGameId());
         if(board == null) return ResponseEntity.notFound().build();
 
         try {
@@ -47,7 +43,7 @@ public class BotGameApiController {
 
     @PostMapping("/bot-move") // The endpoint stockfish calls
     public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req) throws InvalidMoveException {
-        ChessBoard board = botGameService.getBoard(req.getGameId());
+        Game board = botGameService.getBoard(req.getGameId());
         if (board == null) return ResponseEntity.notFound().build();
 
         try {

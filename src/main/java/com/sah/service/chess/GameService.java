@@ -7,7 +7,7 @@ import com.sah.entity.Users;
 import com.sah.enums.LobbyType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
-import com.sah.game.ChessBoard;
+import com.sah.game.Game;
 import com.sah.game.gameenums.ColorType;
 import com.sah.repository.GameRepository;
 import com.sah.repository.LobbyRepository;
@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class GameService {
-    private final Map<String, ChessBoard> activeLobbies = new ConcurrentHashMap<>();
+    private final Map<String, Game> activeLobbies = new ConcurrentHashMap<>();
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
     private final SimpMessageSendingOperations messageTemplate;
@@ -31,15 +31,15 @@ public class GameService {
         this.messageTemplate = messageTemplate;
     }
 
-    public ChessBoard getOrCreateBoard(String lobbyId){
+    public Game getOrCreateBoard(String lobbyId){
         return activeLobbies.computeIfAbsent(lobbyId, id -> {
-            ChessBoard newBoard = new ChessBoard();
+            Game newBoard = new Game();
             newBoard.initializeBoard();
             return newBoard;
         });
     }
 
-    public ChessBoard getBoard(String lobbyId) {
+    public Game getBoard(String lobbyId) {
         return activeLobbies.get(lobbyId);
     }
 
@@ -56,7 +56,7 @@ public class GameService {
 
     public void saveClassicGame(String lobbyId, WinType winReason) {
         ChessGames game =  new ChessGames();
-        ChessBoard board = getBoard(lobbyId);
+        Game board = getBoard(lobbyId);
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
         lobby.setLobbyType(LobbyType.FINISHED);
         game.setLobby(lobby);
@@ -75,7 +75,7 @@ public class GameService {
         ChessLobbies lobby = lobbyRepository.findByLobbyId(request.lobbyId);
         if(lobby == null)
             throw new RuntimeException("Lobby doesn't exist");
-        ChessBoard game = getBoard(request.lobbyId);
+        Game game = getBoard(request.lobbyId);
         if(!isUserInLobby(request))
             throw new RuntimeException("User is not in lobby");
 
@@ -91,7 +91,7 @@ public class GameService {
         lobby.setLobbyType(LobbyType.ABORTED);
     }
 
-    public Sides resignGame(ChessLobbies lobby, ChessBoard board, Users currentUser) {
+    public Sides resignGame(ChessLobbies lobby, Game board, Users currentUser) {
         board.setResignation(true);
         if(lobby.getPlayerWhite().getUsername().equals(currentUser.getUsername()))
             board.setWinner(Sides.BLACK);

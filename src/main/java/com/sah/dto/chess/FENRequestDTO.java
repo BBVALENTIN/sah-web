@@ -1,7 +1,7 @@
 package com.sah.dto.chess;
 
 import com.sah.game.gameenums.ColorType;
-import com.sah.game.pieces.Pieces;
+import com.sah.game.Piece;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FENRequestDTO {
-    public Pieces board[][];
+    public Piece board[][];
     private ColorType currentColor;
     private short halfMove;
     private CastlingInfoDTO castlingInfo;

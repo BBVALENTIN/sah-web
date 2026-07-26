@@ -1,7 +1,6 @@
 package com.sah.dto.responses;
 
 import com.sah.dto.chess.PieceDTO;
-import com.sah.game.ChessBoard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

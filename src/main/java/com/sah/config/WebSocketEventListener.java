@@ -7,7 +7,7 @@ import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
-import com.sah.game.ChessBoard;
+import com.sah.game.Game;
 import com.sah.repository.LobbyRepository;
 import com.sah.service.lobby.ChessLobbyService;
 import com.sah.service.chess.GameService;
@@ -78,7 +78,7 @@ public class WebSocketEventListener {
             pendingReconnections.remove(username);
         }
 
-        ChessBoard board = gameService.getBoard(lobby.getLobbyId());
+        Game board = gameService.getBoard(lobby.getLobbyId());
 
         if(board != null && board.movesPlayed > 2) {
             if (username != null && lobby.getPlayerWhite() != null

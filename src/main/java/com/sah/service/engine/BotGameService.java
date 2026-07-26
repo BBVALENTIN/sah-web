@@ -9,7 +9,7 @@ import com.sah.entity.Users;
 import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
-import com.sah.game.ChessBoard;
+import com.sah.game.Game;
 import com.sah.game.dtos.OMoveResult;
 import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.game.gameenums.ColorType;
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class BotGameService {
-    private record BotGameSession(ChessBoard board, String username, Sides botSide) {}
+    private record BotGameSession(Game board, String username, Sides botSide) {}
     private final Map<String, BotGameSession> botBoards = new ConcurrentHashMap<>();
     private final BotGameRepository botGameRepository;
     private final CurrentUserProvider currentUserProvider;
@@ -61,7 +61,7 @@ public class BotGameService {
     public BotStartResponseDTO createBoard(Sides botSide)
     {
         String gameId = "B_"+assignGameId();
-        ChessBoard board = new ChessBoard();
+        Game board = new Game();
         Users currentUser = currentUserProvider.get();
         board.initializeBoard();
         botBoards.put(gameId, new BotGameSession(board, currentUser.getUsername(), botSide));
@@ -69,7 +69,7 @@ public class BotGameService {
         return new BotStartResponseDTO(gameId, board.getAllPiecesDTO());
     }
 
-    public ChessBoard getBoard(String gameId)
+    public Game getBoard(String gameId)
     {
         BotGameSession session = botBoards.get(gameId);
         if(session == null) return null;
@@ -81,7 +81,7 @@ public class BotGameService {
     }
 
     public OMoveResult makeMove(BotMoveRequestDTO req) throws InvalidMoveException {
-        ChessBoard board = getBoard(req.getGameId());
+        Game board = getBoard(req.getGameId());
         BotGameSession session = getSession(req.getGameId());
 
 
@@ -104,7 +104,7 @@ public class BotGameService {
     }
 
     public String handleEndEarly(String gameId) {
-        ChessBoard board = getBoard(gameId);
+        Game board = getBoard(gameId);
 
         if(board == null)
         {
@@ -153,7 +153,7 @@ public class BotGameService {
     }
 
     public void saveGame(String gameId, WinType winType, ResultType result) {
-        ChessBoard board = getBoard(gameId);
+        Game board = getBoard(gameId);
         BotGameSession session = getSession(gameId);
         Users player = currentUserProvider.get();
 
@@ -181,7 +181,7 @@ public class BotGameService {
         if (session == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
 
-        ChessBoard board = session.board();
+        Game board = session.board();
         return new BotMinimalStateDTO(
                 board.getAllPiecesDTO(),
                 board.getCurrentColor(),
