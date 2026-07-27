@@ -4,7 +4,9 @@ import com.sah.config.AppConstants;
 import com.sah.game.dtos.MoveCoords;
 import com.sah.game.gameenums.ColorType;
 import com.sah.game.gameenums.Type;
+import lombok.Getter;
 
+@Getter
 public class Board {
     private final Piece[][] squares = new Piece[8][8];
 
