@@ -19,6 +19,18 @@ public class Board {
         initializeFromFEN(fen);
     }
 
+    public Board(Board other)
+    {
+        for(int r = 0; r < 8; r++)
+            for(int c =0; c < 8; c++)
+            {
+                Piece p = other.squares[r][c];
+                if(p != null) {
+                    squares[r][c] = p.copy();
+                }
+            }
+    }
+
     private void initializeFromFEN(String FEN)
     {
         String[] parts = FEN.split(" ");
@@ -63,7 +75,7 @@ public class Board {
         return squares[row][col] == null;
     }
 
-    public void movePiece(int fR, int fC, int tR, int tC)
+   public void movePiece(int fR, int fC, int tR, int tC)
     {
         Piece piece = squares[fR][fC];
         squares[tR][tC] = piece;
@@ -141,5 +153,25 @@ public class Board {
             return false;
         }
         return false;
+    }
+
+    public void executeKingCastle(ColorType color) {
+        int kingRow = 0;
+        if(color == ColorType.WHITE) {
+             kingRow = 7;
+        }
+
+        Piece king = this.squares[kingRow][4];
+        Piece smallCastleRook = this.squares[kingRow][7];
+        movePiece(kingRow, 4, 7, 6);
+        movePiece(kingRow, 7, 7, 5);
+        // modify rights
+    }
+
+    public void executeQueenCastle(ColorType color) {
+        int kingRow = 0;
+        if(color == ColorType.WHITE) {
+            kingRow = 7;
+        }
     }
 }

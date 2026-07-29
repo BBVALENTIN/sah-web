@@ -6,10 +6,12 @@ import com.sah.game.Piece;
 import com.sah.game.gameenums.Type;
 
 public class Pgn {
-    public String format(Move move, Board boardBefore, boolean isCheck, boolean isCheckMate)
+
+    // fix PGN notation
+    public String format(Move move, Board boardBefore, boolean isCheck, boolean isCheckMate, boolean isCastling)
     {
-        if(move.isCastling()) {
-            if(move.fromCol() < move.targetCol())
+        if (isCastling) {
+            if (move.fromCol() < move.targetCol())
                 return "O-O";
             else
                 return "O-O-O";
@@ -17,54 +19,74 @@ public class Pgn {
 
         char pieceChar = Character.toUpperCase(getCharFromTip(move.pieceType()));
 
-        char colChar = (char)('a' + move.targetCol());
+        char colChar = (char) ('a' + move.targetCol());
         int boardRow = 8 - move.targetRow();
 
-        char fromColChar = (char)('a' + move.fromCol());
+        char fromColChar = (char) ('a' + move.fromCol());
         int fromBoardRow = 8 - move.fromRow();
 
         String disambiguation = "";
-        if(move.pieceType() != Type.PAWN) {
+        if (move.pieceType() != Type.PAWN) {
+            boolean sameFile = false;
+            boolean sameRank = false;
+            boolean ambiguous = false;
+
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
+                    if (i == move.fromRow() && j == move.fromCol())
+                        continue;
+
                     Piece p = boardBefore.at(i, j);
                     if (p == null)
                         continue;
-                    if ((p.color == move.pieceColor() && p.type == move.pieceType()) && boardBefore.canMove(i, j, move.targetRow(), move.targetCol())) {
-                        if (j == move.fromCol()) {
-                            disambiguation = "" + fromBoardRow;
-                        } else {
-                            disambiguation = "" + fromColChar;
-                        }
+
+                    if (p.color == move.pieceColor() && p.type == move.pieceType()
+                            && boardBefore.canMove(i, j, move.targetRow(), move.targetCol())) {
+                        ambiguous = true;
+                        if (j == move.fromCol()) sameRank = false;
+                        if (j == move.fromCol()) sameFile = true;
+                        if (i == move.fromRow()) sameRank = true;
                     }
+                }
+            }
+
+            if (ambiguous) {
+                if (!sameFile) {
+                    disambiguation = "" + fromColChar;
+                } else if (!sameRank) {
+                    disambiguation = "" + fromBoardRow;
+                } else {
+                    disambiguation = "" + fromColChar + fromBoardRow;
                 }
             }
         }
 
-        String notation = "";
+        boolean isPawnDiagonalMove = move.pieceType() == Type.PAWN && move.fromCol() != move.targetCol();
+        boolean isCapture = !boardBefore.isEmpty(move.targetRow(), move.targetCol()) || isPawnDiagonalMove;
 
-        if(move.pieceType() == Type.PAWN) {
-            if(boardBefore.isEmpty(move.targetRow(), move.targetCol())) {
-                notation = fromColChar + "x" + colChar+ boardRow;
-            }
-            else {
+        String notation;
+
+        if (move.pieceType() == Type.PAWN) {
+            if (isCapture) {
+                notation = fromColChar + "x" + colChar + boardRow;
+            } else {
                 notation = "" + colChar + boardRow;
             }
-        }
-        else {
-            if(boardBefore.isEmpty(move.targetRow(), move.targetCol())) {
-                notation = "" + pieceChar + disambiguation +"x" + colChar + boardRow;
-            }
-            else {
-                notation = "" + pieceChar + disambiguation + colChar +boardRow;
+        } else {
+            if (isCapture) {
+                notation = "" + pieceChar + disambiguation + "x" + colChar + boardRow;
+            } else {
+                notation = "" + pieceChar + disambiguation + colChar + boardRow;
             }
         }
 
-        // implement promotion
+//        if (move.promotionType() != null) {
+//            notation = notation + "=" + Character.toUpperCase(getCharFromTip(move.promotionType()));
+//        }
 
-        if(isCheck && !isCheckMate)
+        if (isCheck && !isCheckMate)
             notation = notation + "+";
-        if(isCheckMate)
+        if (isCheckMate)
             notation = notation + "#";
 
         return notation;

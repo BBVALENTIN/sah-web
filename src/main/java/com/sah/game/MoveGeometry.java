@@ -26,7 +26,7 @@ public final class MoveGeometry {
     private static boolean isValidPawnMove(ColorType color, MoveCoords moveCoords)
     {
         int direction = (color == ColorType.WHITE) ? -1 : 1;
-        int dC = Math.abs(moveCoords.getFromCol() - moveCoords.getFromRow());
+        int dC = Math.abs(moveCoords.getTargetCol() - moveCoords.getFromCol());
         int dR = moveCoords.getTargetRow() - moveCoords.getFromRow();
 
         if(dC == 0 && dR == direction) return true;

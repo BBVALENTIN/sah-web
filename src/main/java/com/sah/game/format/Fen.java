@@ -1,12 +1,15 @@
 package com.sah.game.format;
 
+import com.sah.config.AppConstants;
 import com.sah.game.Board;
 import com.sah.game.CastlingRights;
 import com.sah.game.Game;
 import com.sah.game.Piece;
 import com.sah.game.gameenums.ColorType;
 import com.sah.game.gameenums.Type;
+import lombok.Getter;
 
+@Getter
 public class Fen {
     public String formatMove(Board board, ColorType turn, CastlingRights castlingRights, int halfMove, int fullMove) {
         StringBuilder fen = new StringBuilder();
@@ -38,7 +41,6 @@ public class Fen {
 
         String returnedFEN = String.format("%s %s %s %s %d %d",
                 fen.toString(), t, castling, enPassant, halfMove, fullMove);
-
         return returnedFEN;
     }
 
