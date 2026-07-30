@@ -27,10 +27,15 @@ public class MoveValidator {
         boolean isEnPassant = false;
         boolean isPromotion = false;
 
-
         if(move.pieceType() == Type.KING && checkCastle(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol(), copyBoard)) {
             if (canCastle(board, move, p.color, castlingRights)) {
                 isCastling = true;
+                boolean kingSide = move.targetCol() > move.fromCol();
+                if(kingSide == true)
+                    copyBoard.executeKingCastle(p.color);
+                else
+                    copyBoard.executeQueenCastle(p.color);
+
                 return Optional.of(new ValidationResult(move, isCapture, isCastling, isEnPassant, isPromotion));
             }
         }
@@ -43,6 +48,8 @@ public class MoveValidator {
 
         if(p.type == Type.PAWN && isPromotion(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol(), p.color))
             isPromotion = true;
+
+        copyBoard.movePiece(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol());
 
         if(isMyKingInCheck(copyBoard, move.pieceColor()))
             throw new InvalidMoveException(ErrorCodes.KING_IN_CHECK);
@@ -112,4 +119,30 @@ public class MoveValidator {
         //check eventual attacks on rows
         return true;
     }
+
+    private boolean hasLegalMoves(Board board, ColorType sideToMove, CastlingRights castlingRights) {
+        for(int r = 0; r < 8; r++) {
+            for(int c = 0; c < 8; c++) {
+                Piece p = board.at(r, c);
+                if(p == null || p.color != sideToMove) continue;
+
+                for(int tr = 0; tr < 8; tr++)
+                    for(int tc = 0; tc < 8; tc++) {
+                        Move test = new Move(r, c, tr, tc, board.at(r, c).type, sideToMove);
+
+                        if(p.type == Type.PAWN && (tr == 0 || tr == 7)) {
+                            test = new Move(r, c, tr, tc, Type.QUEEN, sideToMove);
+                        }
+
+                        try {
+                            Optional<ValidationResult> result = validate(board, test, castlingRights);
+                            if(result.isPresent()) return true;
+                        } catch(InvalidMoveException e) {
+                        }
+                    }
+            }
+        }
+        return false;
+    }
+
 }

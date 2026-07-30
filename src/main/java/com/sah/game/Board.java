@@ -45,6 +45,7 @@ public class Board {
                 else
                 {
                     squares[r][col] = mapToPiece(ch);
+                    System.out.println("Piece: " + at(r, col).type);
                     col++;
                 }
             }
@@ -106,7 +107,7 @@ public class Board {
         if(piece == null)
             return false;
 
-        if(!MoveGeometry.isValid(piece.type, piece.color, new MoveCoords(fR, fC, tR, tC)))
+        if(!MoveGeometry.isValid(piece.type, piece.color, fR, fC, tR, tC))
             return false;
 
         if(piece.type == Type.PAWN)
@@ -173,5 +174,25 @@ public class Board {
         if(color == ColorType.WHITE) {
             kingRow = 7;
         }
+    }
+
+    public boolean canAttack(int row, int col, int attackedRow, int attackedCol) {
+
+        Piece attacker = at(row, col);
+
+        if(MoveGeometry.isValid(attacker.type, attacker.color, row, col, attackedRow, attackedCol) == false)
+            return false;
+
+        if(attacker.type == Type.PAWN) {
+            int dCol = Math.abs(attackedCol - col);
+            int dRow = attackedRow - row;
+            int direction = (attacker.color == ColorType.WHITE) ? -1 : 1;
+            return dCol == 1 && dRow == direction;
+        }
+
+        if(attacker.type != Type.KNIGHT && !isPathClear(row, col, attackedRow, attackedCol))
+            return false;
+
+        return true;
     }
 }

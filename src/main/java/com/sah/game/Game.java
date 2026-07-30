@@ -30,11 +30,13 @@ public class Game {
     private Board board;
     private List<OCapturedPiece> OCapturedPieces = new ArrayList<>();
     private int halfMove, fullMove;
+    private boolean isCheck, isCheckMate;
     private CastlingRights castlingRights;
 
     private ColorType currentColor;
     private final MoveValidator validator;
     private final MoveExecutor executor;
+    private final Situation situation;
 
     private final Fen fenFormatter;
     private final Pgn pgnFromatter;
@@ -45,10 +47,13 @@ public class Game {
         this.currentColor = ColorType.WHITE;
 
         this.validator = new MoveValidator();
-        this.executor = new MoveExecutor();
+        this.situation = new Situation(validator);
+        this.executor = new MoveExecutor(situation);
         this.fenFormatter = new Fen();
         this.pgnFromatter = new Pgn();
         this.castlingRights = CastlingRights.standard();
+        this.isCheck = false;
+        this.isCheckMate = false;
     }
 
     public OMoveResult makeMove(MoveCoords moveCoords) throws InvalidMoveException {
@@ -85,7 +90,9 @@ public class Game {
         fullMove++;
 
         executor.execute(this, move, validationResult);
-
+        ColorType opponent = currentColor == ColorType.WHITE ? ColorType.BLACK : ColorType.WHITE;
+        this.isCheck = situation.isInCheck(board, opponent);
+        this.isCheckMate = this.isCheck && situation.easyIsCheckmate(this.isCheck ,board, opponent, castlingRights);
         currentColor = switchTurn(currentColor); // looks bad! IM BAD! IM REALLY REALLY BAD!
 
 
@@ -93,9 +100,9 @@ public class Game {
         return OMoveResult.builder()
                 .lastMoveCoords(new MoveCoords(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol()))
                 .capturedPieceList(OCapturedPieces)
-                .isCheck(false)
-                .isCheckMate(false)
-                .pgn(pgnFromatter.format(move, oldBoard, false, false, validationResult.isCastling()))
+                .isCheck(this.isCheck)
+                .isCheckMate(this.isCheckMate)
+                .pgn(pgnFromatter.format(move, oldBoard, this.isCheck, this.isCheckMate, validationResult.isCastling()))
                 .fen(fenFormatter.formatMove(board, currentColor, castlingRights, halfMove ,fullMove))
                 .currentColor(currentColor)
                 .build();

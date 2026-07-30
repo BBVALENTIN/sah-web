@@ -1,12 +1,17 @@
 package com.sah.game;
 
+import com.sah.game.gameenums.ColorType;
 import com.sah.game.gameenums.Type;
+import lombok.AllArgsConstructor;
 
 /*
 * Check if the move puts the other king in danger
 *
 * */
+@AllArgsConstructor
 public class MoveExecutor {
+
+    private final Situation situation;
 
     public Board execute(Game game, Move move, ValidationResult validation)
     {
@@ -26,6 +31,7 @@ public class MoveExecutor {
             game.setCastlingRights(game.getCastlingRights().without(move.pieceColor()));
 
         board.movePiece(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol());
+
         return board;
     }
 }
