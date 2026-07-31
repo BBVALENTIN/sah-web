@@ -2,6 +2,7 @@ package com.sah.controller.api;
 
 import com.sah.dto.requests.BotMoveRequestDTO;
 import com.sah.dto.responses.BotStartResponseDTO;
+import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.Game;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/bot")
 public class BotGameApiController {
-    private final Game game;
     private final BotGameService botGameService;
 
     @Autowired
-    public BotGameApiController(Game game, BotGameService botGameService, UserRepository userRepository)
+    public BotGameApiController(BotGameService botGameService, UserRepository userRepository)
     {
-        this.game = game;
         this.botGameService = botGameService;
     }
 
@@ -43,14 +42,14 @@ public class BotGameApiController {
 
     @PostMapping("/bot-move") // The endpoint stockfish calls
     public ResponseEntity<?> botMove(@RequestBody BotMoveRequestDTO req) throws InvalidMoveException {
-        Game board = botGameService.getBoard(req.getGameId());
-        if (board == null) return ResponseEntity.notFound().build();
+        Game game = botGameService.getBoard(req.getGameId());
+        if (game == null) return ResponseEntity.notFound().build();
 
         try {
-            OMoveResult result = board.makeOptimisedMove(req.getMoveCoords());
+            OMoveResult result = game.makeMove(req.getMoveCoords());
             if(result.isCheckMate())
             {
-                botGameService.saveGame(req.getGameId(), WinType.CHECKMATE, board.convertToResult()); // maybe buggy here
+                botGameService.saveGame(req.getGameId(), WinType.CHECKMATE, ResultType.BLACK_WIN); // maybe buggy here CHANGE
             }
             return ResponseEntity.ok(result);
         }

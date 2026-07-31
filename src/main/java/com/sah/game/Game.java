@@ -1,7 +1,7 @@
 package com.sah.game;
 
+import com.sah.config.AppConstants;
 import com.sah.dto.chess.*;
-import com.sah.enums.Sides;
 import com.sah.game.dtos.MoveCoords;
 import com.sah.game.dtos.OMoveResult;
 import com.sah.game.exceptions.InvalidMoveException;
@@ -11,18 +11,12 @@ import com.sah.game.gameenums.ColorType;
 import com.sah.game.dtos.OCapturedPiece;
 import com.sah.game.gameenums.ErrorCodes;
 import com.sah.game.gameenums.Type;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.expression.ExpressionException;
-import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -32,6 +26,7 @@ public class Game {
     private int halfMove, fullMove;
     private boolean isCheck, isCheckMate;
     private CastlingRights castlingRights;
+    private String fullPGN, currentFEN = AppConstants.startingFEN;
 
     private ColorType currentColor;
     private final MoveValidator validator;
@@ -52,12 +47,16 @@ public class Game {
         this.fenFormatter = new Fen();
         this.pgnFromatter = new Pgn();
         this.castlingRights = CastlingRights.standard();
+        this.fullPGN = "";
         this.isCheck = false;
         this.isCheckMate = false;
     }
 
     public OMoveResult makeMove(MoveCoords moveCoords) throws InvalidMoveException {
 
+        if(this.isCheckMate) {
+            throw new InvalidMoveException(ErrorCodes.GAME_ALREADY_OVER);
+        }
         int fromRow = moveCoords.getFromRow();
         int fromCol = moveCoords.getFromCol();
         int targetRow = moveCoords.getTargetRow();
@@ -91,34 +90,24 @@ public class Game {
         fullMove++;
 
         executor.execute(this, move, validationResult);
-        ColorType opponent = currentColor == ColorType.WHITE ? ColorType.BLACK : ColorType.WHITE;
+        ColorType opponent = opposite(currentColor);
         this.isCheck = situation.isInCheck(board, opponent);
         this.isCheckMate = this.isCheck && situation.easyIsCheckmate(this.isCheck ,board, opponent, castlingRights);
         currentColor = switchTurn(currentColor); // looks bad! IM BAD! IM REALLY REALLY BAD!
 
-
+        String currentPGN =pgnFromatter.format(move, oldBoard, this.isCheck, this.isCheckMate, validationResult.isCastling());
+        this.currentFEN = fenFormatter.formatMove(board, currentColor, castlingRights, halfMove ,fullMove);
+        appendPGN(currentPGN);
         // for now
         return OMoveResult.builder()
                 .lastMoveCoords(new MoveCoords(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol(), moveCoords.getPromotionPiece()))
                 .capturedPieceList(OCapturedPieces)
                 .isCheck(this.isCheck)
                 .isCheckMate(this.isCheckMate)
-                .pgn(pgnFromatter.format(move, oldBoard, this.isCheck, this.isCheckMate, validationResult.isCastling()))
-                .fen(fenFormatter.formatMove(board, currentColor, castlingRights, halfMove ,fullMove))
+                .pgn(currentPGN)
+                .fen(this.currentFEN)
                 .currentColor(currentColor)
                 .build();
-
-        /*
-        * construct Move
-        * getCapturedPieces();
-        * checkPromotion();
-        * check()
-        * checkmate()
-        * generatePGN();
-        * generateFEN();
-        *
-        * */
-
     }
 
     private OCapturedPiece getOCapturedPiece(int tR, int tC)
@@ -133,5 +122,13 @@ public class Game {
         else
             currentColor = ColorType.WHITE;
         return currentColor;
+    }
+
+    private void appendPGN(String currentPGN) {
+        this.fullPGN += " " + currentPGN;
+    }
+
+    public ColorType opposite(ColorType color) {
+        return color == ColorType.WHITE ? ColorType.BLACK : ColorType.WHITE;
     }
 }

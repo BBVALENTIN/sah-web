@@ -66,7 +66,6 @@ async function loadBoard() {
         const response = await fetch('/practiceBoard');
         if(response.ok) {
             const minimalState: minimalState = await response.json();
-            console.log(minimalState);
             const currentFEN = minimalState.currentFEN;
             if(minimalState.currentPGN != null )
                 moveList.addWholePGN(minimalState.currentPGN);

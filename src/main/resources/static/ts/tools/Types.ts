@@ -78,6 +78,5 @@ export interface Message {
 
 export interface minimalState {
     currentFEN: string;
-    currentColor: Sides;
     currentPGN: string;
 }

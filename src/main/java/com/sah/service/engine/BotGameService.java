@@ -61,12 +61,11 @@ public class BotGameService {
     public BotStartResponseDTO createBoard(Sides botSide)
     {
         String gameId = "B_"+assignGameId();
-        Game board = new Game();
+        Game game = new Game();
         Users currentUser = currentUserProvider.get();
-        board.initializeBoard();
-        botBoards.put(gameId, new BotGameSession(board, currentUser.getUsername(), botSide));
+        botBoards.put(gameId, new BotGameSession(game, currentUser.getUsername(), botSide));
 
-        return new BotStartResponseDTO(gameId, board.getAllPiecesDTO());
+        return new BotStartResponseDTO(gameId, game.getCurrentFEN());
     }
 
     public Game getBoard(String gameId)
@@ -81,18 +80,18 @@ public class BotGameService {
     }
 
     public OMoveResult makeMove(BotMoveRequestDTO req) throws InvalidMoveException {
-        Game board = getBoard(req.getGameId());
+        Game game = getBoard(req.getGameId());
         BotGameSession session = getSession(req.getGameId());
 
 
         Sides playerSide = session.botSide().equals(Sides.WHITE) ? Sides.BLACK : Sides.WHITE;
-        ColorType pieceColor = board.board[req.getMoveCoords().getFromRow()][req.getMoveCoords().getFromCol()].color;
+        ColorType pieceColor =  game.getBoard().at(req.getMoveCoords().getFromRow(), req.getMoveCoords().getFromCol()).color;
 
         if (pieceColor != SideToColorConversion(playerSide)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can't move the chess engine's pieces");
         }
 
-        return board.makeOptimisedMove(req.getMoveCoords());
+        return game.makeMove(req.getMoveCoords());
     }
 
     private ColorType SideToColorConversion(Sides side)
@@ -104,14 +103,14 @@ public class BotGameService {
     }
 
     public String handleEndEarly(String gameId) {
-        Game board = getBoard(gameId);
+        Game game = getBoard(gameId);
 
-        if(board == null)
+        if(game == null)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session not found!");
         }
 
-        if(board.getMovesPlayed() >= 2) {
+        if(game.getFullMove() > 2) {
             return convertResultToWinString(resignGame(gameId));
         }
         else {
@@ -153,7 +152,7 @@ public class BotGameService {
     }
 
     public void saveGame(String gameId, WinType winType, ResultType result) {
-        Game board = getBoard(gameId);
+        Game game = getBoard(gameId);
         BotGameSession session = getSession(gameId);
         Users player = currentUserProvider.get();
 
@@ -167,8 +166,8 @@ public class BotGameService {
                 .stockfishDepth(18) // change this
                 .result(result)
                 .winReason(winType)
-                .numberOfMoves(board.getMovesPlayed())
-                .PGN(board.getAllPGN())
+                .numberOfMoves(game.getFullMove())
+                .PGN(game.getFullPGN())
                 .playedAt(LocalDateTime.now())
                 .build();
 
@@ -181,13 +180,12 @@ public class BotGameService {
         if (session == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session doesn't exist!");
 
-        Game board = session.board();
+        Game game = session.board();
         return new BotMinimalStateDTO(
-                board.getAllPiecesDTO(),
-                board.getCurrentColor(),
-                board.getAllPGN(),
+                game.getCurrentColor(),
+                game.getFullPGN(),
                 session.botSide(),
-                board.getCurrentFen()
+                game.getCurrentFEN()
         );
     }
 }

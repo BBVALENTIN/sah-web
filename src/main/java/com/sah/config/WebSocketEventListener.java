@@ -78,19 +78,20 @@ public class WebSocketEventListener {
             pendingReconnections.remove(username);
         }
 
-        Game board = gameService.getBoard(lobby.getLobbyId());
+        Game game = gameService.getBoard(lobby.getLobbyId());
+        Sides winner = Sides.NONE;
 
-        if(board != null && board.movesPlayed > 2) {
+        if(game != null && game.getFullMove() > 2) {
             if (username != null && lobby.getPlayerWhite() != null
                     && username.equals(lobby.getPlayerWhite().getUsername())) {
-                board.setWinner(Sides.BLACK);
+                winner = Sides.BLACK;
             } else {
-                board.setWinner(Sides.WHITE);
+                winner = Sides.WHITE;
             }
 
             lobby.setLobbyType(LobbyType.FINISHED);
             lobbyRepository.save(lobby);
-            gameService.saveClassicGame(lobbyId, WinType.ABANDONMENT);
+            gameService.saveClassicGame(lobbyId, WinType.ABANDONMENT, winner);
             LobbyDTO finishedLobby = lobbyService.convertLobbyDTO(lobby);
             messageTemplate.convertAndSend("/topic/lobby/" + lobby.getLobbyId(), finishedLobby);
             messageTemplate.convertAndSend("/topic/global-lobbies", finishedLobby);

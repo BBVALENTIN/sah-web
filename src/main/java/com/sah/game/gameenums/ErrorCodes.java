@@ -5,5 +5,6 @@ public enum ErrorCodes {
     WRONG_ROW,
     ILLEGAL_MOVE,
     WRONG_TURN,
-    KING_IN_CHECK
+    KING_IN_CHECK,
+    GAME_ALREADY_OVER
 }

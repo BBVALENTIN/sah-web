@@ -45,7 +45,6 @@ public class Board {
                 else
                 {
                     squares[r][col] = mapToPiece(ch);
-                    System.out.println("Piece: " + at(r, col).type);
                     col++;
                 }
             }

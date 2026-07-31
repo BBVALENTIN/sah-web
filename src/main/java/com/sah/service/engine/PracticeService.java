@@ -2,19 +2,23 @@ package com.sah.service.engine;
 
 import com.sah.dto.chess.MinimalStateDTO;
 import com.sah.game.Game;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sah.service.chess.GameService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PracticeService {
-    @Autowired
-    private Game game;
+
+    private final GameService gameService;
+
+    public PracticeService(GameService gameService)
+    {
+        this.gameService = gameService;
+    }
 
     public MinimalStateDTO initialize() {
-        game.initializeBoard();
+        gameService.newPracticeGame();
+        Game game = gameService.getPracticeGame();
 
-        MinimalStateDTO minimalStateDTO = new MinimalStateDTO(game.getAllPiecesDTO(), game.currentColor, "");
-
-        return minimalStateDTO;
+        return new MinimalStateDTO(game.getCurrentFEN(), game.getFullPGN());
     }
 }

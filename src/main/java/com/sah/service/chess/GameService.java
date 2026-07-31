@@ -5,6 +5,7 @@ import com.sah.entity.ChessGames;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.Users;
 import com.sah.enums.LobbyType;
+import com.sah.enums.ResultType;
 import com.sah.enums.Sides;
 import com.sah.enums.WinType;
 import com.sah.game.Game;
@@ -23,6 +24,7 @@ public class GameService {
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
     private final SimpMessageSendingOperations messageTemplate;
+    private Game practiceGame;
 
 
     public GameService(LobbyRepository lobbyRepository, GameRepository gameRepository, SimpMessageSendingOperations messageTemplate) {
@@ -31,10 +33,21 @@ public class GameService {
         this.messageTemplate = messageTemplate;
     }
 
+
+    public Game getPracticeGame() {
+        if(practiceGame == null) {
+            practiceGame = new Game();
+        }
+        return practiceGame;
+    }
+
+    public void newPracticeGame() {
+        this.practiceGame = new Game();
+    }
+
     public Game getOrCreateBoard(String lobbyId){
         return activeLobbies.computeIfAbsent(lobbyId, id -> {
             Game newBoard = new Game();
-            newBoard.initializeBoard();
             return newBoard;
         });
     }
@@ -54,21 +67,22 @@ public class GameService {
         }
     }
 
-    public void saveClassicGame(String lobbyId, WinType winReason) {
-        ChessGames game =  new ChessGames();
-        Game board = getBoard(lobbyId);
+    public void saveClassicGame(String lobbyId, WinType winReason, Sides winner) {
+        ChessGames ChessGameDB =  new ChessGames();
+        Game game = getBoard(lobbyId);
         ChessLobbies lobby = lobbyRepository.findByLobbyId(lobbyId);
         lobby.setLobbyType(LobbyType.FINISHED);
-        game.setLobby(lobby);
-        game.setResult(board.convertToResult());
-        game.setPGN(board.getAllPGN());
-        game.setNumberOfMoves(board.getMovesPlayed());
-        game.setWinReason(winReason);
+        ChessGameDB.setLobby(lobby);
+        ChessGameDB.setWinReason(winReason);
+        ChessGameDB.setResult(convertToResult(winner));
+        ChessGameDB.setPGN(game.getFullPGN());
+        ChessGameDB.setNumberOfMoves(game.getFullMove());
 
-        gameRepository.save(game);
+        gameRepository.save(ChessGameDB);
+
         activeLobbies.remove(lobbyId);
     }
-    
+
     public void endGameEarly(GameEndRequest request)
     {
         Sides winner = Sides.NONE;
@@ -79,10 +93,10 @@ public class GameService {
         if(!isUserInLobby(request))
             throw new RuntimeException("User is not in lobby");
 
-        if(game.movesPlayed < 2)
+        if(game.getFullMove() < 2)
             abortGame(lobby);
         else
-            winner = resignGame(lobby, game, request.currentUser);
+            winner = resignGame(lobby, request.currentUser);
         messageTemplate.convertAndSend("/topic/resign-lobby/" + lobby.getLobbyId(), winner);
         lobbyRepository.save(lobby);
     }
@@ -91,14 +105,14 @@ public class GameService {
         lobby.setLobbyType(LobbyType.ABORTED);
     }
 
-    public Sides resignGame(ChessLobbies lobby, Game board, Users currentUser) {
-        board.setResignation(true);
+    public Sides resignGame(ChessLobbies lobby, Users currentUser) {
+        Sides winner = Sides.NONE;
         if(lobby.getPlayerWhite().getUsername().equals(currentUser.getUsername()))
-            board.setWinner(Sides.BLACK);
+            winner = Sides.BLACK;
         else
-            board.setWinner(Sides.WHITE);
-        saveClassicGame(lobby.getLobbyId(), WinType.RESIGNATION);
-        return board.getWinner();
+            winner = Sides.WHITE;
+        saveClassicGame(lobby.getLobbyId(), WinType.RESIGNATION, winner);
+        return winner;
     }
 
     private boolean isUserInLobby(GameEndRequest request) {
@@ -106,6 +120,10 @@ public class GameService {
         if(lobby == null)
             return false;
         return lobby.getPlayerBlack().getUsername().equals(request.currentUser.getUsername()) || lobby.getPlayerWhite().getUsername().equals(request.currentUser.getUsername());
+    }
+
+    private ResultType convertToResult(Sides winner) {
+        return winner == Sides.WHITE ? ResultType.WHITE_WIN : ResultType.BLACK_WIN;
     }
 
     // To implement further logic here
