@@ -46,8 +46,13 @@ public class MoveValidator {
         if(!board.isEmpty(move.targetRow(), move.targetCol()))
             isCapture = true;
 
-        if(p.type == Type.PAWN && isPromotion(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol(), p.color))
+        if(p.type == Type.PAWN && isPromotion(move.targetRow(), p.color)) {
+            if(move.promotion() == null)
+                return Optional.empty();
             isPromotion = true;
+        } else if (move.promotion() != null) {
+            return Optional.empty();
+        }
 
         copyBoard.movePiece(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol());
 
@@ -69,7 +74,7 @@ public class MoveValidator {
     }
 
     //check promotion
-    private boolean isPromotion(int fR, int fC, int tR, int tC, ColorType color) {
+    private boolean isPromotion(int tR, ColorType color) {
         return (color == ColorType.WHITE && tR == 0) || (color == ColorType.BLACK && tR == 7);
     }
 
@@ -128,10 +133,10 @@ public class MoveValidator {
 
                 for(int tr = 0; tr < 8; tr++)
                     for(int tc = 0; tc < 8; tc++) {
-                        Move test = new Move(r, c, tr, tc, board.at(r, c).type, sideToMove);
+                        Move test = new Move(r, c, tr, tc, board.at(r, c).type, sideToMove, null);
 
                         if(p.type == Type.PAWN && (tr == 0 || tr == 7)) {
-                            test = new Move(r, c, tr, tc, Type.QUEEN, sideToMove);
+                            test = new Move(r, c, tr, tc, Type.QUEEN, sideToMove, null);
                         }
 
                         try {

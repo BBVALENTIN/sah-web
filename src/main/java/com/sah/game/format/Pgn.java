@@ -80,9 +80,9 @@ public class Pgn {
             }
         }
 
-//        if (move.promotionType() != null) {
-//            notation = notation + "=" + Character.toUpperCase(getCharFromTip(move.promotionType()));
-//        }
+        if (move.promotion() != null) {
+            notation = notation + "=" + Character.toUpperCase(getCharFromTip(move.promotion().toType()));
+        }
 
         if (isCheck && !isCheckMate)
             notation = notation + "+";

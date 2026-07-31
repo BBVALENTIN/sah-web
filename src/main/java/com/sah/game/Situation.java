@@ -66,10 +66,10 @@ public class Situation {
 
                 for(int tr = 0; tr < 8; tr++)
                     for(int tc = 0; tc < 8; tc++) {
-                        Move test = new Move(r, c, tr, tc, board.at(r, c).type, sideToMove);
+                        Move test = new Move(r, c, tr, tc, board.at(r, c).type, sideToMove, null); // change this
 
                         if(p.type == Type.PAWN && (tr == 0 || tr == 7)) {
-                            test = new Move(r, c, tr, tc, Type.QUEEN, sideToMove);
+                            test = new Move(r, c, tr, tc, Type.QUEEN, sideToMove, null);
                         }
 
                         try {

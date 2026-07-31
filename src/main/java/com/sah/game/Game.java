@@ -72,7 +72,8 @@ public class Game {
                 targetRow,
                 targetCol,
                 board.at(fromRow, fromCol).type,
-                board.at(moveCoords.getFromRow(), moveCoords.getFromCol()).color
+                board.at(moveCoords.getFromRow(), moveCoords.getFromCol()).color,
+                moveCoords.getPromotionPiece()
         );
 
         Board oldBoard = new Board(board);
@@ -98,7 +99,7 @@ public class Game {
 
         // for now
         return OMoveResult.builder()
-                .lastMoveCoords(new MoveCoords(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol()))
+                .lastMoveCoords(new MoveCoords(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol(), moveCoords.getPromotionPiece()))
                 .capturedPieceList(OCapturedPieces)
                 .isCheck(this.isCheck)
                 .isCheckMate(this.isCheckMate)

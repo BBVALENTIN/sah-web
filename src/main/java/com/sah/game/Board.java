@@ -195,4 +195,8 @@ public class Board {
 
         return true;
     }
+
+    public void setSquare(int tr, int tc, Piece piece) {
+        this.squares[tr][tc] = piece;
+    }
 }

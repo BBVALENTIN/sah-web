@@ -31,7 +31,9 @@ public class MoveExecutor {
             game.setCastlingRights(game.getCastlingRights().without(move.pieceColor()));
 
         board.movePiece(move.fromRow(), move.fromCol(), move.targetRow(), move.targetCol());
-
+        if(validation.isPromotion()) {
+            board.setSquare(move.targetRow(), move.targetCol(), Piece.of(move.pieceColor(), move.promotion().toType()));
+        }
         return board;
     }
 }
