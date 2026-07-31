@@ -66,10 +66,11 @@ async function loadBoard() {
         const response = await fetch('/practiceBoard');
         if(response.ok) {
             const minimalState: minimalState = await response.json();
-            const piecesData = minimalState.Pieces;
+            console.log(minimalState);
+            const currentFEN = minimalState.currentFEN;
             if(minimalState.currentPGN != null )
                 moveList.addWholePGN(minimalState.currentPGN);
-            board.setPiecesFromServer(piecesData);
+            board.setPiecesFromFEN(currentFEN);
             board.redraw();
         }
     }

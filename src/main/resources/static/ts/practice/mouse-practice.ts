@@ -1,13 +1,17 @@
 import {Board} from "../tools/Board.js";
 import {Piece} from "../pieces/Piece.js";
 import {SoundManager} from "../audio/soundManager.js";
-import {SidesExplicit, moveSounds} from "../tools/Enums.js";
-import {Mutare_Reusita, OptimisedMove} from "../tools/Types.js";
+import {PieceType, SidesExplicit} from "../tools/Enums.js";
+import {mvData, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 
 const fenOutput = document.getElementById('FEN') as HTMLInputElement;
 const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;
+const promotionModal = document.getElementById('promotion-modal') as HTMLDivElement;
+const promotionChoices = document.getElementById('promotion-choices') as HTMLDivElement;
+
 export let FEN: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'; // starting FEN
+
 export class MousePractice {
     canvas: HTMLCanvasElement;
     board: Board;
@@ -20,6 +24,9 @@ export class MousePractice {
     currentMove: string;
     moveList: MoveList;
     onEngineRequest?: (fen: string) => void;
+
+    private pendingMove: {fromRow: number, fromCol: number, targetRow: number, targetCol: number} | null = null;
+
     constructor(canvas: HTMLCanvasElement, board: Board, moveList: MoveList) {
         this.canvas = canvas;
         this.board = board;
@@ -35,17 +42,55 @@ export class MousePractice {
         this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
-    async handleMutareAPI(e: any):Promise<OptimisedMove> {
-        const { col, row, x, y} = this.getSquareFromMouse(e);
+    private isPromotionMove(piece: Piece, fromRow: number, targetRow: number) {
+        if(piece.tip !== PieceType.PAWN) return false;
+        if(piece.color === SidesExplicit.WHITE && (fromRow === 1 && targetRow === 0)) return true;
+        if(piece.color === SidesExplicit.BLACK && (fromRow === 6 && targetRow === 7)) return true;
+        return false;
+    }
+
+    private showPromotionModal(color: SidesExplicit, callback: (piece: string) => void): void {
+        const pieces = color === SidesExplicit.WHITE ?
+            ['white-queen', 'white-rook', 'white-bishop', 'white-knight'] :
+            ['black-queen', 'black-rook', 'black-bishop', 'black-knight'];
+
+        const chars = ['q', 'r', 'b', 'n'];
+
+        promotionChoices.innerHTML = '';
+        pieces.forEach((imgName, idx) => {
+           const btn = document.createElement('div');
+
+           btn.className = 'promotion-piece-btn';
+           btn.innerHTML = `<img src="images/pieces-default/${imgName}.png" alt="${chars[idx]}">`;
+           btn.onclick = () => {
+             this.hidePromotionModal();
+             callback(chars[idx]);
+           };
+           promotionChoices.appendChild(btn);
+        });
+        promotionModal.style.display = 'flex';
+    }
+
+    private hidePromotionModal(): void {
+        promotionModal.style.display = 'none';
+    }
+
+    async handleMove(fromRow: number, fromCol: number, targetRow: number, targetCol: number, promotionPiece: string | null = null):Promise<OptimisedMove> {
+
         let mutare: Promise<OptimisedMove>;
         let errorText: any;
-        const moveData = {
-            fromRow: this.selectedPiece!.row,
-            fromCol: this.selectedPiece!.col,
-            targetRow: row,
-            targetCol: col
+        let moveData: mvData = {
+            fromRow: fromRow,
+            fromCol: fromCol,
+            targetRow: targetRow,
+            targetCol: targetCol,
+            promotionPiece: null
         };
-        console.log(moveData);
+
+        if(promotionPiece) {
+            moveData.promotionPiece = promotionPiece;
+        }
+
         const res: Response = await fetch(`/api/chess/omove`,
             {
                 method: "POST",
@@ -62,7 +107,6 @@ export class MousePractice {
             throw new Error(errorText);
         }
         mutare = await res.json();
-        console.log(mutare);
         return mutare;
     }
 
@@ -117,30 +161,64 @@ export class MousePractice {
     public async onMouseUp(e: any): Promise<void> {
         if(!this.selectedPiece) { return; }
         const { col, row } = this.getSquareFromMouse(e);
-
+        const piece = this.selectedPiece;
         this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
+        if(this.isPromotionMove(piece, piece.row, row)) {
+            this.pendingMove = {
+                fromRow: piece.row,
+                fromCol: piece.col,
+                targetRow: row,
+                targetCol: col
+            };
+
+            this.showPromotionModal(piece.color, async (chosenPiece: string) => {
+                try {
+                    const result = await this.handleMove(
+                        this.pendingMove!.fromRow,
+                        this.pendingMove!.fromCol,
+                        this.pendingMove!.targetRow,
+                        this.pendingMove!.targetCol,
+                        chosenPiece
+                    );
+                    this.processMoveResult(result);
+                } catch(err) {
+                    console.error("Error regarding the endpoint ", err);
+                    this.reset();
+                } finally {
+                    this.reset();
+                }
+            });
+            return;
+        }
+
         try {
-            const result:OptimisedMove | undefined = await this.handleMutareAPI(e);
-            console.log(result);
+            const result:OptimisedMove | undefined = await this.handleMove(piece.row, piece.col, row, col);
             if(result === undefined)
                 return;
 
-            this.playSound(result);
-
-            this.moveList.addMove(result.pgn);
-            this.board.setPiecesFromFEN(result.fen); // function to set pieces from FEN
-            this.afterMove(result);
-            FEN = result.fen;
-            if(this.onEngineRequest)
-                this.onEngineRequest(FEN);
-            fenOutput.value = FEN;
-            this.addMoveToCopyable(result.pgn);
+            this.processMoveResult(result)
         } catch(err){
             console.error("Error regarding the API: ", err);
         } finally {
             this.reset();
         }
+    }
+
+    private processMoveResult(result: OptimisedMove) {
+        this.pendingMove = null;
+        this.playSound(result);
+        this.moveList.addMove(result.pgn);
+        this.board.setPiecesFromFEN(result.fen);
+        this.afterMove(result);
+        FEN = result.fen;
+
+        if (this.onEngineRequest) {
+            this.onEngineRequest(FEN);
+        }
+
+        fenOutput.value = FEN;
+        this.addMoveToCopyable(result.pgn);
     }
 
     reset() {
@@ -173,11 +251,11 @@ export class MousePractice {
     }
 
     playSound(result: OptimisedMove): void {
-        if(result.isCheckMate){
+        if(result.checkMate){
             this.soundManager.play("checkmate");
             this.soundManager.play("end")
         }
-        else if(result.isCheck) { this.soundManager.play("check");}
+        else if(result.check) { this.soundManager.play("check");}
         else if(result.pgn.includes('x')) {this.soundManager.play("capture");}
         else {this.soundManager.play("move"); }
     }

@@ -96,10 +96,10 @@ async function loadBoard(lobbyId: string):Promise<void>
     try {
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
         const minimalState: minimalState = await response.json();
-        const piecesData = minimalState.Pieces;
+        const currentFEN = minimalState.currentFEN;
         if(minimalState.currentPGN != null )
             moveList.addWholePGN(minimalState.currentPGN);
-        board.setPiecesFromServer(piecesData);
+        board.setPiecesFromFEN(currentFEN);
         board.redraw();
     }
     catch (e) {

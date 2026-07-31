@@ -1,4 +1,5 @@
 import {MessageType, LobbyType, Formats, Sides, SidesExplicit, PieceType} from "./Enums.js";
+import {Piece} from "../pieces/Piece.js";
 
 export interface PieceDTO {
     Type: String;
@@ -24,8 +25,8 @@ export interface OptimisedMove {
     fen: string;
     pgn: string;
     lastMoveCoords: MoveCoords;
-    isCheck: boolean;
-    isCheckMate: boolean;
+    check: boolean;
+    checkMate: boolean;
     capturedPieces: minPiece;
     currentColor: SidesExplicit;
 }
@@ -33,6 +34,14 @@ export interface OptimisedMove {
 interface minPiece {
     type: string;
     color: Sides;
+}
+
+export interface mvData {
+    fromRow: number;
+    fromCol: number;
+    targetRow: number;
+    targetCol: number;
+    promotionPiece: null | string;
 }
 
 export interface MoveCoords {
@@ -68,7 +77,7 @@ export interface Message {
 }
 
 export interface minimalState {
-    Pieces: PieceDTO[];
+    currentFEN: string;
     currentColor: Sides;
     currentPGN: string;
 }

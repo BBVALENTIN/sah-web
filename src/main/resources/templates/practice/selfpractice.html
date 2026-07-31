@@ -52,7 +52,9 @@
         </div>
 
         <div th:insert="~{fragments/copyables :: copyables}"></div>
-
+        <div id="promotion-modal" class="hidden promotion-overlay">
+            <div class="promotion-choices" id="promotion-choices"></div>
+        </div>
     </div>
 
     <script type="module" th:src="@{/ts-transpiled/practice/practice-index.js}"></script>
