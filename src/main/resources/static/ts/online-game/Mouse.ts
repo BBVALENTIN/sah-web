@@ -3,8 +3,8 @@ import { SoundManager } from "../audio/soundManager.js";
 import { Piece } from "../pieces/Piece.js";
 import {lobbyInfo} from "../tools/Types.js";
 import {state, currentColor} from "./WebSockets.js";
-import {loggedUsername, getInfoLobby} from "../misc/APIs.js";
 import {PromotionManager} from "../tools/PromotionManager.js";
+import {getInfoLobby} from "./onlineg-funcs.js";
 
 export class Mouse {
     canvas: HTMLCanvasElement;
