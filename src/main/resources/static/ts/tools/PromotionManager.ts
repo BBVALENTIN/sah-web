@@ -25,7 +25,7 @@ export class PromotionManager {
         return false;
     }
 
-    showPromotionModal(color: SidesExplicit, callback: (piece: string) => void): void {
+    showPromotionModal(color: SidesExplicit, position: { x:number, y: number}, callback: (piece: string) => void): void {
         const pieces = color === SidesExplicit.WHITE ?
             ['white-queen', 'white-rook', 'white-bishop', 'white-knight'] :
             ['black-queen', 'black-rook', 'black-bishop', 'black-knight'];
@@ -44,6 +44,13 @@ export class PromotionManager {
             };
             this.promotionChoices.appendChild(btn);
         });
+        this.promotionModal.style.display = 'flex';
+
+        this.promotionModal.style.position = 'fixed';
+        this.promotionModal.style.zIndex = '9999';
+        this.promotionModal.style.left = `${position.x}px`;
+        this.promotionModal.style.top = `${position.y}px`;
+        this.promotionModal.style.transform = 'translate(-50%)';
         this.promotionModal.style.display = 'flex';
     }
 

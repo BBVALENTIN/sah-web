@@ -42,6 +42,8 @@ export class MousePractice {
         this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
     }
 
+    protected endpoint = "/api/chess/omove";
+
     async handleMove(fromRow: number, fromCol: number, targetRow: number, targetCol: number, promotionPiece: string | null = null):Promise<OptimisedMove> {
 
         let mutare: Promise<OptimisedMove>;
@@ -58,13 +60,13 @@ export class MousePractice {
             moveData.promotionPiece = promotionPiece;
         }
 
-        const res: Response = await fetch(`/api/chess/omove`,
+        const res: Response = await fetch(this.endpoint,
             {
                 method: "POST",
                 headers: {
                     'Content-type': 'application/json'
                 },
-                body: JSON.stringify(moveData)
+                body: JSON.stringify(this.buildRequestBody(moveData))
             });
 
 
@@ -127,7 +129,7 @@ export class MousePractice {
     }
     public async onMouseUp(e: any): Promise<void> {
         if(!this.selectedPiece) { return; }
-        const { col, row } = this.getSquareFromMouse(e);
+        const { col, row, x, y} = this.getSquareFromMouse(e);
         const piece = this.selectedPiece;
         this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
@@ -139,7 +141,7 @@ export class MousePractice {
                 targetCol: col
             });
 
-            this.promotionManager.showPromotionModal(piece.color, async (chosenPiece: string) => {
+            this.promotionManager.showPromotionModal(piece.color, {x: e.clientX, y: e.clientY}, async (chosenPiece: string) => {
                 const pendingMove = await this.promotionManager.getPendingMove();
                 try {
                     const result = await this.handleMove(
@@ -154,6 +156,7 @@ export class MousePractice {
                     console.error("Error regarding the endpoint ", err);
                     this.reset();
                 } finally {
+                    this.promotionManager.clearPendingMove();
                     this.reset();
                 }
             });
@@ -235,5 +238,9 @@ export class MousePractice {
         FEN = fen;
         const fenOutput = document.getElementById('FEN') as HTMLInputElement;
         if(fenOutput) fenOutput.value = fen;
+    }
+
+    protected buildRequestBody(moveData: mvData): any {
+        return moveData;
     }
 }

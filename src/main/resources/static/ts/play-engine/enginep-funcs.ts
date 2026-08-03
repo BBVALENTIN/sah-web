@@ -6,7 +6,7 @@ import {PieceDTO} from "../tools/Types.js";
 export let engineCore: AppCore;
 interface botResponse {
     gameId: string;
-    pieces: PieceDTO[];
+    currentFEN: string;
 }
 
 const startingFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -57,7 +57,7 @@ export async function initEngineApp() {
             const state = await response.json();
             if (state.currentPGN != null)
                 engineCore.moveList.addWholePGN(state.currentPGN);
-            engineCore.board.setPiecesFromServer(state.pieces);
+            engineCore.board.setPiecesFromFEN(state.currentFEN)
             engineCore.board.redraw();
 
             const botSide = state.botSide as SidesExplicit;
@@ -82,14 +82,18 @@ export async function initEngineApp() {
         const isPlayerPlayingBlack: boolean = botSide === SidesExplicit.WHITE;
         engineCore.board.setOrientation(isPlayerPlayingBlack);
         const username = await getLoggedUsername();
+
         const playerBlack = isPlayerPlayingBlack ? username : 'Stockfish';
         const playerWhite = isPlayerPlayingBlack ? 'Stockfish' : username;
+
         setText('player-black', playerBlack);
         setText('player-white', playerWhite);
         const response = await fetch(`/api/bot/start?botSide=${botSide}`, { method: 'POST' });
+
         const data: botResponse = await response.json();
+
         botGameId = data.gameId;
-        engineCore.board.setPiecesFromServer(data.pieces);
+        engineCore.board.setPiecesFromFEN(data.currentFEN);
         engineCore.board.redraw(); // will make a function for this
         sessionStorage.setItem('botGameId', botGameId);
 
@@ -97,6 +101,7 @@ export async function initEngineApp() {
             engineCore.canvas, engineCore.board, botGameId, engineCore.moveList,
             botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
         );
+
         mouseBot.onEngineRequest = (fen: string) => requestStockfishMove(fen);
 
         if (botSide === SidesExplicit.WHITE)

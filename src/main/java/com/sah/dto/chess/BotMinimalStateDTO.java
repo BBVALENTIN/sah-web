@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class BotMinimalStateDTO {
-    private ColorType currentColor;
+    private ColorType currentColor; // redundant, will change
     private String currentPGN;
     private Sides botSide;
     private String currentFEN;

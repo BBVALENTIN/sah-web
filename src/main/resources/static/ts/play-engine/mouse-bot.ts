@@ -1,6 +1,6 @@
 import {MousePractice} from "../practice/mouse-practice.js";
 import {Board} from "../tools/Board.js";
-import {OptimisedMove} from "../tools/Types.js";
+import {mvData, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 import {SidesExplicit} from "../tools/Enums.js";
 
@@ -11,37 +11,13 @@ export class MouseBot extends MousePractice {
         super(canvas, board, moveList);
         this.gameId = gameId;
         this.currentColor = playerSide;
+
+        this.endpoint = "/api/bot/move"; // maybe rename this endpoint so it's more intuitive (its the player's move)
     }
 
     protected afterMove(result: OptimisedMove): void {
     }
 
-    async handleMutareAPI(e: any): Promise<OptimisedMove> {
-        const { col, row } = this.getSquareFromMouse(e);
-        const fromRow = this.selectedPiece!.row;
-        const fromCol= this.selectedPiece!.col;
-        const targetRow= row;
-        const targetCol= col;
-
-        const moveData = {
-            gameId: this.gameId,
-            moveCoords: { fromRow, fromCol, targetRow, targetCol },
-        };
-
-        const respMutare = await fetch('/api/bot/move', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(moveData)
-        });
-
-        if (!respMutare.ok) {
-            const errorText = await respMutare.text();
-            this.reset();
-            throw new Error(errorText);
-        }
-
-        return respMutare.json();
-    }
 
     async applyBotMove(mutare: string): Promise<void> {
         const fromCol = mutare.charCodeAt(0) - 97;
@@ -69,5 +45,12 @@ export class MouseBot extends MousePractice {
             this.playSound(result);
             this.updateFEN(result.fen);
         }
+    }
+
+    protected buildRequestBody(moveData: mvData): any {
+      return {
+          gameId: this.gameId,
+          moveCoords: moveData
+      }
     }
 }

@@ -77,7 +77,6 @@ public class ChessApiController {
     public ResponseEntity<?> optimisedMove(@RequestBody MoveCoords moveCoords) throws InvalidMoveException {
         try {
             Game game = gameService.getPracticeGame();
-            System.out.println("game = " + game);
             OMoveResult res = game.makeMove(moveCoords);
             return ResponseEntity.ok(res);
         }
