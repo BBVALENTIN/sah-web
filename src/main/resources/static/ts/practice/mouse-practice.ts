@@ -4,6 +4,7 @@ import {SoundManager} from "../audio/soundManager.js";
 import {PieceType, SidesExplicit} from "../tools/Enums.js";
 import {mvData, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
+import {PromotionManager} from "../tools/PromotionManager.js";
 
 const fenOutput = document.getElementById('FEN') as HTMLInputElement;
 const pgnOutput = document.getElementById('PGN') as HTMLTextAreaElement;
@@ -24,8 +25,7 @@ export class MousePractice {
     currentMove: string;
     moveList: MoveList;
     onEngineRequest?: (fen: string) => void;
-
-    private pendingMove: {fromRow: number, fromCol: number, targetRow: number, targetCol: number} | null = null;
+    private promotionManager: PromotionManager = new PromotionManager();
 
     constructor(canvas: HTMLCanvasElement, board: Board, moveList: MoveList) {
         this.canvas = canvas;
@@ -40,39 +40,6 @@ export class MousePractice {
         this.canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
         this.canvas.addEventListener("mousemove", this.MouseMove.bind(this));
         this.canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
-    }
-
-    private isPromotionMove(piece: Piece, fromRow: number, targetRow: number) {
-        if(piece.tip !== PieceType.PAWN) return false;
-        if(piece.color === SidesExplicit.WHITE && (fromRow === 1 && targetRow === 0)) return true;
-        if(piece.color === SidesExplicit.BLACK && (fromRow === 6 && targetRow === 7)) return true;
-        return false;
-    }
-
-    private showPromotionModal(color: SidesExplicit, callback: (piece: string) => void): void {
-        const pieces = color === SidesExplicit.WHITE ?
-            ['white-queen', 'white-rook', 'white-bishop', 'white-knight'] :
-            ['black-queen', 'black-rook', 'black-bishop', 'black-knight'];
-
-        const chars = ['q', 'r', 'b', 'n'];
-
-        promotionChoices.innerHTML = '';
-        pieces.forEach((imgName, idx) => {
-           const btn = document.createElement('div');
-
-           btn.className = 'promotion-piece-btn';
-           btn.innerHTML = `<img src="images/pieces-default/${imgName}.png" alt="${chars[idx]}">`;
-           btn.onclick = () => {
-             this.hidePromotionModal();
-             callback(chars[idx]);
-           };
-           promotionChoices.appendChild(btn);
-        });
-        promotionModal.style.display = 'flex';
-    }
-
-    private hidePromotionModal(): void {
-        promotionModal.style.display = 'none';
     }
 
     async handleMove(fromRow: number, fromCol: number, targetRow: number, targetCol: number, promotionPiece: string | null = null):Promise<OptimisedMove> {
@@ -164,21 +131,22 @@ export class MousePractice {
         const piece = this.selectedPiece;
         this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
 
-        if(this.isPromotionMove(piece, piece.row, row)) {
-            this.pendingMove = {
+        if(this.promotionManager.isPromotionMove(piece, piece.row, row)) {
+            this.promotionManager.setPendingMove( {
                 fromRow: piece.row,
                 fromCol: piece.col,
                 targetRow: row,
                 targetCol: col
-            };
+            });
 
-            this.showPromotionModal(piece.color, async (chosenPiece: string) => {
+            this.promotionManager.showPromotionModal(piece.color, async (chosenPiece: string) => {
+                const pendingMove = await this.promotionManager.getPendingMove();
                 try {
                     const result = await this.handleMove(
-                        this.pendingMove!.fromRow,
-                        this.pendingMove!.fromCol,
-                        this.pendingMove!.targetRow,
-                        this.pendingMove!.targetCol,
+                        pendingMove!.fromRow,
+                        pendingMove!.fromCol,
+                        pendingMove!.targetRow,
+                        pendingMove!.targetCol,
                         chosenPiece
                     );
                     this.processMoveResult(result);
@@ -206,7 +174,6 @@ export class MousePractice {
     }
 
     private processMoveResult(result: OptimisedMove) {
-        this.pendingMove = null;
         this.playSound(result);
         this.moveList.addMove(result.pgn);
         this.board.setPiecesFromFEN(result.fen);
