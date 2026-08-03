@@ -1,5 +1,5 @@
 import {Board} from "../tools/Board.js";
-import {Piece} from "../pieces/Piece.js";
+import {Piece} from "../tools/Piece.js";
 import {SoundManager} from "../audio/soundManager.js";
 import {PieceType, SidesExplicit} from "../tools/Enums.js";
 import {mvData, OptimisedMove} from "../tools/Types.js";

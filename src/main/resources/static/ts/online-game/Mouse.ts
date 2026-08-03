@@ -1,6 +1,6 @@
 import { Board } from "../tools/Board.js";
 import { SoundManager } from "../audio/soundManager.js";
-import { Piece } from "../pieces/Piece.js";
+import { Piece } from "../tools/Piece.js";
 import {lobbyInfo} from "../tools/Types.js";
 import {state, currentColor} from "./WebSockets.js";
 import {PromotionManager} from "../tools/PromotionManager.js";

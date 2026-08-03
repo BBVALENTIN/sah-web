@@ -1,4 +1,4 @@
-import {Piece} from "../pieces/Piece.js";
+import {Piece} from "./Piece.js";
 import {PieceType, SidesExplicit} from "../tools/Enums.js";
 
 export interface PendingMove {

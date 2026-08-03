@@ -1,5 +1,4 @@
 import {MessageType, LobbyType, Formats, Sides, SidesExplicit, PieceType} from "./Enums.js";
-import {Piece} from "../pieces/Piece.js";
 
 export interface PieceDTO {
     Type: String;

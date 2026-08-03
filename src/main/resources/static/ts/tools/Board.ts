@@ -1,10 +1,4 @@
-import {Piece} from "../pieces/Piece.js";
-import {Pawn} from "../pieces/Pawn.js";
-import {Bishop} from "../pieces/Bishop.js";
-import {Knight} from "../pieces/Knight.js";
-import {Rook} from "../pieces/Rook.js";
-import {King} from "../pieces/King.js";
-import {Queen} from "../pieces/Queen.js";
+import {Piece} from "./Piece.js";
 import {PieceType, SidesExplicit} from "./Enums.js";
 import {PieceDTO} from "./Types.js";
 
@@ -150,17 +144,12 @@ export class Board {
     {
         const { type, color, row, col } = data;
 
-        let piece: Piece;
-
-        switch (type.toLowerCase()) {
-            case "pawn": piece = new Pawn(color, row, col); break;
-            case "queen": piece = new Queen(color, row, col); break;
-            case "king": piece = new King(color, row, col); break;
-            case "rook": piece = new Rook(color, row, col); break;
-            case "bishop": piece = new Bishop(color, row, col); break;
-            case "knight": piece = new Knight(color, row, col); break;
-            default: throw new Error("Unknown piece type");
-        }
+        const piece: Piece = new Piece(
+            type,
+            color,
+            row,
+            col
+        );
 
         const colorKey = (color === SidesExplicit.WHITE) ? "white" : "black";
         const imgKey = `${colorKey}-${type.toLowerCase()}`;
