@@ -12,10 +12,10 @@ let stockfishOutputs: stockfishLine[] = [];
 const stockfishTrigger = document.getElementById('stockfish-trigger') as HTMLInputElement;
 export let engineOn: boolean = false;
 
-export const { board, moveList, canvas } = initCanvas('chessCanvas', 'move-list');
+export const { board, moveList} = initCanvas('chessCanvas', 'move-list');
 await initBoard(board);
 await loadBoard();
-const mousePractice = new MousePractice(canvas, board, moveList);
+const mousePractice = new MousePractice(board.getCanvas(), board, moveList);
 mousePractice.onEngineRequest = (fen: string) => {
     if(engineOn) requestStockfishMove(fen);
 };
@@ -83,18 +83,18 @@ function handleFlip() {
     board.redraw(board.pieces);
 }
 
-async function handleReset() {
-    const reset = await fetch('/api/chess/reset');
-    if(reset.ok) {
-        const newPieces: PieceDTO[] = await reset.json(); // Delete this after finishing the page
-        board.setPiecesFromServer(newPieces);
-        board.redraw();
-        moveList.reset();
-        mousePractice.resetGame();
-    }
-    else
-        console.log("Fail");
-}
+// async function handleReset() {
+//     const reset = await fetch('/api/chess/reset');
+//     if(reset.ok) {
+//         const newPieces: PieceDTO[] = await reset.json(); // Delete this after finishing the page
+//         board.setPiecesFromServer(newPieces);
+//         board.redraw();
+//         moveList.reset();
+//         mousePractice.resetGame();
+//     }
+//     else
+//         console.log("Fail");
+// }
 
 function formatEvaluation(type: string, value: string, isBlackToMove: boolean): string {
     if(type === 'cp')
@@ -140,7 +140,7 @@ export async function initPractice() {
     await initBoard(board);
     await loadBoard();
     onButtonClick('flipBoard', handleFlip);
-    onButtonClick('resetBoard', handleReset);
+    // onButtonClick('resetBoard', handleReset);
     uciCmd('uci');
     uciCmd('isready');
 }

@@ -78,17 +78,10 @@ export async function initializeApp() {
     });
 }
 
-const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
-const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-
-const size: number = Board.squareSize * 8;
-canvas.width = size;
-canvas.height = size;
-
-export const board: Board = new Board(ctx);
+export const board: Board = new Board('chessCanvas');
 export const moveList:MoveList = new MoveList("move-list");
 
-export const mouse: Mouse = new Mouse(canvas, board);
+export const mouse: Mouse = new Mouse(board.getCanvas(), board);
 const resignBtn = document.getElementById("resign-button") as HTMLButtonElement;
 async function loadBoard(lobbyId: string):Promise<void>
 {

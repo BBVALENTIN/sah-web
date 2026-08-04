@@ -39,8 +39,8 @@ export class Mouse {
         const x: number = e.clientX - rect.left;
         const y: number = e.clientY - rect.top;
 
-        let col: number = Math.floor(x / Board.squareSize);
-        let row: number = Math.floor(y / Board.squareSize);
+        let col: number = Math.floor(x / this.board.getSquareSize());
+        let row: number = Math.floor(y / this.board.getSquareSize());
 
         if(this.board.isBlack) {
             col = 7 - col;
@@ -59,8 +59,8 @@ export class Mouse {
             const visualCol = this.board.isBlack ? 7 - piece.col : piece.col;
             const visualRow = this.board.isBlack ? 7 - piece.row : piece.row;
 
-            this.offsetX = x - visualCol * Board.squareSize;
-            this.offsetY = y - visualRow * Board.squareSize;
+            this.offsetX = x - visualCol * this.board.getSquareSize();
+            this.offsetY = y - visualRow * this.board.getSquareSize();
 
             this.board.redraw(this.board.pieces.filter(p => p !== piece), this.selectedPiece);
         }

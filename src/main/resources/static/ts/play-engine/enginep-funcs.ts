@@ -62,7 +62,7 @@ export async function initEngineApp() {
 
             const botSide = state.botSide as SidesExplicit;
             mouseBot = new MouseBot(
-                engineCore.canvas, engineCore.board, gameId, engineCore.moveList,
+                engineCore.board.getCanvas(), engineCore.board, gameId, engineCore.moveList,
                 botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
             );
             mouseBot.onEngineRequest = (fen: string) => requestStockfishMove(fen);
@@ -98,7 +98,7 @@ export async function initEngineApp() {
         sessionStorage.setItem('botGameId', botGameId);
 
         mouseBot = new MouseBot(
-            engineCore.canvas, engineCore.board, botGameId, engineCore.moveList,
+            engineCore.board.getCanvas(), engineCore.board, botGameId, engineCore.moveList,
             botSide === SidesExplicit.BLACK ? SidesExplicit.WHITE : SidesExplicit.BLACK
         );
 

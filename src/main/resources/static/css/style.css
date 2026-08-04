@@ -74,7 +74,16 @@ html, body {
 
 /* ------------------------ START LUCRURI LEGATE DE CANVAS SI DE INFO WRAPPEr ------------------------*/
 #chessCanvas{
-    border: 1px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
+    width: 100%;
+    aspect-ratio: 1;
+    height: auto;
+}
+
+.chess-playground {
+    width: min(70vw, 760px);
 }
 
 .copyable, .copyables {
