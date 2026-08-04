@@ -2,8 +2,7 @@ import {Board} from '../tools/Board.js';
 import {Mouse} from "./Mouse.js";
 import {MoveList} from "../tools/MoveList.js";
 import {connect, sendMessage, state} from "./WebSockets.js"
-import {getInfoLobby} from "../misc/APIs.js";
-import {minimalState} from "../tools/Types.js";
+import {minimalState, lobbyInfo} from "../tools/Types.js";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
@@ -96,13 +95,21 @@ async function loadBoard(lobbyId: string):Promise<void>
     try {
         const response: Response = await fetch(`/api/chess/onlineState/${lobbyId}`);
         const minimalState: minimalState = await response.json();
-        const piecesData = minimalState.Pieces;
+        const currentFEN = minimalState.currentFEN;
         if(minimalState.currentPGN != null )
             moveList.addWholePGN(minimalState.currentPGN);
-        board.setPiecesFromServer(piecesData);
+        board.setPiecesFromFEN(currentFEN);
         board.redraw();
     }
     catch (e) {
         console.error("There was an error loading the data");
     }
+}
+
+export async function getInfoLobby(): Promise<lobbyInfo | undefined> {
+    const response = await fetch('/info/lobby');
+    if(response.ok) {
+        return await response.json();
+    }
+    return undefined;
 }

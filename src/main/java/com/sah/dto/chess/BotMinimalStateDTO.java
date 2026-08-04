@@ -4,16 +4,13 @@ import com.sah.enums.Sides;
 import com.sah.game.gameenums.ColorType;
 import lombok.*;
 
-import java.util.List;
-
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class BotMinimalStateDTO {
-    private List<PieceDTO> Pieces;
-    private ColorType currentColor;
+    private ColorType currentColor; // redundant, will change
     private String currentPGN;
     private Sides botSide;
     private String currentFEN;

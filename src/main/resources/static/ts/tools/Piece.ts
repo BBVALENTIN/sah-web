@@ -1,8 +1,7 @@
-import {Board} from "../tools/Board.js";
-import {PieceType, SidesExplicit} from "../tools/Enums.js";
+import {Board} from "./Board.js";
+import {PieceType, SidesExplicit} from "./Enums";
 
 export class Piece {
-    readonly tip: PieceType | undefined;
     color: SidesExplicit;
     row:number;
     col: number;
@@ -13,7 +12,8 @@ export class Piece {
     dragY?: number;
     img?: HTMLImageElement
 
-    constructor(color: SidesExplicit, row: number, col: number) {
+    constructor(public readonly tip: PieceType,color: SidesExplicit, row: number, col: number) {
+        this.tip = tip;
         this.color = color
         this.row = row;
         this.col = col;

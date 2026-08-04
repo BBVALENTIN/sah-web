@@ -11,19 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 @Service
 public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
+    private static final long MAX_UPLOAD_BYTES = 5L * 1024 * 1024;
+    private static final int AVATAR_SIZE = 256;
 
     @Autowired
     public FileSystemStorageService(StorageProperties storageProperties) {
@@ -58,6 +59,37 @@ public class FileSystemStorageService implements StorageService {
         } catch(IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
+    }
+
+    @Override
+    public String storeImage(MultipartFile file) throws IOException {
+
+        if(file.isEmpty())
+            throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
+
+        if(file.getSize() > MAX_UPLOAD_BYTES)
+            throw new StorageException("File too large");
+
+        byte[] resizedWebp;
+        try {
+            resizedWebp = ImageResizer.resizeToAvatar(file.getBytes(), AVATAR_SIZE);
+        } catch (IOException e) {
+            throw new StorageException("Uploaded file is not a valid image", e);
+        }
+
+        String filename = java.util.UUID.randomUUID().toString() + ".jpeg";
+        Path destionationFile = this.rootLocation.resolve(Paths.get(filename))
+                .normalize().toAbsolutePath();
+
+        if(!destionationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
+            throw new StorageException("Cannot store file outside of current dir");
+        }
+
+        Files.write(destionationFile, resizedWebp,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING);
+
+        return filename;
     }
 
     @Override

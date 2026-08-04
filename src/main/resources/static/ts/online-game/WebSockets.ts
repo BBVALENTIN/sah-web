@@ -139,11 +139,11 @@ function onMoveReceived(payload: any) {
         resignBtn.innerText = 'Resign';
     board.redraw();
 
-    if (result.isCheckMate) {
+    if (result.checkMate) {
         mouse.soundManager.play("checkmate");
         mouse.soundManager.play("end");
         resignBtn.disabled = true;
-    } else if (result.isCheck) {
+    } else if (result.check) {
         mouse.soundManager.play("check");
     } else if (result.pgn.includes('x')) {
         mouse.soundManager.play("capture");

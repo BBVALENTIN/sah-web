@@ -2,24 +2,23 @@ package com.sah.controller.api;
 
 import com.sah.config.WebSocketEventListener;
 import com.sah.dto.chess.MinimalStateDTO;
-import com.sah.dto.chess.PieceDTO;
 import com.sah.dto.misc.ChatMessageDTO;
 import com.sah.dto.requests.GameEndRequest;
 import com.sah.dto.requests.MoveRequestDTO;
-import com.sah.dto.responses.MoveResultDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
 import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
+import com.sah.enums.Sides;
 import com.sah.enums.WinType;
-import com.sah.game.ChessBoard;
+import com.sah.game.Game;
 import com.sah.game.gameenums.ColorType;
 import com.sah.game.exceptions.InvalidMoveException;
 import com.sah.game.dtos.MoveCoords;
 import com.sah.game.dtos.OMoveResult;
-import com.sah.game.pieces.Pieces;
+import com.sah.game.Piece;
 import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
@@ -38,9 +37,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.security.Principal;
 import java.util.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/chess")
@@ -48,39 +45,39 @@ import java.util.List;
 public class ChessApiController {
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final ChessBoard chessBoard;
     private final LobbyRepository lobbyRepository;
     private final ChessLobbyChatService chessLobbyChatService;
     private final ChessLobbyChatRepository chessLobbyChatRepository;
     private final UserRepository userRepository;
     private final CurrentUserProvider currentUserProvider;
 
-    @GetMapping("/turn")
-    public ColorType getCurrentColor()
-    {
-        return chessBoard.getCurrentColor();
-    }
+//    @GetMapping("/turn")
+//    public ColorType getCurrentColor()
+//    {
+//        return game.getCurrentColor();
+//    }
 
 
-    @GetMapping("/reset")
-    public List<PieceDTO> ResetBoard()
-    {
-        chessBoard.piecesList.clear();
-        for(int i = 0; i < 8; i++)
-            for(int j = 0; j < 8; j++)
-                chessBoard.board[i][j] = null;
-        chessBoard.resetMoveNotations();
-        chessBoard.initializeBoard();
-        List<PieceDTO> dto = new ArrayList<>();
-        for(Pieces p : chessBoard.getAllPieces())
-            dto.add(ChessBoard.toDTO(p, p.row, p.col));
-        return dto;
-    }
+//    @GetMapping("/reset")
+//    public List<PieceDTO> ResetBoard()
+//    {
+//        game.piecesList.clear();
+//        for(int i = 0; i < 8; i++)
+//            for(int j = 0; j < 8; j++)
+//                game.board[i][j] = null;
+//        game.resetMoveNotations();
+//        game.initializeBoard();
+//        List<PieceDTO> dto = new ArrayList<>();
+//        for(Piece p : game.getAllPieces())
+//            dto.add(Game.toDTO(p, p.row, p.col));
+//        return dto;
+//    }
 
     @PostMapping("/omove")
     public ResponseEntity<?> optimisedMove(@RequestBody MoveCoords moveCoords) throws InvalidMoveException {
         try {
-            OMoveResult res = chessBoard.makeOptimisedMove(moveCoords);
+            Game game = gameService.getPracticeGame();
+            OMoveResult res = game.makeMove(moveCoords);
             return ResponseEntity.ok(res);
         }
         catch(InvalidMoveException ex) { // maybe remove this to play a sound if a move is wrong
@@ -90,28 +87,25 @@ public class ChessApiController {
 
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request, Authentication auth) throws InvalidMoveException {
-        ChessBoard lobbyBoard = gameService.getOrCreateBoard(request.getLobbyId());
-        Pieces piece = lobbyBoard.board[request.moveCoords.getFromRow()][request.getMoveCoords().getFromCol()];
+        Game currentGame = gameService.getOrCreateBoard(request.getLobbyId());
         Users currentUser = resolveCurrentUser(auth);
-        if (piece == null) {
-            sendError(currentUser, "No piece detected");
-            return;
-        }
 
-        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), currentUser, piece.color)) {
+        Piece p = currentGame.getBoard().at(request.moveCoords.getFromRow(), request.moveCoords.getFromCol());
+
+        if (!gameService.isValidMoveForPlayer(request.getLobbyId(), currentUser, p.color)) {
             sendError(currentUser, "You can't move your opponent's pieces");
             return;
         }
 
         try {
-            OMoveResult result = lobbyBoard.makeOptimisedMove(request.moveCoords);
+            OMoveResult result = currentGame.makeMove(request.moveCoords);
 
             messagingTemplate.convertAndSend("/topic/game/" + request.getLobbyId(), result);
             if (result.isCheckMate() == true) {
                 ChessLobbies lobby = lobbyRepository.findByLobbyId(request.getLobbyId());
                 lobby.setLobbyType(LobbyType.FINISHED);
                 lobbyRepository.save(lobby);
-                gameService.saveClassicGame(request.getLobbyId(), WinType.CHECKMATE);
+                gameService.saveClassicGame(request.getLobbyId(), WinType.CHECKMATE, OppositeColor(currentGame.getCurrentColor()));
             }
         }
         catch (InvalidMoveException ex) {
@@ -123,8 +117,8 @@ public class ChessApiController {
 
     @GetMapping("/onlineState/{lobbyId}")
     public MinimalStateDTO getOnlineState(@PathVariable String lobbyId) {
-        ChessBoard lobbyBoard = gameService.getOrCreateBoard(lobbyId);
-        return new MinimalStateDTO(lobbyBoard.getAllPiecesDTO(), lobbyBoard.currentColor, lobbyBoard.getAllPGN());
+        Game currentGame = gameService.getOrCreateBoard(lobbyId);
+        return new MinimalStateDTO(currentGame.getCurrentFEN(), currentGame.getFullPGN());
     }
 
     @MessageMapping("/chat.sendMessage/{lobbyId}")
@@ -182,6 +176,10 @@ public class ChessApiController {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         return userRepository.findById(userDetails.getId())
                 .orElseThrow(() -> new IllegalStateException("User authenticated but not found in the database"));
+    }
+
+    private Sides OppositeColor(ColorType color) {
+        return color == ColorType.WHITE ? Sides.BLACK : Sides.WHITE;
     }
 }
 
