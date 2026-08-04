@@ -1,5 +1,5 @@
 import {Board} from "./Board.js";
-import {PieceType, SidesExplicit} from "./Enums";
+import {PieceType, SidesExplicit} from "./Enums.js";
 
 export class Piece {
     color: SidesExplicit;
