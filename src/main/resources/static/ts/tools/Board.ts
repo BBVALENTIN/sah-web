@@ -36,15 +36,23 @@ export class Board {
         this.isBlack = false;
 
         this.resize();
+
+        window.addEventListener('resize', () => {
+            this.resize();
+            this.redraw();
+        });
     }
 
+    // need a resize function for the whole page, no tjust the canvas
     private resize() {
-        const maxSize = Math.min(window.innerWidth * 0.55, 720); // testing
+        const maxSizeWidth = window.innerWidth * 0.55;
+        const maxSizeHeight = window.innerHeight;
 
-        this.canvas.width = maxSize;
-        this.canvas.height = maxSize;
+        const boardSquareSize = Math.min(maxSizeWidth, maxSizeHeight, 720);
+        this.canvas.width = boardSquareSize;
+        this.canvas.height = boardSquareSize;
 
-        this.squareSize = maxSize / 8;
+        this.squareSize = boardSquareSize / 8;
     }
 
     public getCanvas(): HTMLCanvasElement {
