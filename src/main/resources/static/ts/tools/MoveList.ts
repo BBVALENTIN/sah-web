@@ -1,5 +1,4 @@
 import {MoveRow} from "./Types.js";
-import {Sides} from "./Enums.js";
 
 export class MoveList {
     private container: HTMLElement;

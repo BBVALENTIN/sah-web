@@ -1,4 +1,4 @@
-import {minimalState, PieceDTO} from "../tools/Types.js";
+import {minimalState} from "../tools/Types.js";
 import {FEN, MousePractice} from "./mouse-practice.js";
 import {initCanvas, initBoard, onButtonClick} from "../tools/chess-utils.js";
 

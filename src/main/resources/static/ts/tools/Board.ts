@@ -36,8 +36,6 @@ export class Board {
         this.isBlack = false;
 
         this.resize();
-
-        window.addEventListener("resize", this.resize);
     }
 
     private resize() {
