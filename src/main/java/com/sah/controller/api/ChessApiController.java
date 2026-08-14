@@ -114,7 +114,6 @@ public class ChessApiController {
 
     }
 
-
     @GetMapping("/onlineState/{lobbyId}")
     public MinimalStateDTO getOnlineState(@PathVariable String lobbyId) {
         Game currentGame = gameService.getOrCreateBoard(lobbyId);

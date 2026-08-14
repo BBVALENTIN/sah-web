@@ -62,8 +62,12 @@ public class Game {
         int targetRow = moveCoords.getTargetRow();
         int targetCol = moveCoords.getTargetCol();
 
+
         if(board.isEmpty(fromRow, fromCol))
             throw new InvalidMoveException(ErrorCodes.UNDETECTED_PIECE);
+
+        if(board.at(fromRow, fromCol).color != currentColor)
+            throw new InvalidMoveException(ErrorCodes.WRONG_TURN);
 
         Move move = new Move(
                 fromRow,

@@ -7,7 +7,6 @@ declare var Stomp: any;
 
 // should change this
 let loggedUsername: string = "";
-let userId: number = 0;
 let currentLobbyId: string = "";
 export let currentColor: SidesExplicit = SidesExplicit.WHITE;
 let resignBtn = document.getElementById('resign-button') as HTMLButtonElement;
@@ -36,7 +35,7 @@ export function connect(username: string, lobbyId: string):void{
     state.stompClient = Stomp.over(socket);
 
     state.stompClient.connect(
-        { username: loggedUsername},
+        { username: loggedUsername}, //remove this
         function () {
             state.connected = true;
 
