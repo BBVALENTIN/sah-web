@@ -45,10 +45,11 @@ export class Board {
 
     // need a resize function for the whole page, no tjust the canvas
     private resize() {
-        const maxSizeWidth = window.innerWidth * 0.55;
-        const maxSizeHeight = window.innerHeight;
+        const parentElement = document.querySelector('.chess-main-online') as HTMLDivElement;
+        const maxSizeWidth = parentElement.offsetWidth;
+        const maxSizeHeight = parentElement.offsetHeight;
 
-        const boardSquareSize = Math.min(maxSizeWidth, maxSizeHeight, 720);
+        const boardSquareSize = Math.min(maxSizeWidth, maxSizeHeight);
         this.canvas.width = boardSquareSize;
         this.canvas.height = boardSquareSize;
 

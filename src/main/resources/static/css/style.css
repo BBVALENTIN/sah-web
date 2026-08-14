@@ -14,7 +14,7 @@
     --cHeight: 600px;
     --infoHeight: 580px; /* modify with padding*/
     --section-width: 33%;
-    --copyable-width: 650px;
+    --copyable-width: clamp(280px, 33vw, 650px);
     --space-5percent: 5%;
     /*COLORS*/
     --bodyGray: rgba(36, 36, 36);
@@ -50,19 +50,20 @@ html, body {
 
 .content-play-online {
     background-color: var(--bodyGray);
-    flex: 1;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
-    margin-top: 15px;
+    align-items: center;
     gap: 20px;
     font-family: inherit;
+    max-width: 90%;
+    margin: 15px auto 0;
 }
 
 .chess-main-online {
     display: flex;
     flex-wrap: wrap !important;
+    flex: 2;
     justify-content: center;
     position: relative;
 }
@@ -80,10 +81,12 @@ html, body {
     width: 100%;
     aspect-ratio: 1;
     height: auto;
+    resize: both;
 }
 
 .chess-playground {
-    width: min(70vw, 760px);
+    flex: 1.15;
+    min-width: 0;
 }
 
 .copyable, .copyables {
@@ -146,14 +149,15 @@ html, body {
 
 .copyable {
     border-radius: 4px;
-    max-width: var(--gWidth);
+    max-width: var(--copyable-width);
     width: 100%;
 }
 /* only in online page for now*/
 .copyables-wrapper{
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    width: var(--copyable-width);
+    margin: 15px auto;
 }
 
 input, textarea, select {
@@ -187,12 +191,9 @@ button, input, optgroup, select, textarea {
     border: none;
     background: transparent;
     padding: 0;
-
     color: inherit;
     font: inherit;
-
     cursor: pointer;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -203,23 +204,7 @@ button, input, optgroup, select, textarea {
     cursor: not-allowed;
 }
 
-.chat-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-#chat-wrapper {
-    width: var(--cWidth);
-    height: var(--gHeight);
-    margin-top: 20px;
-    background-color: #1e1e1e;
-    border: 2px solid #333;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
-}
 
 /* Grid-ul pentru mutari */
 #move-list {
@@ -363,7 +348,25 @@ input:checked + .slider:before {
 
 /* ------------------------ end things related to wrapper ------------------------*/
 
-/* ------------------------ start css for chat ------------------------*/
+/* ------------------------ start css for chat - present on the online chess pages ------------------------*/
+
+.chat-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#chat-wrapper {
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: flex;
+    flex: 0.5;
+    flex-direction: column;
+    align-self: stretch;
+    align-items: stretch;
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
+}
 
 #messageArea {
     flex-grow: 1;
@@ -414,10 +417,10 @@ input:checked + .slider:before {
 #chess-info-wrapper {
     display: flex;
     flex-direction: column;
-    width: var(--infoWidth);
+    align-items: stretch;
+    flex: 0.85;
     gap: 15px;
     font-family: inherit;
-    height: var(--infoHeight);
     background-color: #1e1e1e;  /* gri foarte inchis */
     border: 2px solid #333;
     border-radius: 10px;
