@@ -1,8 +1,9 @@
 import {Board} from '../tools/Board.js';
 import {Mouse} from "./Mouse.js";
 import {MoveList} from "../tools/MoveList.js";
-import {connect, sendMessage, state} from "./WebSockets.js"
-import {minimalState, lobbyInfo} from "../tools/Types.js";
+import {connect, currentColor, sendMessage, setCurrentColor, state} from "./WebSockets.js"
+import {lobbyInfo, minimalState} from "../tools/Types.js";
+import {SidesExplicit} from "../tools/Enums";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
@@ -96,11 +97,22 @@ async function loadBoard(lobbyId: string):Promise<void>
         if(minimalState.currentPGN != null )
             moveList.addWholePGN(minimalState.currentPGN);
         board.setPiecesFromFEN(currentFEN);
+        setCurrentColor(parseColorFromFEN(currentFEN));
         board.redraw();
     }
     catch (e) {
         console.error("There was an error loading the data");
     }
+}
+
+function parseColorFromFEN(FEN: string): SidesExplicit {
+    const split:string[] = FEN.split(' ');
+    if(split[1] == 'w')
+        return SidesExplicit.WHITE;
+    else
+        return SidesExplicit.BLACK;
+
+    throw new Error("FEN error, can't read character: " + split[1]);
 }
 
 export async function getInfoLobby(): Promise<lobbyInfo | undefined> {
