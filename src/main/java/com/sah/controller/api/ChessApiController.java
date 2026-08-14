@@ -124,10 +124,11 @@ public class ChessApiController {
     @MessageMapping("/chat.sendMessage/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
     public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO,
-                                      @DestinationVariable String lobbyId) {
+                                      @DestinationVariable String lobbyId,
+                                      Authentication auth) {
 
         ChessLobbyChats chat = chessLobbyChatRepository.findByLobby_LobbyId(lobbyId);
-        Users user = currentUserProvider.get();
+        Users user = resolveCurrentUser(auth);
 
         ChessLobbyChatMessages savedMessage =
                 chessLobbyChatService.sendMessage(

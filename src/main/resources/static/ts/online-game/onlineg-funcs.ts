@@ -24,6 +24,16 @@ export async function initializeApp() {
                 console.error("Username not found");
                 return;
             }
+
+            const messageInput = document.getElementById('message') as HTMLInputElement;
+
+            messageInput.addEventListener('keydown', (e: KeyboardEvent) => {
+                if(e.code === 'Enter') {
+                    sendMessage();
+                    e.preventDefault();
+                }
+            });
+
             if(lobbyInfo &&lobbyInfo.playerWhite === username)
             {
                 currentPlayerSide.innerText = username;
@@ -45,12 +55,6 @@ export async function initializeApp() {
         console.error("Failed to fetch user info", e);
     }
 
-    let sendButton = document.querySelector('#sendMessageButton') as HTMLButtonElement;
-
-    sendButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        sendMessage();
-    });
 
     resignBtn.addEventListener("click", async () => {
         resignBtn.disabled = true;
