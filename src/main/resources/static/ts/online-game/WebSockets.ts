@@ -1,49 +1,43 @@
 import {lobbyInfo, Message, OptimisedMove} from "../tools/Types.js";
 import {MessageType, SidesExplicit} from "../tools/Enums.js";
 import {mouse, moveList, board} from "./onlineg-funcs.js";
-
-declare var SockJS: any;
-declare var Stomp: any;
+import {Client} from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 // should change this
-let loggedUsername: string = "";
+let loggedUsername = document.body.dataset.username;
 let currentLobbyId: string = "";
 export let currentColor: SidesExplicit = SidesExplicit.WHITE;
 let resignBtn = document.getElementById('resign-button') as HTMLButtonElement;
 const pgnOutput = document.getElementById('PGN') as HTMLInputElement;
 const fenOutput = document.getElementById('FEN') as HTMLTextAreaElement;
 export const state = {
-    stompClient: null as any,
+    stompClient: null as Client | null,
     connected: false
 };
 let messageInput = document.querySelector('#message') as HTMLInputElement;
 let chatMessage: Message;
 let messageArea = document.querySelector("#messageArea") as HTMLElement;
 if(!messageInput) {
-    alert("Nu poti trimite mesaje goale");
+    alert("Can't send empty messages");
 }
 
-export function connect(username: string, lobbyId: string):void{
-    if(!username) {
-        alert("Error - not seeing the user");
-        return;
-    }
+export function connect(lobbyId: string):void{
 
-    loggedUsername = username;
     currentLobbyId = lobbyId;
-    const socket = new SockJS('/ws');
-    state.stompClient = Stomp.over(socket);
 
-    state.stompClient.connect(
-        { username: loggedUsername}, //remove this
-        function () {
+    const client = new Client({
+        webSocketFactory: () => new SockJS('/ws'),
+
+        onConnect: (frame) => {
             state.connected = true;
+            console.log("Connected: ", frame);
 
-            console.log("Connected");
+            client.subscribe(`/topic/chat/${lobbyId}`, onMessageReceived);
 
-            state.stompClient.subscribe(`/topic/chat/${lobbyId}`, onMessageReceived);
-            state.stompClient.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
-            state.stompClient.subscribe(`/topic/resign-lobby/${lobbyId}`, function (payload: any) {
+            client.subscribe(`/topic/game/${lobbyId}`, onMoveReceived);
+
+            client.subscribe(`/topic/resign-lobby/${lobbyId}`, (payload:any) => {
                 const winnerSide = JSON.parse(payload.body)
                 const resignButton = document.getElementById('resign-button') as HTMLButtonElement;
                 resignButton.disabled = true;
@@ -55,31 +49,51 @@ export function connect(username: string, lobbyId: string):void{
                 }
                 mouse.soundManager.play("end");
             });
-            state.stompClient.subscribe(`/topic/lobby/${lobbyId}`, function (payload: any) {
-                const updatedLobby: lobbyInfo = JSON.parse(payload.body);
-                updatePlayerNamesUI(updatedLobby);
+
+            client.subscribe(`/topic/lobby/${lobbyId}`, (payload: any) => {
+               const updatedLobby: lobbyInfo = JSON.parse(payload.body);
+               updatePlayerNamesUI(updatedLobby);
             });
-            state.stompClient.subscribe(`/user/queue/errors`, onErrorsReceived);
 
-            state.stompClient.send(`/app/chat.addUser/${lobbyId}`, {}, JSON.stringify({sender:loggedUsername, type: MessageType.JOIN })
-            );
+            client.subscribe(`/user/queue/errors`, onErrorsReceived);
 
-            if(moveList.getMoveCount() < 2)
-                resignBtn.innerText = 'Abort';
-            else
-                resignBtn.innerText = 'Resign';
+            client.publish({
+                destination: `/app/chat.addUser/${lobbyId}`,
+                body: JSON.stringify({
+                    type: MessageType.JOIN
+                })
+            });
         },
-        function(error: any) {
+
+        onStompError: (frame) => {
             state.connected = false;
-            console.error("STOMP ERROR: ", error);
+
+            console.error("STOMP ERROR - this shouldn't be happening");
+            console.error("Message: ", frame.headers['message']);
+            console.error("Body", frame.body);
+        },
+
+        onWebSocketError: (error) => {
+            state.connected = false;
+
+            console.error("WebSocket error - this shouldn't be happening, ", error);
+        },
+
+        onWebSocketClose: () => {
+            state.connected = false;
+
+            console.log("Websocket close");
         }
-    )
+    });
+
+    state.stompClient = client;
+    client.activate();
 }
 
 function updatePlayerNamesUI(lobbyInfo: lobbyInfo) {
     const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
     const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
-    if(lobbyInfo &&lobbyInfo.playerWhite === loggedUsername)
+    if(lobbyInfo && lobbyInfo.playerWhite === loggedUsername)
     {
         currentPlayerSide.innerText = loggedUsername;
         otherPlayerSide.innerText = lobbyInfo.playerBlack ? lobbyInfo.playerBlack : 'Waiting . . .';
@@ -94,12 +108,14 @@ export function sendMessage() {
     const messageContent = messageInput.value.trim();
     if(messageContent && state.stompClient && state.connected) {
         chatMessage = {
-            sender: loggedUsername,
             content: messageContent,
             type: MessageType.CHAT,
         };
 
-        state.stompClient.send(`/app/chat.sendMessage/${currentLobbyId}`, {}, JSON.stringify(chatMessage));
+        state.stompClient.publish({
+            destination:  `/app/chat.sendMessage/${currentLobbyId}`,
+            body: JSON.stringify(chatMessage)
+        });
 
         messageInput.value = "";
     }

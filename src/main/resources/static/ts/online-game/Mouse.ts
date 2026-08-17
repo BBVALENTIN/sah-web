@@ -108,13 +108,19 @@ export class Mouse {
             this.promotionManager.showPromotionModal(this.selectedPiece.color, {x: e.clientX, y: e.clientY}, async (promotionPiece: string) => {
                 // i know this is bad, will make it type safe, but promotionPiece should have only this name momentarily
                 try {
-                    state.stompClient.send("/app/chess.move",
-                        {},
-                        JSON.stringify({
+
+                    if(!state.stompClient || !state.connected) {
+                        console.error("STOMP is not connected");
+                        return;
+                    }
+
+                    state.stompClient.publish({
+                        destination: "/app/chess.move",
+                        body: JSON.stringify({
                             moveCoords: {fromRow, fromCol, targetRow, targetCol, promotionPiece},
                             lobbyId: currentLobbyId
                         })
-                    );
+                    });
                 } catch (err) {
                     console.error("Error regarding ws move (promotion)", err);
                 }
@@ -127,14 +133,18 @@ export class Mouse {
 
 
         try {
-            state.stompClient.send(
-                "/app/chess.move",
-                {},
-                JSON.stringify({
+            if(!state.stompClient || !state.connected) {
+                console.error("STOMP is not connected");
+                return;
+            }
+
+            state.stompClient.publish({
+                destination: "/app/chess.move",
+                body: JSON.stringify({
                     moveCoords: {fromRow, fromCol, targetRow, targetCol},
                     lobbyId: currentLobbyId
                 })
-            );
+            });
         } catch(err){
             console.log("Error: ", err);
         } finally {

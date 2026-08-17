@@ -1,6 +1,6 @@
 package com.sah.service.lobby;
 
-import com.sah.dto.misc.ChatMessageDTO;
+import com.sah.dto.misc.MessageResponseDTO;
 import com.sah.entity.ChessLobbyChatMessages;
 import com.sah.entity.ChessLobbyChats;
 import com.sah.entity.Users;
@@ -38,10 +38,10 @@ public class ChessLobbyChatService {
         return lobbyChatMessagesService.save(message);
     }
 
-    public ChatMessageDTO addUser(Users sender, ChessLobbyChats chat) {
+    public MessageResponseDTO addUser(Users sender, ChessLobbyChats chat) {
         ChessLobbyChatMessages message = ChessLobbyChatMessages.builder()
                         .chat(chat).sender(sender).content(MessageType.JOIN.toString()).sendDate(LocalDateTime.now()).build();
         lobbyChatMessagesService.save(message);
-        return new ChatMessageDTO(sender.getUsername(), "", MessageType.JOIN);
+        return new MessageResponseDTO(sender.getUsername(), "", MessageType.JOIN);
     }
 }

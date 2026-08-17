@@ -9,7 +9,7 @@ const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElemen
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
 const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
-let loggedUsername = document.body.dataset.username;
+const loggedUsername = document.body.dataset.username;
 if(!lobbyId) {
     console.log("Lobby ID not found");
 }
@@ -49,7 +49,7 @@ export async function initializeApp() {
             await board.loadImages();
             board.setOrientation(isBlack);
             board.redraw();
-            connect(username, lobbyId);
+            connect(lobbyId);
             await loadBoard(lobbyId);
         }
     } catch (e) {
@@ -67,10 +67,10 @@ export async function initializeApp() {
 
             if(responseResign.ok) {
                 if(state.stompClient && state.connected) {
-                    state.stompClient.disconnect(() => {
-                        console.log("Disconnected from server due to resignation/abort");
-                        state.connected = false
-                    });
+                    await state.stompClient.deactivate();
+
+                    console.log("Disconnected from server due to resignation - test log");
+                    state.connected = false;
                 }
             }
             else {

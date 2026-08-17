@@ -1,13 +1,13 @@
 import {lobbyInfo} from "../tools/Types.js";
 import {LobbyType} from "../tools/Enums.js";
-
-declare var SockJS: any;
-declare var Stomp: any;
+import {Client} from "@stomp/stompjs";
+import SockJS from "sockjs-client/";
 
 const state = {
-    stompClient: null as any,
+    stompClient: null as Client | null,
     connected: false
 };
+
 let lobbyCount = 0;
 const lobbyInfo = document.getElementById('lobbiesCount') as HTMLDivElement;
 
@@ -23,25 +23,38 @@ export function loadLobbies() {
 
 export function connectWS() {
     const socket = new SockJS('/ws');
-    state.stompClient = Stomp.over(socket);
 
-    state.stompClient.connect({}, function () {
-        console.log("Connected to the lobby stream");
+    const client = new Client({
 
-        state.stompClient.subscribe('/topic/global-lobbies', function (payload: any) {
-            const lobbyDto: lobbyInfo = JSON.parse(payload.body);
+        webSocketFactory: () => new SockJS('/ws'),
 
-            if (lobbyDto.lobbyType === LobbyType.AVAILABLE) {
-                addLobbyRow(lobbyDto);
-            }
-            else {
-                deleteTableRow(lobbyDto.lobbyId);
-            }
-            updateLobbyCountText();
-        });
-    }, function(error: any) {
-        console.error("STOMP ERROR GLOBAL: ", error);
+        onConnect: (frame) =>
+        {
+           state.connected = true;
+
+           client.subscribe('/topic/global-lobbies', (payload: any) => {
+              const lobby: lobbyInfo = JSON.parse(payload);
+
+              if(lobby.lobbyType === LobbyType.AVAILABLE) {
+                  addLobbyRow(lobby);
+              }
+              else {
+                  deleteTableRow(lobby.lobbyId);
+              }
+              updateLobbyCountText();
+           });
+       },
+
+        onStompError: (frame) => {
+           state.connected = false;
+
+           console.error("STOMP ERROR");
+           console.error("Message: ", frame.headers['message']);
+           console.error("Body", frame.body);
+        }
     });
+    state.stompClient = client;
+    client.activate();
 }
 
 function updateLobbyCountText() {
