@@ -1,0 +1,34 @@
+$body-gray: rgba(36, 36, 36);
+$font-color: #bababa;
+$input-background: #24221e;
+$gray-border: #404040;
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: $body-gray;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+.icon {
+    color: var(--c-font);
+}
+
+.icon-tabler-copy {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    display: block
+}
+
+input, textarea, select {
+    background: $input-background;
+    border: 1px solid $gray-border;
+    padding: .6em 1em;
+}
+
+button, input, optgroup, select, textarea {
+    font: inherit;
+    color: $font-color;
+}

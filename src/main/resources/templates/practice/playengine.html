@@ -9,7 +9,7 @@
 
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="content-play">
+    <div class="content-chess">
 
         <div id="side-select-overlay" class="overlay">
             <div class="overlay-card">
@@ -39,10 +39,10 @@
             </div>
         </div>
 
-        <div th:insert="~{fragments/copyables :: copyables}"></div>
         <div th:insert="~{fragments/promotion :: promotion}"></div>
     </div>
 
+    <div class="copyables-wrapper" th:insert="~{fragments/copyables :: copyables}"></div>
     <script type="module" th:src="@{/ts-transpiled/play-engine/engine-index.js}"></script>
 </body>
 </html>

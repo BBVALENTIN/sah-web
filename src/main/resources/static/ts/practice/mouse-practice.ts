@@ -1,7 +1,7 @@
 import {Board} from "../tools/Board.js";
 import {Piece} from "../tools/Piece.js";
 import {SoundManager} from "../audio/soundManager.js";
-import {PieceType, SidesExplicit} from "../tools/Enums.js";
+import { SidesExplicit} from "../tools/Enums.js";
 import {mvData, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 import {PromotionManager} from "../tools/PromotionManager.js";
@@ -81,8 +81,12 @@ export class MousePractice {
 
     getSquareFromMouse(e: any){
         const rect: DOMRect = this.canvas.getBoundingClientRect();
-        const x: number = e.clientX - rect.left;
-        const y: number = e.clientY - rect.top;
+
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x: number = (e.clientX - rect.left) * scaleX;
+        const y: number = (e.clientY - rect.top) * scaleY;
 
         let col: number = Math.floor(x / this.board.getSquareSize());
         let row: number = Math.floor(y / this.board.getSquareSize());

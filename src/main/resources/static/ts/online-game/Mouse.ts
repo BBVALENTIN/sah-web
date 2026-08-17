@@ -36,8 +36,12 @@ export class Mouse {
 
     getSquareFromMouse(e: any){
         const rect: DOMRect = this.canvas.getBoundingClientRect();
-        const x: number = e.clientX - rect.left;
-        const y: number = e.clientY - rect.top;
+
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x: number = (e.clientX - rect.left) * scaleX;
+        const y: number = (e.clientY - rect.top) * scaleY;
 
         let col: number = Math.floor(x / this.board.getSquareSize());
         let row: number = Math.floor(y / this.board.getSquareSize());

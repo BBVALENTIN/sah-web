@@ -11,7 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "watch": "tsc -w",
-    "bundle": ".\\out-scripts\\index-parser.exe"
+    "bundle": ".\\out-scripts\\index-parser.exe",
+    "build:css": "sass src/main/resources/static/scss:src/main/resources/static/css/",
+    "watch:css": "sass --watch src/main/resources/static/scss:src/main/resources/static/css/"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@types/sockjs-client": "^1.5.4",
     "esbuild": "^0.28.1",
+    "sass": "^1.102.0",
     "typescript": "^7.0.2"
   }
 }

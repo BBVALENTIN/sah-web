@@ -1,46 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Online Chess</title>
-  <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Online Chess</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/chess.css}">
 </head>
+
 <body th:data-username="${currentUsername}">
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="content-play-online">
+    <div class="content-chess">
 
-        <div id="chat-wrapper">
-            <div class="chat-header">
-                <h2> Chat box</h2>
+        <div class="main-axis">
+
+            <div class="chat-wrapper">
+                <div class="chat-header">
+                    <h2> Chat box</h2>
+                </div>
+                <div id="messageArea"></div>
+                <form id="messageForm" name="messageForm">
+                    <input type="text" id="message" placeholder="Type a message..." autocomplete="off">
+                </form>
             </div>
-            <div id="messageArea"></div>
-            <form id="messageForm" name="messageForm">
-                <input type="text" id="message" placeholder="Type a message..." autocomplete="off">
-            </form>
+
+            <div class="chess-main">
+                <div class="chess-playground">
+                    <div id="otherPlayer">Waiting . . .</div>
+                    <canvas id="chessCanvas"></canvas>
+                    <div id="currentPlayer">Waiting . . .</div>
+                </div>
+
+                <div id="chess-info-wrapper" class="chess-info-wrapper">
+                    <div id="chess-info-item">Play</div>
+                    <div id="move-list-container">
+                        <div id="move-list"></div>
+                    </div>
+                    <div id="buttons" class="buttons">
+                        <button id="resign-button">Resign</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="chess-main-online chess-main">
-            <div class="chess-playground">
-                <div id="otherPlayer">Waiting . . .</div>
-                <canvas id="chessCanvas"></canvas>
-                <div id="currentPlayer">Waiting . . .</div>
-            </div>
-
-            <div id="chess-info-wrapper" class="chess-info-wrapper">
-                <div id="chess-info-item">Play</div>
-                <div id="move-list-container">
-                    <div id="move-list"></div>
-                </div>
-                <div id="buttons" class="buttons">
-                    <button id="resign-button">Resign</button>
-                </div>
-            </div>
+        <div class="second-axis">
+            <div class="copyables-wrapper" th:insert="~{fragments/copyables :: copyables}"></div>
         </div>
 
         <div th:insert="~{fragments/promotion :: promotion}"></div>
  </div>
 
-    <div class="copyables-wrapper" th:insert="~{fragments/copyables :: copyables}"></div>
     <script type="module" th:src="@{/ts-transpiled/polyfills.js}"></script>
     <script type="module" th:src="@{/ts-transpiled/online-game/online-index.js}"></script>
 </body>
