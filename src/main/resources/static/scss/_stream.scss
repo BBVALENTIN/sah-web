@@ -1,3 +1,5 @@
+@use "_library" as *;
+$twitch-purple: #9147ff;
 .stream-card {
     border-radius: 12px;
     overflow: hidden;
@@ -10,7 +12,7 @@
 
 .stream-card:hover {
     transform: translateY(-5px);
-    border-color: var(--twitch-purple);
+    border-color: $twitch-purple;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -45,13 +47,13 @@
 }
 
 .stream-user {
-    color: var(--twitch-purple);
+    color: $twitch-purple;
     font-size: 1.1rem;
     margin: 0 0 5px 0;
 }
 
 .stream-title {
-    color: var(--c-font);
+    color: $font-color;
     font-size: 0.95rem;
     margin: 5px 0;
     line-height: 1.4;
@@ -62,7 +64,7 @@
 }
 
 .viewer-count {
-    color: var(--c-font-dim);
+    color: $font-dim;
     font-size: 0.85rem;
     display: flex;
     align-items: center;

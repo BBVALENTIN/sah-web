@@ -1,9 +1,10 @@
 @use "body";
 @use "navbar";
+@use "_library" as *;
 
 .profile-container {
     display: flex;
-    width: var(--pBodyWidth);
+    width: 600px;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
@@ -13,7 +14,7 @@
 .profile-card {
     position: relative;
     display: inherit;
-    gap: var(--space-24);
+    gap: 24px;
     width: 100%;
     justify-content: flex-start;
     margin: 40px auto 20px auto;
@@ -155,14 +156,14 @@
     display: flex;
     margin-top: 10px;
     align-items: center;
-    color: var(--c-font-dim);
+    color: $font-dim;
     gap: 8px;
 }
 
 .edit-button {
     background: none;
     border: none;
-    color: var(--c-font-dim);
+    color: $font-dim;
     cursor: pointer;
     padding: 4px 8px;
     border-radius: 999px;
@@ -171,15 +172,15 @@
 
 
 #edit-description-button:hover {
-    color: var(--c-twitter-blue);
-    background-color: var(--c-twitter-blue-bg-hover);
+    color: $sep-gray;
+    background-color: $body-gray; // change this
 }
 
 .desc-input {
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--c-separator-gray);
-    color: var(--c-font-dim);
+    border-bottom: 1px solid $sep-gray;
+    color: $font-dim;
     font-size: 15px;
     outline: none;
     width: 300px;

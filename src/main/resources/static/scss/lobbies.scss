@@ -1,10 +1,11 @@
 @use "body";
 @use "navbar";
+@use "_library" as *;
 
 .content-lobby {
     width: 100%;
     box-sizing: border-box;
-    padding: 0 var(--space-5percent);
+    padding: 0 5%;
 }
 
 .lobby-header {
@@ -13,7 +14,7 @@
     align-items: flex-start;
     padding: 5px 0;
     margin-left: 0;
-    gap: var(--space-6);
+    gap: 6px;
 }
 
 .toolbar-above {
@@ -28,9 +29,9 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: var(--c-bg-card);
-    color: var(--c-font);
-    border: 1px solid var(--c-border-card);
+    background-color: #1e1e1e;
+    color: $font-color;
+    border: 1px solid #333;
     border-radius: 999px;
     padding: 8px 18px;
     font-size: 14px;
@@ -40,7 +41,7 @@
 }
 
 .page-info {
-    color: var(--c-font-dim);
+    color: $font-dim;
     font-size: 14.5px;
 }
 
@@ -60,22 +61,22 @@
     width: 100%;
     max-width: 900px;
     font-size: 15px;
-    color: var(--c-font-dim);
+    color: $font-color;
     margin: 10px 0 0 0;
 }
 
 .lobby-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--c-bg-card);
-    border: 2px solid var(--c-border-card);
+    background-color: #333;
+    border: 2px solid #333;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4);
 }
 
 .lobby-table thead tr {
-    background-color: var(--c-bg-card-header);
+    background-color: #2c2c2c;
     text-align: left;
 }
 
@@ -84,8 +85,8 @@
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--c-font-dim);
-    border-bottom: 1px solid var(--c-border-card);
+    color: $font-dim;
+    border-bottom: 1px solid #333;
 }
 
 .lobby-table tbody tr {
@@ -93,28 +94,28 @@
 }
 
 .lobby-table tbody tr:hover {
-    background-color: var(--c-bg-card-hover);
+    background-color: #262626;
 }
 
 .lobby-table tbody tr:not(:last-child) td {
-    border-bottom: 1px solid var(--c-border-card);
+    border-bottom: 1px solid #333;
 }
 
 .lobby-table tbody td {
     padding: 12px 16px;
     font-size: 14.5px;
-    color: var(--c-font);
+    color: $font-color;
     vertical-align: middle;
 }
 
 .lobby-table tbody td:nth-child(3) {
-    color: var(--c-font-dim);
+    color: $font-dim;
 }
 
 .join-btn {
-    background: var(--c-font-dim);
+    background: $font-dim;
     color: white;
-    border: 1px solid var(--c-border);
+    border: 1px solid $gray-border;
     padding: 6px 16px;
     border-radius: 999px;
     font-size: 13.5px;
@@ -124,7 +125,7 @@
 }
 
 .join-btn:hover {
-    background-color: var(--c-font);
+    background-color: $font-dim;
 }
 
 .join-btn:active {
@@ -133,7 +134,7 @@
 
 #lobbiesContainer p.empty-state {
     text-align: left;
-    color: var(--c-font-dim);
+    color: $font-dim;
     font-size: 14px;
     padding: 20px 0;
 }
@@ -151,7 +152,7 @@
     .lobby-table tbody tr {
         margin-bottom: 12px;
         border-radius: 8px;
-        border: 1px solid var(--c-border-card);
+        border: 1px solid #333;
         padding: 6px 0;
     }
 
@@ -168,7 +169,7 @@
     .lobby-table tbody td::before {
         content: attr(data-label);
         font-weight: 600;
-        color: var(--c-font-dim);
+        color: $font-dim;
         text-transform: uppercase;
         font-size: 11px;
     }

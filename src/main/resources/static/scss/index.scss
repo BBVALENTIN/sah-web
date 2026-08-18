@@ -3,12 +3,13 @@
 @use "_stream";
 @use "_post";
 @use "_comment";
+@use "_library" as *;
 
 .content-main {
     display: flex;
     flex-direction: row;
     padding: 24px 16px;
-    gap: var(--space-24);
+    gap: 24px;
 }
 
 .content-main-left {
@@ -17,8 +18,8 @@
 }
 
 .content-main-center {
-    border-left: 1px solid var(--c-separator-gray);
-    border-right: 1px solid var(--c-separator-gray);
+    border-left: 1px solid $sep-gray;
+    border-right: 1px solid $sep-gray;
     flex: 1.3;
 }
 
@@ -30,20 +31,19 @@
 .content-main-right {
     flex: 1;
     align-content: flex-start;
-    padding-left: var(--space-5percent);
+    padding-left: 5%;
 }
-
 
 .main-stream {
     display: flex;
-    width: var(--stream-height);
-    height: var(--stream-width);
-    gap: var(--space-24);
+    width: 320px;
+    height: 320px;
+    gap: 24px;
 }
 
 .no-main-stream {
     display: flex;
-    color: var(--c-font-dim);
+    color: $font-dim;
     text-decoration: none;
 }
 
@@ -52,15 +52,15 @@
 }
 
 .win-char {
-    color: var(--c-winChar-green);
+    color: #66ff10;
 }
 
 .lose-char {
-    color: var(--c-loseChar-red);
+    color: #ff000d;
 }
 
 .draw-char {
-    color: var(--c-drawChar-brightGray);
+    color: #3C4151;
 }
 
 .result-string {
