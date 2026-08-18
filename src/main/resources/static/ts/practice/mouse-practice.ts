@@ -20,6 +20,12 @@ export class MousePractice {
     soundManager: SoundManager = new SoundManager();
     offsetX: number;
     offsetY: number;
+    private dragStartX = 0;
+    private dragStartY = 0;
+    private didDrag = false;
+    private dragThreshold = 4;
+    private dragCandidate: Piece | undefined;
+    private priorSelectedPiece: Piece | undefined;
     moveNumber: number;
     currentColor: SidesExplicit;
     currentMove: string;
@@ -98,86 +104,86 @@ export class MousePractice {
         return { col, row, x, y};
     }
 
-
-
     public async onMouseDown(e:any) {
         const { col, row, x, y} = this.getSquareFromMouse(e);
         const piesa = this.board.getPiece(row, col);
+
+        this.dragStartX = e.clientX;
+        this.dragStartY = e.clientY;
+        this.didDrag = false;
+        this.priorSelectedPiece = this.selectedPiece;
+        this.dragCandidate = undefined;
+
         if (piesa && piesa.color === this.currentColor) {
             this.selectedPiece = piesa;
-            this.selectedPiece.isDragging = true;
+            this.dragCandidate = piesa;
 
             const vizualCol = this.board.isBlack ? 7 - piesa.col : piesa.col;
             const vizualRow = this.board.isBlack ? 7 - piesa.row : piesa.row;
 
             this.offsetX = x - vizualCol * this.board.getSquareSize();
             this.offsetY = y - vizualRow * this.board.getSquareSize();
-
-            this.board.redraw(this.board.pieces.filter(p => p !== piesa), this.selectedPiece);
         }
     }
     public async MouseMove(e:any):Promise<void> {
         const { col, row, x, y} = this.getSquareFromMouse(e);
         const piesa = this.board.getPiece(row, col);
-        if(piesa && piesa.color == this.currentColor)
-            this.canvas.style.cursor = "grab";
-        else
-            this.canvas.style.cursor = "default";
-        if (!this.selectedPiece) return;
+
+        if(!this.dragCandidate)
+        {
+            this.canvas.style.cursor = (piesa && piesa.color == this.currentColor) ? "grab" : "default";
+            return
+        }
+
+        const dx = e.clientX - this.dragStartX;
+        const dy = e.clientY - this.dragStartY;
+
+        if(!this.didDrag && Math.hypot(dx, dy) > this.dragThreshold) {
+            this.didDrag = true;
+            this.dragCandidate.isDragging = true;
+        }
+        if(!this.didDrag) return;
 
         this.canvas.style.cursor = "grabbing";
-        this.selectedPiece.dragX = x - this.offsetX;
-        this.selectedPiece.dragY = y - this.offsetY;
+        this.dragCandidate.dragX = x - this.offsetX;
+        this.dragCandidate.dragY = y - this.offsetY;
 
-        this.board.redraw(this.board.pieces, this.selectedPiece);
+        this.board.redraw(this.board.pieces, this.dragCandidate);
     }
     public async onMouseUp(e: any): Promise<void> {
         if(!this.selectedPiece) { return; }
         const { col, row, x, y} = this.getSquareFromMouse(e);
-        const piece = this.selectedPiece;
-        this.board.setLastMove(this.selectedPiece.row, this.selectedPiece.col, row, col);
+        const wasDragging = this.didDrag && this.dragCandidate;
+        this.didDrag = false;
 
-        if(this.promotionManager.isPromotionMove(piece, piece.row, row)) {
-            this.promotionManager.setPendingMove( {
-                fromRow: piece.row,
-                fromCol: piece.col,
-                targetRow: row,
-                targetCol: col
-            });
+        if(wasDragging) {
+            const piece = this.dragCandidate!;
+            this.dragCandidate = undefined;
 
-            this.promotionManager.showPromotionModal(piece.color, {x: e.clientX, y: e.clientY}, async (chosenPiece: string) => {
-                const pendingMove = await this.promotionManager.getPendingMove();
-                try {
-                    const result = await this.handleMove(
-                        pendingMove!.fromRow,
-                        pendingMove!.fromCol,
-                        pendingMove!.targetRow,
-                        pendingMove!.targetCol,
-                        chosenPiece
-                    );
-                    this.processMoveResult(result);
-                } catch(err) {
-                    console.error("Error regarding the endpoint ", err);
-                    this.reset();
-                } finally {
-                    this.promotionManager.clearPendingMove();
-                    this.reset();
-                }
-            });
+            if(row === piece.row && col === piece.col) {
+                piece.isDragging = false;
+                piece.dragX = undefined;
+                piece.dragY = undefined;
+                this.board.redraw(this.board.pieces);
+                return;
+            }
+            await this.tryMove(piece, row, col, e);
             return;
         }
 
-        try {
-            const result:OptimisedMove | undefined = await this.handleMove(piece.row, piece.col, row, col);
-            if(result === undefined)
-                return;
+        this.dragCandidate = undefined;
+        const targetPiece = this.board.getPiece(row, col);
 
-            this.processMoveResult(result)
-        } catch(err){
-            console.error("Error regarding the API: ", err);
-        } finally {
-            this.reset();
+        if(targetPiece && targetPiece.color === this.currentColor) {
+            if(targetPiece === this.priorSelectedPiece) {
+                this.reset();
+            }
+            else {
+                this.selectedPiece = targetPiece;
+            }
+            return;
         }
+        await this.tryMove(this.selectedPiece, row, col, e);
     }
 
     private processMoveResult(result: OptimisedMove) {
@@ -246,5 +252,39 @@ export class MousePractice {
 
     protected buildRequestBody(moveData: mvData): any {
         return moveData;
+    }
+
+    private async tryMove(p: Piece, row: number, col: number, e: MouseEvent) {
+        this.board.setLastMove(p.row, p.col, row, col);
+
+        if (this.promotionManager.isPromotionMove(p, p.row, row)) {
+            this.promotionManager.setPendingMove({ fromRow: p.row, fromCol: p.col, targetRow: row, targetCol: col });
+            this.promotionManager.showPromotionModal(p.color, { x: e.clientX, y: e.clientY }, async (chosenPiece: string) => {
+                const pendingMove = await this.promotionManager.getPendingMove();
+                try {
+                    const result = await this.handleMove(
+                        pendingMove!.fromRow, pendingMove!.fromCol,
+                        pendingMove!.targetRow, pendingMove!.targetCol, chosenPiece
+                    );
+                    this.processMoveResult(result);
+                } catch (err) {
+                    console.error("Error regarding the endpoint ", err);
+                } finally {
+                    this.promotionManager.clearPendingMove();
+                    this.reset();
+                }
+            });
+            return;
+        }
+
+        try {
+            const result = await this.handleMove(p.row, p.col, row, col);
+            if (result === undefined) return;
+            this.processMoveResult(result);
+        } catch (err) {
+            console.error("Error regarding the API: ", err);
+        } finally {
+            this.reset();
+        }
     }
 }
