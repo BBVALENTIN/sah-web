@@ -1,5 +1,6 @@
 @use "body";
 @use "navbar";
+@use "_library" as *;
 
 .content-chess {
   display: flex;
@@ -282,7 +283,7 @@ input:checked + .slider:before {
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
-  width: var(--copyable-width);
+  width: 650px;
   box-sizing: border-box;
   position: relative;
   transition: all 150ms ease;
@@ -299,28 +300,103 @@ input:checked + .slider:before {
   cursor: pointer;
   background: none;
   border: none;
-  padding: var(--space-6);
+  padding: 6px;
   line-height: 0;
-  color: var(--c-font-dim);
-  border-radius: var(--space-6);
+  color: $font-dim;
+  border-radius: 6px;
 }
 .copy-btn:hover {
-  color: var(--c-font);
+  color: $font-color;
   background: transparent;
 }
 .copyables .name {
   flex: 0 0 5ch;
   font-weight: bold;
-  color: var(--c-font-dim);
+  color: $font-dim;
 }
 .copyable {
   border-radius: 4px;
-  max-width: var(--copyable-width);
+  max-width: 650px;
   width: 100%;
 }
 .copyables-wrapper{
   display: flex;
   flex-direction: column;
-  width: var(--copyable-width);
+  width: 650px;
   margin: 15px auto;
+}
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(3px);
+}
+
+.overlay-card {
+    background: $input-background;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 250px;
+    border: 1px solid $gray-border;
+}
+
+.overlay-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+    color: $font-color;
+}
+
+.side-btn {
+    padding: 0.65rem 1.5rem;
+    border-radius: 6px;
+    border: 0;
+    font-size: 1rem;
+    cursor:pointer;
+    transition: opacity 150ms ease, transform 150ms ease;
+}
+
+/* promotion-overlay*/
+.promotion-overlay {
+    position: absolute;
+    display: none;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.promotion-choices {
+    display: flex;
+    flex-direction: column;
+    background: #f0d9b5;
+    border: 2px solid #b5886c;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.promotion-piece-btn {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promotion-piece-btn:hover {
+    background: #baca44;
+}
+
+.promotion-piece-btn img {
+    width: 50px;
+    height: 50px;
 }

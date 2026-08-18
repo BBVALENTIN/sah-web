@@ -1,8 +1,4 @@
-$body-gray: rgba(36, 36, 36);
-$font-color: #bababa;
-$input-background: #24221e;
-$gray-border: #404040;
-
+@use "_library" as *;
 html, body {
     margin: 0;
     padding: 0;

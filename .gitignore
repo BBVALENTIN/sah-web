@@ -48,3 +48,6 @@ geodb-lite/*
 
 ### todos list
 TODOS.md
+
+### css directory
+src/main/resources/static/css

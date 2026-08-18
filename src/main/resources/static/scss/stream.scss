@@ -1,0 +1,10 @@
+@use "body";
+@use "navbar";
+@use "_stream";
+
+.streams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 30px;
+}

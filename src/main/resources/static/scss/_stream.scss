@@ -1,0 +1,76 @@
+.stream-card {
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.stream-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--twitch-purple);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.stream-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.3s;
+}
+
+.live-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #eb0400;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.stream-info {
+    padding: 15px;
+}
+
+.stream-user {
+    color: var(--twitch-purple);
+    font-size: 1.1rem;
+    margin: 0 0 5px 0;
+}
+
+.stream-title {
+    color: var(--c-font);
+    font-size: 0.95rem;
+    margin: 5px 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.viewer-count {
+    color: var(--c-font-dim);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.viewer-count::before {
+    content: "●";
+    color: #adadb8;
+    margin-right: 5px;
+}

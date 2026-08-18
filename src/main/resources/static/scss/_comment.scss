@@ -1,0 +1,33 @@
+@use "_library" as *;
+.like-comments .ti-heart-filled,
+.like-button .ti-heart-filled {
+    display: none;
+    color: $like-color;
+}
+
+.like-comments .ti-heart,
+.like-button .ti-heart {
+    display: inline;
+}
+
+.like-comments:hover,
+.like-button:hover {
+    color: $like-color;
+    background-color: $like-color-hov;
+}
+
+.like-comments.liked .ti-heart,
+.like-button.liked .ti-heart {
+    display: none;
+}
+
+.like-comments.liked .ti-heart-filled,
+.like-button.liked .ti-heart-filled {
+    display: inline;
+    color: $like-color;
+}
+
+.comment-button:hover {
+    color: $sep-gray;
+    background-color: $body-gray; // change these
+}
