@@ -6,17 +6,22 @@
 
 #ifdef _WIN32
     #include <process.h>
+    #include <direct.h>
     #define PATH_SEPARATOR '\\'
     #define ESBUILD_BIN ".\\node_modules\\.bin\\esbuild.cmd"
+    #define RMDIR _rmdir
 #else
     #include <unistd.h>
     #include <sys/wait.h>
     #define PATH_SEPARATOR '/'
     #define ESBUILD_BIN "./node_modules/.bin/esbuild"
+    #define RMDIR rmdir
 #endif
 
 #define MAX_ENTRIES   512
 #define MAX_PATH_LEN  1024
+#define SRC_DIR       "src/main/resources/static/ts"
+#define OUT_DIR       "src/main/resources/static/ts-transpiled"
 
 static char *entries[MAX_ENTRIES];
 static int entryCount = 0;
@@ -75,9 +80,44 @@ void scanDirectory(const char *path)
     closedir(dir);
 }
 
+// recursively deletes everything before
+void cleanDirectory(const char *path)
+{
+    DIR *dir = opendir(path);
+    if (dir == NULL)
+        return; /* doesn't exist yet -- nothing to clean */
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            continue;
+
+        char fullPath[MAX_PATH_LEN];
+        int written = snprintf(fullPath, sizeof(fullPath), "%s%c%s",
+                                path, PATH_SEPARATOR, entry->d_name);
+        if (written < 0 || (size_t)written >= sizeof(fullPath))
+            continue;
+
+        struct stat st;
+        if (stat(fullPath, &st) != 0)
+            continue;
+
+        if (S_ISDIR(st.st_mode)) {
+            cleanDirectory(fullPath);
+            RMDIR(fullPath);
+        } else {
+            remove(fullPath);
+        }
+    }
+    closedir(dir);
+}
+
 int main(void)
 {
-    scanDirectory("src/main/resources/static/ts");
+    printf("Cleaning %s...\n", OUT_DIR);
+    cleanDirectory(OUT_DIR);
+
+    scanDirectory(SRC_DIR);
 
     if (entryCount == 0) {
         printf("No *-index.ts files found, nothing to build.\n");
@@ -94,8 +134,8 @@ int main(void)
     argv[argc++] = "--splitting";
     argv[argc++] = "--target=esnext";
     argv[argc++] = "--format=esm";
-    argv[argc++] = "--outbase=src/main/resources/static/ts";
-    argv[argc++] = "--outdir=src/main/resources/static/ts-transpiled";
+    argv[argc++] = "--outbase=" SRC_DIR;
+    argv[argc++] = "--outdir=" OUT_DIR;
     argv[argc] = NULL;
 
     printf("\nRunning esbuild with %d entry point(s)...\n\n", entryCount);
