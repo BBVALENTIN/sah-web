@@ -1,0 +1,30 @@
+@use "_library" as *;
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: $body-gray;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+}
+
+.icon {
+    color: $font-color;
+}
+
+.icon-tabler-copy {
+    fill: none;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    display: block
+}
+
+input, textarea, select {
+    background: $input-background;
+    border: 1px solid $gray-border;
+    padding: .6em 1em;
+}
+
+button, input, optgroup, select, textarea {
+    font: inherit;
+    color: $font-color;
+}

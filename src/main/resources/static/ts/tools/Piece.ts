@@ -1,5 +1,5 @@
 import {Board} from "./Board.js";
-import {PieceType, SidesExplicit} from "./Enums";
+import {PieceType, SidesExplicit} from "./Enums.js";
 
 export class Piece {
     color: SidesExplicit;
@@ -19,27 +19,17 @@ export class Piece {
         this.col = col;
     }
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    draw(board: Board, ctx: CanvasRenderingContext2D): void {
         if(!this.img || !this.img.complete) return;
 
-        let xPixeli = this.col * Board.squareSize;
-        let yPixeli = this.row * Board.squareSize;
+        let xPixeli = this.col * board.getSquareSize();
+        let yPixeli = this.row * board.getSquareSize();
 
         if (this.isDragging && this.dragX !== undefined && this.dragY !== undefined) {
             xPixeli = this.dragX;
             yPixeli = this.dragY;
         }
 
-        ctx.drawImage(this.img, xPixeli, yPixeli, Board.squareSize, Board.squareSize);
-    }
-
-    getX(col: number): number
-    {
-        return col*Board.squareSize;
-    }
-
-    getY(row: number): number
-    {
-        return row*Board.squareSize
+        ctx.drawImage(this.img, xPixeli, yPixeli, board.getSquareSize(), board.getSquareSize());
     }
 }

@@ -1,7 +1,7 @@
 package com.sah.config;
 
-import com.sah.dto.misc.ChatMessageDTO;
 import com.sah.dto.misc.LobbyDTO;
+import com.sah.dto.misc.MessageResponseDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.enums.LobbyType;
 import com.sah.enums.MessageType;
@@ -53,7 +53,7 @@ public class WebSocketEventListener {
         {
             log.info("User disconnected: {}", username);
             pendingReconnections.put(username, lobbyId);
-            var chatMessage = ChatMessageDTO.builder().type(MessageType.LEAVE).sender(username).build();
+            var chatMessage = MessageResponseDTO.builder().type(MessageType.LEAVE).sender(username).build();
             messageTemplate.convertAndSend("/topic/public", chatMessage);
 
             scheduler.schedule(() -> {

@@ -40,10 +40,13 @@ public class Situation {
     {
         return isCheck && !hasLegalMoves(board, sideToMove, rights);
     }
+
 //    public boolean isStalemate(Board board, ColorType kingColor) {}
-//    public boolean isDrawBy50Moves(int halfMove) {
-//        return halfMove == 50;
-//    }
+
+    public boolean isDrawBy50Moves(int halfMove) {
+        return halfMove == 50;
+    }
+
 //    public boolean isDrawByRepetition(List<Long> positionHashes) {}
 //    public boolean insufficientMatingMaterial() {}
 

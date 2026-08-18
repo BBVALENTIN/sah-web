@@ -103,6 +103,9 @@ public class ProfileService {
         if (game == null || game.getResult() == null) {
             return false;
         }
+        if(lobby.getPlayerBlack() == null  || lobby.getPlayerWhite() == null) {
+            throw new IllegalStateException("One of the users in a saved game was null");
+        }
 
         return (Objects.equals(lobby.getPlayerBlack().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.BLACK_WIN)) || (Objects.equals(lobby.getPlayerWhite().getUsername(), currentUser.getUsername()) && Objects.equals(game.getResult(), ResultType.WHITE_WIN));
     }

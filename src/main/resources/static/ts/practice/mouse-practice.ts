@@ -1,7 +1,7 @@
 import {Board} from "../tools/Board.js";
 import {Piece} from "../tools/Piece.js";
 import {SoundManager} from "../audio/soundManager.js";
-import {PieceType, SidesExplicit} from "../tools/Enums.js";
+import { SidesExplicit} from "../tools/Enums.js";
 import {mvData, OptimisedMove} from "../tools/Types.js";
 import {MoveList} from "../tools/MoveList.js";
 import {PromotionManager} from "../tools/PromotionManager.js";
@@ -81,11 +81,15 @@ export class MousePractice {
 
     getSquareFromMouse(e: any){
         const rect: DOMRect = this.canvas.getBoundingClientRect();
-        const x: number = e.clientX - rect.left;
-        const y: number = e.clientY - rect.top;
 
-        let col: number = Math.floor(x / Board.squareSize);
-        let row: number = Math.floor(y / Board.squareSize);
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x: number = (e.clientX - rect.left) * scaleX;
+        const y: number = (e.clientY - rect.top) * scaleY;
+
+        let col: number = Math.floor(x / this.board.getSquareSize());
+        let row: number = Math.floor(y / this.board.getSquareSize());
 
         if(this.board.isBlack) {
             col = 7 - col;
@@ -106,8 +110,8 @@ export class MousePractice {
             const vizualCol = this.board.isBlack ? 7 - piesa.col : piesa.col;
             const vizualRow = this.board.isBlack ? 7 - piesa.row : piesa.row;
 
-            this.offsetX = x - vizualCol * Board.squareSize;
-            this.offsetY = y - vizualRow * Board.squareSize;
+            this.offsetX = x - vizualCol * this.board.getSquareSize();
+            this.offsetY = y - vizualRow * this.board.getSquareSize();
 
             this.board.redraw(this.board.pieces.filter(p => p !== piesa), this.selectedPiece);
         }

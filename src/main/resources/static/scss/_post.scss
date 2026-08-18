@@ -1,0 +1,198 @@
+@use "_library" as *;
+.post-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #2f3336;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.post-item:hover {
+    background-color: rgba(94,94,94,0.3);
+}
+
+.post-item-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.post-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.post-username {
+    font-weight: 700;
+    font-size: 15px;
+    color: #e7e9ea;
+}
+
+.post-time {
+    font-size: 13px;
+    color: #536471;
+}
+
+.post-text {
+    font-size: 15px;
+    color: #e7e9ea;
+    line-height: 1.5;
+    margin: 0;
+    word-break: break-word;
+}
+
+.post-buttons {
+    display: flex;
+    gap: 12px;
+}
+.action-btn {
+    display: inherit;
+    background: none;
+    border: none;
+    color: $font-dim;
+    font-size: 13px;
+    cursor: pointer;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.action-btn i {
+    font-size: 18px;
+}
+
+.post-selected {
+    display: flex;
+    max-width: $max-body;
+    max-height: $post-height !important;
+    align-items: flex-start;
+    margin: 0 auto;
+    border-left: 1px solid $sep-gray;
+    border-right: 1px solid $sep-gray;
+}
+
+.delete-button {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #0001;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 999px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.delete-button:hover {
+    color: $delete-hov;
+    background-color: rgba(224, 36, 94, 0.1);
+}
+.mini-profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #2c2c2c;
+    border: 2px solid #555;
+}
+
+.mini-profile-picture:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+
+.post-message::placeholder {
+    color: #e7e9ea;
+}
+
+.p-info {
+    font-size: 13px;
+    color: #536471;
+    margin: 4px 0 0;
+    text-align: right;
+}
+
+.post-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #2f3336;
+}
+
+.submit-button {
+    background-color: #e7e9ea;
+    color: #000000;
+    border-color: rgba(0, 0, 0, 0);
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover:not(:disabled) {
+    background-color: #949494;
+}
+
+.submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#post-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.post-message {
+    resize: none;
+    overflow: hidden;
+    min-height: 52px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    color: #e7e9ea;
+    caret-color: #e7e9ea;
+    line-height: 1.5;
+    padding: 4px 0;
+    box-sizing: border-box;
+    height: auto;
+}
+
+.post-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    border-bottom: 1px solid #2f3336;
+    border-left: 1px solid $sep-gray;
+    border-right: 1px solid $sep-gray;
+}
+
+.post-editable {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+}
+
+.mini-profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    margin-top: 4px;
+}

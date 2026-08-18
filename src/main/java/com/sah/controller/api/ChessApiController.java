@@ -2,8 +2,9 @@ package com.sah.controller.api;
 
 import com.sah.config.WebSocketEventListener;
 import com.sah.dto.chess.MinimalStateDTO;
-import com.sah.dto.misc.ChatMessageDTO;
+import com.sah.dto.misc.MessageResponseDTO;
 import com.sah.dto.requests.GameEndRequest;
+import com.sah.dto.requests.MessageRequestDTO;
 import com.sah.dto.requests.MoveRequestDTO;
 import com.sah.entity.ChessLobbies;
 import com.sah.entity.ChessLobbyChatMessages;
@@ -23,9 +24,9 @@ import com.sah.repository.ChessLobbyChatRepository;
 import com.sah.repository.LobbyRepository;
 import com.sah.repository.UserRepository;
 import com.sah.security.CurrentUserProvider;
-import com.sah.security.CustomUserDetails;
 import com.sah.service.lobby.ChessLobbyChatService;
 import com.sah.service.chess.GameService;
+import com.sah.service.user.ResolveAuthUserImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -50,6 +51,7 @@ public class ChessApiController {
     private final ChessLobbyChatRepository chessLobbyChatRepository;
     private final UserRepository userRepository;
     private final CurrentUserProvider currentUserProvider;
+    private final ResolveAuthUserImpl resolveCurrentUser;
 
 //    @GetMapping("/turn")
 //    public ColorType getCurrentColor()
@@ -88,7 +90,7 @@ public class ChessApiController {
     @MessageMapping("/chess.move")
     public void moveOnline(MoveRequestDTO request, Authentication auth) throws InvalidMoveException {
         Game currentGame = gameService.getOrCreateBoard(request.getLobbyId());
-        Users currentUser = resolveCurrentUser(auth);
+        Users currentUser = resolveCurrentUser.returnAuthenticatedUser(auth);
 
         Piece p = currentGame.getBoard().at(request.moveCoords.getFromRow(), request.moveCoords.getFromCol());
 
@@ -114,7 +116,6 @@ public class ChessApiController {
 
     }
 
-
     @GetMapping("/onlineState/{lobbyId}")
     public MinimalStateDTO getOnlineState(@PathVariable String lobbyId) {
         Game currentGame = gameService.getOrCreateBoard(lobbyId);
@@ -123,20 +124,21 @@ public class ChessApiController {
 
     @MessageMapping("/chat.sendMessage/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
-    public ChatMessageDTO sendMessage(@Payload ChatMessageDTO chatMessageDTO,
-                                      @DestinationVariable String lobbyId) {
+    public MessageResponseDTO sendMessage(@Payload MessageRequestDTO req,
+                                          @DestinationVariable String lobbyId,
+                                          Authentication auth) {
 
         ChessLobbyChats chat = chessLobbyChatRepository.findByLobby_LobbyId(lobbyId);
-        Users user = currentUserProvider.get();
+        Users user = resolveCurrentUser.returnAuthenticatedUser(auth);
 
         ChessLobbyChatMessages savedMessage =
                 chessLobbyChatService.sendMessage(
                         chat,
                         user,
-                        chatMessageDTO.getContent()
+                        req.getContent()
                 );
 
-        return new ChatMessageDTO(
+        return new MessageResponseDTO(
                 savedMessage.getSender().getUsername(),
                 savedMessage.getContent(),
                 MessageType.CHAT
@@ -146,13 +148,16 @@ public class ChessApiController {
 
     @MessageMapping("/chat.addUser/{lobbyId}")
     @SendTo("/topic/chat/{lobbyId}")
-    public ChatMessageDTO addUser(@Payload ChatMessageDTO chatMessageDTO, @DestinationVariable String lobbyId, SimpMessageHeaderAccessor headerAccessor) {
-        Users sender = userRepository.findByUsername(chatMessageDTO.getSender());
+    public MessageResponseDTO addUser(@DestinationVariable String lobbyId,
+                                      SimpMessageHeaderAccessor headerAccessor,
+                                      Authentication auth)
+    {
+        Users sender = resolveCurrentUser.returnAuthenticatedUser(auth);
         if(headerAccessor.getSessionAttributes() != null) {
-            headerAccessor.getSessionAttributes().put("username", chatMessageDTO.getSender());
+            headerAccessor.getSessionAttributes().put("username", sender);
             headerAccessor.getSessionAttributes().put("lobbyId", lobbyId);
         }
-        WebSocketEventListener.userReturned(chatMessageDTO.getSender());
+        WebSocketEventListener.userReturned(sender.getUsername());
         return chessLobbyChatService.addUser(sender,chessLobbyChatRepository.findByLobby_LobbyId(lobbyId));
     }
 
@@ -169,13 +174,6 @@ public class ChessApiController {
     {
         GameEndRequest request = new GameEndRequest(lobbyId, currentUserProvider.get());
         gameService.endGameEarly(request);
-    }
-
-    private Users resolveCurrentUser(Authentication auth)
-    {
-        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-        return userRepository.findById(userDetails.getId())
-                .orElseThrow(() -> new IllegalStateException("User authenticated but not found in the database"));
     }
 
     private Sides OppositeColor(ColorType color) {

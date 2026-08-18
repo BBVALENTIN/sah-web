@@ -1,18 +1,19 @@
 import {Piece} from "./Piece.js";
 import {PieceType, SidesExplicit} from "./Enums.js";
-import {PieceDTO} from "./Types.js";
 
 export class Board {
-    static squareSize: number = 75;
+    private canvas: HTMLCanvasElement;
+    private ctx: CanvasRenderingContext2D;
+    private static readonly BOARD_SIZE  = 8;
+    private readonly colorBlackSquares: string = "#6F8FAF";
+    private readonly colorWhiteSquares: string = "#DCE1E6";
+    private squareSize: number = 75;
     lastMove?: {
         fromRow: number,
         fromCol: number,
         toRow: number,
         toCol: number
     };
-    ctx: CanvasRenderingContext2D;
-    rows: number;
-    cols: number;
     pieces: Piece[];
     imageCache: Record<string, HTMLImageElement>
     isBlack: boolean;
@@ -21,28 +22,81 @@ export class Board {
         this.lastMove = { fromRow, fromCol, toRow, toCol };
     }
 
-    constructor(ctx: CanvasRenderingContext2D) {
+    constructor(canvasId: string) {
+        this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+
+        const ctx = this.canvas.getContext("2d");
+
+        if(!ctx) throw new Error("Cannot create canvas context");
+
         this.ctx = ctx;
-        this.rows = 8;
-        this.cols = 8;
-        this.pieces = [];
+
+        this.pieces = []; // maybe redundant
         this.imageCache = {};
         this.isBlack = false;
+
+        this.resize();
+
+        window.addEventListener('resize', () => {
+            this.resize();
+            this.redraw();
+        });
     }
 
-    getPiece(row: number, col: number): Piece  | undefined {
+    // need a resize function for the whole page, no tjust the canvas
+    private resize() {
+        // rule of thumb, always name the element chess-playground and have a parent div on it
+        const playground = document.querySelector('.chess-playground') as HTMLElement;
+        const parentElement = playground.parentNode as HTMLDivElement;
+        console.log("viewport:", window.innerWidth, window.innerHeight);
+
+        console.log(
+            "parent:",
+            parent.innerHeight,
+            parent.innerWidth
+        );
+
+        console.log(
+            "document:",
+            document.documentElement.clientWidth,
+            document.documentElement.clientHeight
+        );
+
+        console.log("parent rect:", parentElement.getBoundingClientRect());
+        console.log("canvas rect:", this.canvas.getBoundingClientRect());
+        const rect = parentElement.getBoundingClientRect();
+        let availableHeight = window.innerHeight - rect.top;
+        console.log(parentElement.children.length);
+        if(parentElement.children.length < 2)
+            availableHeight *= 0.8;
+
+        const boardSquareSize = Math.min(parentElement.clientWidth, availableHeight);
+        this.canvas.width = boardSquareSize;
+        this.canvas.height = boardSquareSize;
+
+        this.squareSize = boardSquareSize / 8;
+    }
+
+    public getCanvas(): HTMLCanvasElement {
+        return this.canvas;
+    }
+    public getPiece(row: number, col: number): Piece  | undefined {
         return this.pieces.find(p => p.row === row && p.col === col);
     }
 
-    setOrientation(isBlack: boolean) {
+    public setOrientation(isBlack: boolean) {
         this.isBlack = isBlack;
     }
 
-    getOrientation() {
+    public getOrientation() {
         return this.isBlack;
     }
 
-    async loadImages(): Promise<void> {
+    public getSquareSize():number {
+        return this.squareSize
+    }
+
+    public async loadImages(): Promise<void> {
         const tipuri: PieceType[] = Object.values(PieceType);
         const culori: string[] = [ "white", "black"];
         const promises: Promise<void>[] = [];
@@ -71,63 +125,63 @@ export class Board {
         });
 
         await Promise.all(promises);
-        console.log("All images have been stocked in cache.");
     }
 
-    redraw(pieces: Piece[] = this.pieces, selectedPiece?: Piece): void {
-        let c = 0;
-        const ctx = this.ctx;
-        const size = Board.squareSize;
-        const boardSize = size * 8;
+    public redraw(pieces: Piece[] = this.pieces, selectedPiece?: Piece): void {
+        this.drawBoard();
+        this.drawLastMove();
+        this.drawPieces(pieces, selectedPiece);
+        this.drawCoordinates();
+    }
 
-        for(let row = 0; row < this.rows; row++){
-            for(let col = 0; col < this.cols; col++)
+    private drawBoard(): void {
+        let c = 0;
+        const size = this.squareSize;
+
+        for(let row = 0; row < Board.BOARD_SIZE; row++){
+            for(let col = 0; col < Board.BOARD_SIZE; col++)
                 {
-                    this.ctx.fillStyle = c === 0 ? "#ffffff" : "#0b96be";
+                    this.ctx.fillStyle = c === 0 ? this.colorWhiteSquares : this.colorBlackSquares;
                     c = 1 - c;
                     this.ctx.fillRect(col * size, row * size, size, size);
                 }
             c = 1 - c;
         }
+    }
 
-        this.drawLastMove(this.ctx);
-
-
+    private drawPieces(pieces: Piece[], selectedPiece?: Piece): void {
         pieces.forEach(p => this.drawOrientedPiece(p));
 
         if(selectedPiece && selectedPiece.img?.complete) {
             this.drawOrientedPiece(selectedPiece);
         }
-
-        this.drawCoordinates();
     }
 
-    private drawOrientedPiece(piece: Piece) {
-        const size = Board.squareSize;
+    private drawOrientedPiece(piece: Piece): void {
+        const size = this.squareSize;
 
         if (piece.isDragging && piece.dragX !== undefined && piece.dragY !== undefined) {
-            piece.draw(this.ctx);
+            piece.draw(this, this.ctx);
             return;
         }
 
         const visualCol = this.isBlack ? 7 - piece.col : piece.col;
         const visualRow = this.isBlack ? 7 - piece.row : piece.row;
 
-        if (piece.isDragging && piece.dragX !== undefined && piece.dragY !== undefined) {
-            piece.draw(this.ctx);
-        } else {
-            const x = visualCol * size;
-            const y = visualRow * size;
-
-            if (piece.img && piece.img.complete) {
-                this.ctx.drawImage(piece.img, x, y, size, size);
-            }
+        if(piece.img?.complete) {
+            this.ctx.drawImage(
+                piece.img,
+                visualCol * size,
+                visualRow * size,
+                size,
+                size
+            );
         }
     }
 
     private drawCoordinates() {
         const ctx = this.ctx;
-        const size = Board.squareSize;
+        const size = this.squareSize;
         ctx.font = "600 14px Fira Code, sans-serif";
         ctx.fillStyle = "#4a4a4a";
 
@@ -140,7 +194,7 @@ export class Board {
         }
     }
 
-    createPieceFromData(data: any): Piece
+    private createPieceFromData(data: PieceData): Piece
     {
         const { type, color, row, col } = data;
 
@@ -161,11 +215,7 @@ export class Board {
         return piece;
     }
 
-    setPiecesFromServer(piecesData: PieceDTO[]): void {
-        this.pieces = piecesData.map((p:any) => this.createPieceFromData(p));
-    }
-
-    setPiecesFromFEN(FEN: string) {
+    public setPiecesFromFEN(FEN: string) {
         const piecePlacement = FEN.split(' ')[0];
         const ranks = piecePlacement.split('/');
 
@@ -216,8 +266,8 @@ export class Board {
     }
 
 
-    drawLastMove(ctx: CanvasRenderingContext2D) {
-        const size = Board.squareSize;
+    private drawLastMove() {
+        const size = this.squareSize;
         if(!this.lastMove) return;
 
         let {fromRow, fromCol, toRow, toCol} = this.lastMove;
@@ -229,13 +279,20 @@ export class Board {
             toCol = 7 - toCol;
         }
 
-        this.drawHighlight(ctx, fromRow, fromCol);
-        this.drawHighlight(ctx, toRow, toCol);
+        this.drawHighlight(fromRow, fromCol);
+        this.drawHighlight(toRow, toCol);
     }
 
-    drawHighlight(ctx: CanvasRenderingContext2D, row: number, col: number) {
-        ctx.fillStyle = 'rgba(255, 255, 0, 0.4)';
-        const size = Board.squareSize;
-        ctx.fillRect(col*size, row*size, size, size);
+    private drawHighlight(row: number, col: number) {
+        this.ctx.fillStyle = 'rgba(255, 193, 7, 0.30)';
+        const size = this.squareSize;
+        this.ctx.fillRect(col*size, row*size, size, size);
     }
+}
+
+interface PieceData {
+    type: PieceType,
+    color: SidesExplicit,
+    row: number,
+    col: number;
 }

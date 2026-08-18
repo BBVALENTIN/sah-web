@@ -1,0 +1,30 @@
+@use "body";
+@use "navbar";
+@use "_post";
+@use "_comment";
+@use "_library" as *;
+
+
+textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 48px;
+}
+
+.posts-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.post-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    border-left: 1px solid $sep-gray;
+    border-right: 1px solid $sep-gray;
+}
+
+.separator {
+    height: 1px;
+    background-color: $sep-gray;
+    margin: 0;
+}

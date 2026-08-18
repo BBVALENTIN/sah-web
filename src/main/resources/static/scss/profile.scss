@@ -1,0 +1,187 @@
+@use "body";
+@use "navbar";
+@use "_library" as *;
+
+.profile-container {
+    display: flex;
+    width: 600px;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    flex-direction: column;
+}
+
+.profile-card {
+    position: relative;
+    display: inherit;
+    gap: 24px;
+    width: 100%;
+    justify-content: flex-start;
+    margin: 40px auto 20px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 12px;
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+.profile-settings-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: 1px solid #555;
+    border-radius: 6px;
+    color: #aaa;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.profile-header-overview {
+    display: flex;
+}
+
+.profile-header-avatar img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid #555;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.profile-header-overview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-info.username {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.profile-user-description {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.upload-photo {
+    display: flex;
+    justify-content: center;
+}
+
+#profile-picture {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background-color: #2c2c2c;
+    border: 2px solid #555;
+}
+
+
+#profile-username {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#profile-description {
+    font-size: 14px;
+    color: #aaa;
+}
+
+#last-games-container {
+    margin: 20px auto;
+    background-color: #1e1e1e;
+    border: 2px solid #333;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.4);
+}
+
+#last-games-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+#last-games-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#last-games-list li {
+    background-color: #2c2c2c;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    font-size: 14px;
+}
+
+.misc-buttons button {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.win {
+    color: #4caf50;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.lose {
+    color: #f44336;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+#last-games-list > div {
+    text-align: center;
+    color: #888;
+    padding: 10px;
+}
+
+.profile-user-description {
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    color: $font-dim;
+    gap: 8px;
+}
+
+.edit-button {
+    background: none;
+    border: none;
+    color: $font-dim;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 999px;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+
+#edit-description-button:hover {
+    color: $sep-gray;
+    background-color: $body-gray; // change this
+}
+
+.desc-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid $sep-gray;
+    color: $font-dim;
+    font-size: 15px;
+    outline: none;
+    width: 300px;
+}

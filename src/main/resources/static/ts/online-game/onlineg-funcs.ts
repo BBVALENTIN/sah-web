@@ -1,14 +1,15 @@
 import {Board} from '../tools/Board.js';
 import {Mouse} from "./Mouse.js";
 import {MoveList} from "../tools/MoveList.js";
-import {connect, sendMessage, state} from "./WebSockets.js"
-import {minimalState, lobbyInfo} from "../tools/Types.js";
+import {connect, currentColor, sendMessage, setCurrentColor, state} from "./WebSockets.js"
+import {lobbyInfo, minimalState} from "../tools/Types.js";
+import {SidesExplicit} from "../tools/Enums";
 
 const currentPlayerSide = document.getElementById('currentPlayer') as HTMLElement;
 const otherPlayerSide = document.getElementById('otherPlayer') as HTMLElement;
 const lobbyInfo = await getInfoLobby();
 const lobbyId = lobbyInfo?.lobbyId;
-let loggedUsername = document.body.dataset.username;
+const loggedUsername = document.body.dataset.username;
 if(!lobbyId) {
     console.log("Lobby ID not found");
 }
@@ -24,6 +25,16 @@ export async function initializeApp() {
                 console.error("Username not found");
                 return;
             }
+
+            const messageInput = document.getElementById('message') as HTMLInputElement;
+
+            messageInput.addEventListener('keydown', (e: KeyboardEvent) => {
+                if(e.code === 'Enter') {
+                    sendMessage();
+                    e.preventDefault();
+                }
+            });
+
             if(lobbyInfo &&lobbyInfo.playerWhite === username)
             {
                 currentPlayerSide.innerText = username;
@@ -38,19 +49,13 @@ export async function initializeApp() {
             await board.loadImages();
             board.setOrientation(isBlack);
             board.redraw();
-            connect(username, lobbyId);
+            connect(lobbyId);
             await loadBoard(lobbyId);
         }
     } catch (e) {
         console.error("Failed to fetch user info", e);
     }
 
-    let sendButton = document.querySelector('#sendMessageButton') as HTMLButtonElement;
-
-    sendButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        sendMessage();
-    });
 
     resignBtn.addEventListener("click", async () => {
         resignBtn.disabled = true;
@@ -62,10 +67,10 @@ export async function initializeApp() {
 
             if(responseResign.ok) {
                 if(state.stompClient && state.connected) {
-                    state.stompClient.disconnect(() => {
-                        console.log("Disconnected from server due to resignation/abort");
-                        state.connected = false
-                    });
+                    await state.stompClient.deactivate();
+
+                    console.log("Disconnected from server due to resignation - test log");
+                    state.connected = false;
                 }
             }
             else {
@@ -78,17 +83,10 @@ export async function initializeApp() {
     });
 }
 
-const canvas: HTMLCanvasElement = document.getElementById('chessCanvas') as HTMLCanvasElement;
-const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
-
-const size: number = Board.squareSize * 8;
-canvas.width = size;
-canvas.height = size;
-
-export const board: Board = new Board(ctx);
+export const board: Board = new Board('chessCanvas');
 export const moveList:MoveList = new MoveList("move-list");
 
-export const mouse: Mouse = new Mouse(canvas, board);
+export const mouse: Mouse = new Mouse(board.getCanvas(), board);
 const resignBtn = document.getElementById("resign-button") as HTMLButtonElement;
 async function loadBoard(lobbyId: string):Promise<void>
 {
@@ -99,11 +97,22 @@ async function loadBoard(lobbyId: string):Promise<void>
         if(minimalState.currentPGN != null )
             moveList.addWholePGN(minimalState.currentPGN);
         board.setPiecesFromFEN(currentFEN);
+        setCurrentColor(parseColorFromFEN(currentFEN));
         board.redraw();
     }
     catch (e) {
         console.error("There was an error loading the data");
     }
+}
+
+function parseColorFromFEN(FEN: string): SidesExplicit {
+    const split:string[] = FEN.split(' ');
+    if(split[1] == 'w')
+        return SidesExplicit.WHITE;
+    else
+        return SidesExplicit.BLACK;
+
+    throw new Error("FEN error, can't read character: " + split[1]);
 }
 
 export async function getInfoLobby(): Promise<lobbyInfo | undefined> {

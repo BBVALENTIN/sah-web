@@ -36,11 +36,15 @@ export class Mouse {
 
     getSquareFromMouse(e: any){
         const rect: DOMRect = this.canvas.getBoundingClientRect();
-        const x: number = e.clientX - rect.left;
-        const y: number = e.clientY - rect.top;
 
-        let col: number = Math.floor(x / Board.squareSize);
-        let row: number = Math.floor(y / Board.squareSize);
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x: number = (e.clientX - rect.left) * scaleX;
+        const y: number = (e.clientY - rect.top) * scaleY;
+
+        let col: number = Math.floor(x / this.board.getSquareSize());
+        let row: number = Math.floor(y / this.board.getSquareSize());
 
         if(this.board.isBlack) {
             col = 7 - col;
@@ -59,8 +63,8 @@ export class Mouse {
             const visualCol = this.board.isBlack ? 7 - piece.col : piece.col;
             const visualRow = this.board.isBlack ? 7 - piece.row : piece.row;
 
-            this.offsetX = x - visualCol * Board.squareSize;
-            this.offsetY = y - visualRow * Board.squareSize;
+            this.offsetX = x - visualCol * this.board.getSquareSize();
+            this.offsetY = y - visualRow * this.board.getSquareSize();
 
             this.board.redraw(this.board.pieces.filter(p => p !== piece), this.selectedPiece);
         }
@@ -108,13 +112,19 @@ export class Mouse {
             this.promotionManager.showPromotionModal(this.selectedPiece.color, {x: e.clientX, y: e.clientY}, async (promotionPiece: string) => {
                 // i know this is bad, will make it type safe, but promotionPiece should have only this name momentarily
                 try {
-                    state.stompClient.send("/app/chess.move",
-                        {},
-                        JSON.stringify({
+
+                    if(!state.stompClient || !state.connected) {
+                        console.error("STOMP is not connected");
+                        return;
+                    }
+
+                    state.stompClient.publish({
+                        destination: "/app/chess.move",
+                        body: JSON.stringify({
                             moveCoords: {fromRow, fromCol, targetRow, targetCol, promotionPiece},
                             lobbyId: currentLobbyId
                         })
-                    );
+                    });
                 } catch (err) {
                     console.error("Error regarding ws move (promotion)", err);
                 }
@@ -127,14 +137,18 @@ export class Mouse {
 
 
         try {
-            state.stompClient.send(
-                "/app/chess.move",
-                {},
-                JSON.stringify({
+            if(!state.stompClient || !state.connected) {
+                console.error("STOMP is not connected");
+                return;
+            }
+
+            state.stompClient.publish({
+                destination: "/app/chess.move",
+                body: JSON.stringify({
                     moveCoords: {fromRow, fromCol, targetRow, targetCol},
                     lobbyId: currentLobbyId
                 })
-            );
+            });
         } catch(err){
             console.log("Error: ", err);
         } finally {

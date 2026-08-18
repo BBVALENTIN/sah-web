@@ -3,56 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>Self Practice</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/chess.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
-    <div id="chess-stuff" class="content-play">
 
-        <div class="chess-main">
+    <div class="content-chess">
 
-            <div id="chess-playground">
-                <canvas id="chessCanvas"></canvas>
-            </div>
+        <div class="main-axis">
+            <div class="chess-main">
 
-            <div id="chess-info-wrapper" class="chess-info-wrapper">
-                <div id="chess-info-item">Play with yourself</div>
-                <div>
-                    <div class="stockfish-enable">
-                        <label class="switch">
-                            <input id="stockfish-trigger" type="checkbox">
-                            <span class="slider round"></span>
-                        </label>
-                        <span>Enable stockfish</span>
-                    </div>
-                    <div id="stockfish-lines">
-                    </div>
+                <div class="chess-playground">
+                    <canvas id="chessCanvas"></canvas>
                 </div>
-                <div id="move-list-container">
-                    <div id="move-list"></div>
-                </div>
-                <div class="misc-buttons">
-                    <button id="flipBoard">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-transfer-vertical">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M10 4v16l-6 -5.5" />
-                            <path d="M14 20v-16l6 5.5" />
-                        </svg>
-                    </button>
-                    <button id="resetBoard">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-restore">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M3.06 13a9 9 0 1 0 .49 -4.087" />
-                            <path d="M3 4.001v5h5" />
-                            <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                        </svg>
-                    </button>
+
+                <div id="chess-info-wrapper" class="chess-info-wrapper">
+                    <div id="chess-info-item">Play with yourself</div>
+                    <div>
+                        <div class="stockfish-enable">
+                            <label class="switch">
+                                <input id="stockfish-trigger" type="checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                            <span>Enable stockfish</span>
+                        </div>
+                        <div id="stockfish-lines">
+                        </div>
+                    </div>
+                    <div id="move-list-container">
+                        <div id="move-list"></div>
+                    </div>
+                    <div class="misc-buttons">
+                        <button id="flipBoard">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-transfer-vertical">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M10 4v16l-6 -5.5" />
+                                <path d="M14 20v-16l6 5.5" />
+                            </svg>
+                        </button>
+                        <button id="resetBoard">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-restore">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M3.06 13a9 9 0 1 0 .49 -4.087" />
+                                <path d="M3 4.001v5h5" />
+                                <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div th:insert="~{fragments/copyables :: copyables}"></div>
-        <div th:insert="~{fragments/promotion :: promotion}"></div>
+        <div th:insert="~{fragments/promotion :: promotion}"></div><div class="second-axis">
+            <div class="copyables-wrapper" th:insert="~{fragments/copyables :: copyables}"></div>
+        </div>
     </div>
 
     <script type="module" th:src="@{/ts-transpiled/practice/practice-index.js}"></script>
